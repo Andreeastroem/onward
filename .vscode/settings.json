@@ -1,0 +1,9 @@
+{
+  "cmake.useCMakePresets": "always",
+  "cmake.configurePreset": "gcc",
+  "cmake.buildPreset": "gcc",
+  "cmake.buildTarget": "arpg",
+  "cmake.generator": "Unix Makefiles",
+
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

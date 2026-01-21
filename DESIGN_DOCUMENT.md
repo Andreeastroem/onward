@@ -86,6 +86,11 @@ Strength
 
 Similar to Diablo, items have a tier and the legend/set tiers have special effects. No item is restricted to a certain class.
 
+### What kind of items
+
+Weapons or trinkets? Should spells be dropped or should their be skill trees?
+If there should be skill trees, should there be archetypes or should every playable character have their own skill tree? That could be a rather large undertaking
+
 ## End game
 
 When you reach a specific point in the game, you are approached by the god of the opposing faction. Inviting you to join their side. This unlocks the "evil" campaign, where you can play as the enemy mobs.
