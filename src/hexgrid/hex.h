@@ -10,6 +10,16 @@ struct Hex
     int q;
     int r;
     int s;
+    bool operator==(Hex hex)
+    {
+        if (q != hex.q)
+            return false;
+        if (r != hex.r)
+            return false;
+        if (s != hex.s)
+            return false;
+        return true;
+    }
 };
 
 struct FractionalHex

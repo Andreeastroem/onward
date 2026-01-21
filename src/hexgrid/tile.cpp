@@ -1,20 +1,38 @@
 #include "tile.h"
 
+#include <printf.h>
+
 #include <rlgl.h>
 
 Tile::Tile(int q, int r, int s)
 {
     m_color = DARKGREEN;
-    m_q = q;
-    m_r = r;
-    m_s = s;
+    coordinates = Hex{q, r, s};
+}
+
+Tile::Tile(Hex hex)
+{
+    coordinates = hex;
+}
+
+Tile::Tile(Hex hex, Color color)
+{
+    coordinates = hex;
+    m_color = color;
 }
 
 void Tile::render()
 {
     // TODO: calc center
-    Vector2 center{100.f, 100.f};
-    DrawPoly(center, 6, 64, 0, m_color);
+    Vector2 center = hexToPixel(coordinates);
+    printf("center x: %f, y: %f", center.x, center.y);
+
+    DrawPoly(center, 6, HEXSIZE, 0, m_color);
+}
+
+bool Tile::atHex(Hex hex)
+{
+    return coordinates == hex;
 }
 
 // Draw textured polygon, defined by vertex and texture coordinates

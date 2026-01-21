@@ -4,6 +4,21 @@
 
 #include "hexgrid/tile.h"
 
+#include <vector>
+#include "hexgrid/hex.h"
+
+bool hasHexAlready(Hex hex, std::vector<Tile> tiles)
+{
+    for (unsigned int i = 0; i < tiles.size(); ++i)
+    {
+        if (tiles.at(i).atHex(hex))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main()
 {
     const int screenWidth = 1920;
@@ -16,18 +31,31 @@ int main()
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
-    Tile tile{0, 0, 0};
-    Tile tile2{1, 0, 0};
+    std::vector<Tile> tiles{};
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
+        // Listen to mouse events
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            Hex coordinates = pixelToHex(GetMousePosition());
+            if (!hasHexAlready(coordinates, tiles))
+                tiles.push_back(Tile(coordinates.q, coordinates.r, coordinates.s));
+        }
+
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(BLACK);
 
-        tile.render();
+        const std::string numberOfTiles = std::to_string(tiles.size());
+        DrawText(numberOfTiles.c_str(), 100, 100, 16, WHITE);
+
+        for (unsigned int i = 0; i < tiles.size(); ++i)
+        {
+            tiles.at(i).render();
+        }
 
         EndDrawing();
         //----------------------------------------------------------------------------------
