@@ -76,6 +76,8 @@ Possible pattern:
 
 Detailed economy mechanics are specified in RTS_economy_design.md.
 
+v0 economy constants are now locked in the same document under the baseline formulas section (`economy_constants_version = 1`).
+
 ### Primary Resource
 
 Use one main resource: biomass.
@@ -202,6 +204,15 @@ Recommended default victory condition:
 - Destroy the enemy colony core or queen equivalent.
 
 This is clearer than total annihilation and works better with a future domination mode.
+
+Match termination edge cases are locked in [RTS_match_termination_spec.md](RTS_match_termination_spec.md).
+
+v0 termination summary:
+
+- Same-tick dual core destruction resolves to draw.
+- Timer expiry resolves to draw with no tie-breakers.
+- Surrender uses a 3-second countdown before loss is committed.
+- Disconnect enters paused reconnect flow (90+ second grace), then forfeit on timeout.
 
 ## Match Length And Pacing
 

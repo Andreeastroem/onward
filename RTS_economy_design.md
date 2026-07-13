@@ -163,25 +163,60 @@ This avoids instant army deletion while still enforcing macro discipline.
 
 ## Suggested Baseline Formulas
 
-These are placeholder balance formulas for prototyping.
+These are locked v0 baseline formulas and constants.
+
+Economy constants version: `economy_constants_version = 1`.
+
+### Unit Economy Categories (v0)
+
+- Unit economy classes are exactly two values: `Worker` and `Warrior`.
+- Each unit must declare an explicit `economy_class` tag.
+- Queen/core entities are excluded from reclaim economy class calculations.
 
 - Corpse biomass value:
   - biomass_value = unit_cost_biomass x reclaim_ratio
-  - starting reclaim_ratio target: 0.4 to 0.7
+  - reclaim_ratio by economy class:
+    - Worker: 0.40
+    - Warrior: 0.65
 
 - Carry requirement:
   - carriers_required = ceil(corpse_mass / carrier_capacity)
 
 - Corpse decay:
-  - remaining_value(t) = initial_value x e^(-decay_rate x t)
+  - grace_period_seconds = 12
+  - half_life_seconds = 40
+  - remaining_value(t) = initial_value x 0.5 ^ ((t - grace_period_seconds) / half_life_seconds), for t > grace_period_seconds
+  - remaining_value(t) = initial_value, for t <= grace_period_seconds
 
 - Upkeep:
-  - upkeep_per_second = unit_supply_weight x upkeep_factor
+  - worker progressive upkeep starts at worker 11 (workers 1 to 10 are free)
+  - only workers above each threshold receive the increased upkeep for that threshold bracket
+  - worker upkeep brackets (applied only to workers inside each bracket):
+    - workers 11 to 16: +0.02 multiplier per worker
+    - workers 17 to 22: +0.03 multiplier per worker
+    - workers 23 and above: +0.05 multiplier per worker
+  - military upkeep base factor = 0.90
+  - military upkeep scaling by total military supply:
+    - at 120 supply: +0.20
+    - at 180 supply: +0.25
+    - at 230 supply: +0.30
+  - upkeep_per_second = unit_supply_weight x military_upkeep_factor
 
-Initial tuning ranges:
+### Regenerative Site Share Target (v0)
 
-- decay_rate: low enough to allow contest play, high enough to prevent infinite stockpiles.
-- upkeep_factor: light early game impact, meaningful late-game pressure.
+- Target share of total biomass over full matches: 20% to 30%.
+- Cap guideline: should rarely exceed 35% over a rolling 5-minute window.
+- v0 enforcement policy is design-time telemetry and balancing, not runtime clamping.
+
+### Allowed Tuning Bands For Patches
+
+- Reclaim ratios: plus/minus 0.05.
+- Decay grace and half-life: plus/minus 20%.
+- Worker free baseline and bracket thresholds: plus/minus 1 worker.
+- Upkeep factors and tier increments: plus/minus 0.05.
+- Regenerative share target window: plus/minus 5 percentage points.
+
+Values outside these bands require an explicit constants-version increment.
 
 ## Match Phase Behavior
 
@@ -261,34 +296,31 @@ These are required for economy mechanics to feel meaningful in single-player ski
 
 Target outcome: high interaction and comeback potential without nullifying good macro play.
 
-## Economy Rules To Lock Before Faction Design
+## Economy Constants Locked For Faction Design
 
-1. Final reclaim ratio range for unit corpses.
-2. Final decay model and timer visibility.
-3. Large corpse handling method: team carry or onsite dismantle.
-4. Upkeep penalty curve and thresholds.
-5. Final frequency target for regenerative sites: rare.
-6. Regenerative site share target of total income.
+The following economy constants are locked in `economy_constants_version = 1` and define the baseline that factions can tune around:
+
+1. Reclaim ratios by explicit economy class tag (`Worker`, `Warrior`).
+2. Corpse decay model with 12-second grace and 40-second half-life.
+3. Worker free baseline (10) and progressive bracket upkeep from worker 11 onward.
+4. Military upkeep base factor and tier scaling breakpoints/increments.
+5. Regenerative site share target and cap guideline.
+6. Patch tuning bands and versioning discipline.
+
+Remaining open economy implementation choice:
+
+1. Large corpse handling method: team carry or onsite dismantle.
 
 These constants define the strategic foundation that faction bonuses should modify, not replace.
 
-## Open Questions: Locked Decisions (Grill Session)
+## Open Questions: Additional Locked Decisions (Grill Session)
 
-### 1) Worker upkeep
+### 1) Worker upkeep model
 
 - Workers are not exempt from upkeep.
-- A baseline count `X` workers is free.
-- Workers above `X` incur progressive upkeep.
-
-Prototype formula:
-
-- paid_workers = max(0, workers - X)
-- worker_upkeep_per_sec = k \* (paid_workers ^ C), with 1 < C < 2
-
-Notes:
-
-- Use `C` as the primary curve-shape tuning knob.
-- Starting test range for `C`: 1.25 to 1.6.
+- Workers 1 to 10 are free.
+- Workers above 10 use bracketed progressive upkeep.
+- Bracket increases apply only to workers inside their own bracket range.
 
 ### 2) Corpse terrain interaction
 

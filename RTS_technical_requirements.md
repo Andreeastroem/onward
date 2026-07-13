@@ -23,6 +23,24 @@ This document locks the core presentation and simulation constraints that shape 
 - Large battles should stay legible without requiring squad-level unit grouping.
 - The cap exists to keep pathfinding, selection, and AI behavior within a manageable RTS budget.
 
+### Deterministic Match Termination
+
+- Match end resolution must follow a deterministic state machine defined in [RTS_match_termination_spec.md](RTS_match_termination_spec.md).
+- Same-tick termination conflicts must use explicit priority ordering rather than network receive order.
+- Draw outcomes are first-class results and must be represented consistently in UI, save data, and replay output.
+
+### Disconnect And Resume Requirements
+
+- Multiplayer disconnect must pause simulation and open a reconnect grace window of at least 90 seconds.
+- Entering reconnect grace must create a deterministic resume snapshot with stable content hashing.
+- Reconnect timeout must resolve to deterministic forfeit for the disconnected player.
+
+### Replay Audit Requirements
+
+- End-state replay metadata must include termination cause, final tick, trigger event id(s), and same-tick priority trace.
+- Disconnect and surrender timelines must be included in replay metadata for dispute/debug verification.
+- Match termination ruleset version must be persisted with replay output.
+
 ### Terrain Constraints
 
 - Water is impassable in the baseline rules.
@@ -39,3 +57,4 @@ This document locks the core presentation and simulation constraints that shape 
 
 - [RTS_design_doc.md](RTS_design_doc.md)
 - [RTS_economy_design.md](RTS_economy_design.md)
+- [RTS_match_termination_spec.md](RTS_match_termination_spec.md)
