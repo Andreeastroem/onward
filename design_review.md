@@ -99,6 +99,8 @@ Resolution locked:
 
 ## 3) Resource Ownership, Theft, And Logistics Edge Cases (High)
 
+Status: Resolved in v0 ruleset. See [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md).
+
 Why this matters:
 
 - Deposit and pass-through rules are good, but contested interactions need deterministic ownership logic.
@@ -122,6 +124,17 @@ Grill questions:
 Definition of done:
 
 - A resource state machine document with deterministic tie-breaking and anti-exploit constraints.
+
+Resolution locked:
+
+- Core-credit ownership remains authoritative; bank stock is cached, visible, and uncredited until core deposit.
+- Same-frame pickup conflicts resolve deterministically by tuple: interaction tick/substep, path-distance, then lower unit id.
+- No split payout and no no-winner lock state for pickup ties in v0.
+- Near-simultaneous death/deposit uses atomic resolution-tick position check.
+- Fortified bank contents support both steal and deny actions.
+- Anti-exploit minimum handling times are locked for pickup, handoff, steal, and deny channels.
+- Small corpses auto-convert at bank; larger corpses require logarithmic processing with deterministic clamps.
+- Audit-grade dispute logging is required for pickup contention, lock outcome, bank actions, processing, and interruptions.
 
 ---
 

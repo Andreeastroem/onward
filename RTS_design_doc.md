@@ -75,6 +75,7 @@ Possible pattern:
 ## Economy
 
 Detailed economy mechanics are specified in RTS_economy_design.md.
+Resource ownership, theft, and logistics edge-case resolution is specified in RTS_resource_ownership_spec.md.
 
 v0 economy constants are now locked in the same document under the baseline formulas section (`economy_constants_version = 1`).
 

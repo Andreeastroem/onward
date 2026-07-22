@@ -87,12 +87,15 @@ Decay forces decision speed and creates tactical pressure after every engagement
 - Biomass is not credited until delivered to the colony core.
 - If a carrier dies, carried biomass is dropped at death position.
 - Dropped biomass can be reclaimed by either side.
+- Near-simultaneous death and deposit is resolved by an atomic position check at resolution tick.
+- If carrier is alive and within valid deposit radius at resolution tick, deposit succeeds; otherwise biomass drops.
 
 ### Transfer Chain Rules
 
 - Biomass can pass through intermediate storage, but ownership is not finalized there.
 - Any intermediate stock can be stolen, destroyed, or interrupted before final hive delivery.
 - Long routes increase throughput potential but also increase raid exposure.
+- Same-frame pickup conflicts use deterministic tie-break resolution.
 
 ### Drop-off Structures
 
@@ -101,6 +104,11 @@ Decay forces decision speed and creates tactical pressure after every engagement
 - Fortified banks act as pass-through caches and must be emptied by logistics workers.
 - Fortified banks reduce front-line congestion but increase total route complexity.
 - Fortified banks and bank-to-core routes are high-value raid targets.
+- Bank inventory is visible to the owner as universal cached stock, but remains uncredited until core deposit.
+- Friendly carriers can withdraw up to their carry capacity from processed bank stock.
+- Bank raid actions support both steal and deny with channel constraints.
+
+Locked detailed behavior for ownership, theft, denial, and tie-break logic is defined in [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md).
 
 ## Regenerative Economy Sites
 
@@ -201,6 +209,17 @@ Economy constants version: `economy_constants_version = 1`.
     - at 180 supply: +0.25
     - at 230 supply: +0.30
   - upkeep_per_second = unit_supply_weight x military_upkeep_factor
+
+- Resource handling minimums:
+  - pickup lock = 0.35s
+  - handoff lock = 0.50s
+  - bank steal channel = 1.00s per chunk
+  - bank deny channel = 1.50s per chunk
+
+- Bank processing rule:
+  - small corpses auto-convert on bank arrival
+  - medium and larger corpses require processing
+  - processing time = clamp(min_process_seconds, max_process_seconds, base_process_seconds + k \* ln(1 + corpse_mass / mass_ref))
 
 ### Regenerative Site Share Target (v0)
 
@@ -306,10 +325,6 @@ The following economy constants are locked in `economy_constants_version = 1` an
 4. Military upkeep base factor and tier scaling breakpoints/increments.
 5. Regenerative site share target and cap guideline.
 6. Patch tuning bands and versioning discipline.
-
-Remaining open economy implementation choice:
-
-1. Large corpse handling method: team carry or onsite dismantle.
 
 These constants define the strategic foundation that faction bonuses should modify, not replace.
 

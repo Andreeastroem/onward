@@ -41,6 +41,18 @@ This document locks the core presentation and simulation constraints that shape 
 - Disconnect and surrender timelines must be included in replay metadata for dispute/debug verification.
 - Match termination ruleset version must be persisted with replay output.
 
+### Deterministic Resource Interaction Requirements
+
+- Resource ownership transitions and tie-break behavior must follow [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md).
+- Same-frame pickup conflicts must resolve from simulation state only, never network receive order.
+- Carrier death vs deposit outcomes must use atomic resolution-tick checks to remain replay-consistent.
+- Bank raid actions (steal/deny) and processing channels must use explicit timed interactions, not instant one-frame transfers.
+
+### Resource Audit Requirements
+
+- Replay and telemetry output must include the audit-grade resource event set defined in [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md).
+- Event payloads must be sufficient to reconstruct ownership disputes and interruption causes without relying on client logs.
+
 ### Terrain Constraints
 
 - Water is impassable in the baseline rules.
@@ -58,3 +70,4 @@ This document locks the core presentation and simulation constraints that shape 
 - [RTS_design_doc.md](RTS_design_doc.md)
 - [RTS_economy_design.md](RTS_economy_design.md)
 - [RTS_match_termination_spec.md](RTS_match_termination_spec.md)
+- [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md)
