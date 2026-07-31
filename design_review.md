@@ -308,6 +308,8 @@ Definition of done:
 
 ## 9) New Required Document: Combat Specification (High)
 
+Status: Resolved in v0 combat baseline. See [RTS_combat_spec.md](RTS_combat_spec.md).
+
 Why this matters:
 
 - No combat spec exists yet, creating a major gap between economy/tech intent and actual gameplay feel.
@@ -334,9 +336,76 @@ Definition of done:
 
 - A dedicated combat spec document with role matrix, formulas, TTK targets, and test scenarios.
 
+Resolution locked:
+
+- Baseline equal-cost TTK envelopes are locked to: early 2.0 to 3.0 seconds, mid 1.5 to 2.5 seconds, late 0.5 to 1.0 seconds.
+- Every faction must provide capability coverage for worker, warrior, air, anti-air, and behemoth roles.
+- Multi-role unit composition is explicitly allowed and is a primary faction-identity lever.
+- Counter model in v1 is soft-first, with optional evolution toward mixed counter anchors in later passes.
+- Damage channel set in v1 is locked to physical and siege, with DoT and AoE mechanics supported.
+- Armor interaction in v1 is flat reduction with minimum 1 damage floor per hit.
+- Hit resolution uses guaranteed hit with deterministic timing.
+- Friendly fire is disabled in v1.
+- AoE is a core anti-blob pillar and must be strongly telegraphed.
+- Allowed v1 status set is slow, armor break, DoT, and stun.
+- Medium proc usage is allowed with strong telegraphing and deterministic simulation parity.
+- Aura stacking policy is additive.
+- Regeneration exists; no automatic retreat mechanic in v1.
+- A-move may use role-priority targeting, but direct attack-unit commands must remain responsive override inputs.
+- Supply-line disruption verbs are first-class combat objectives: site raids, bank destruction/denial pressure, logistics-trail raids, and biomass-drop pressure.
+- Defensive structures in v1 should bias utility-control defense (for example snare/slow) rather than turret-centric lethality.
+- Behemoths are high-upkeep fight-swing anchors that must remain scoutable and punishable.
+- Desired micro ceiling in equal-cost fights is 15% to 25%, with concaves and flanks as highest-signal skills.
+- Readability bans are locked: no invisible projectiles and no identical VFX language for different actions/effects.
+- Determinism non-negotiables are locked for damage outcomes, status duration/expiration, and aura application order.
+- Publishable combat artifact requirements are locked: role matrix, formulas, TTK target table, per-role counterplay notes, test scenarios with telemetry hooks, and visual telegraph requirements by effect severity.
+
+Deferred to next pass:
+
+- Exact per-unit stat and cost tables by faction roster.
+- Additional damage channels beyond physical/siege.
+- Final numeric readability limits for simultaneous overlapping AoE effects.
+
 ---
 
-## 10) Multiplayer Skirmish Requirements To Add To GDD (High)
+## 10) Building And Unit Production Operations (High)
+
+Why this matters:
+
+- Production rules are a core RTS identity system and currently under-specified.
+- Build-flow ambiguity (who builds, where, how resources commit) can break pacing, readability, and balance.
+- AI behavior and multiplayer determinism depend on explicit production state rules.
+
+What to flesh out:
+
+- Building construction model: no-worker placement, one-worker channel, or multi-worker scaling.
+- Construction placement constraints and pathing/footprint validation.
+- Cost commitment timing and refund policy (on start, over time, or on completion).
+- Build interruption, destruction, and salvage behavior.
+- Logistics coupling policy: remote instant spend vs delivered construction biomass.
+- Unit production topology: local building queues, central hive production, or hybrid.
+- Queue/rally behavior and spawn-blocking resolution rules.
+
+Grill questions:
+
+- How are buildings produced in v1: instant placement, one worker channel, or multiple workers accelerating build time?
+- If workers build, can multiple workers stack efficiency, and what is the scaling rule?
+- Do building costs spend instantly, in ticks over construction time, or only on completion?
+- Is there partial refund on cancel or destruction while under construction?
+- Must biomass be delivered to construction sites via logistics, or can players spend from global stockpile at placement time?
+- Are combat units produced at their respective structures, only from the hive, or via a hybrid model?
+- What are queue rules per production source (single queue, parallel slots, shared global cap)?
+- How should rally points and spawn collision failures resolve deterministically?
+- What anti-cheese constraints exist for forward proxy construction?
+- Which production and construction events are mandatory in replay/telemetry for debugging disputes?
+
+Definition of done:
+
+- A dedicated production operations specification with deterministic state machines for construction and training, plus cost/refund tables, queue rules, and counterplay notes.
+
+---
+
+## 11) Multiplayer Skirmish Requirements To Add To GDD (High)
 
 Why this matters:
 
@@ -370,14 +439,15 @@ Definition of done:
 1. Match termination and victory rules.
 2. Economy constants lock table.
 3. Resource ownership and theft edge cases.
-4. Combat specification creation.
-5. Faction asymmetry contracts.
-6. Tech tree operational spec.
-7. AI measurable tier design.
-8. Technical performance/readability budgets.
-9. Map generation and fairness constraints.
-10. Multiplayer skirmish requirements and v1 scope gates.
+4. Building and unit production operations.
+5. Combat specification creation.
+6. Faction asymmetry contracts.
+7. Tech tree operational spec.
+8. AI measurable tier design.
+9. Technical performance/readability budgets.
+10. Map generation and fairness constraints.
+11. Multiplayer skirmish requirements and v1 scope gates.
 
 Rationale:
 
-- This order resolves deterministic rules first, then balance foundations, then content asymmetry, then implementation constraints, and finally release-scope packaging.
+- This order resolves deterministic rules first, then economy and production foundations, then combat/asymmetry, then implementation constraints, and finally release-scope packaging.

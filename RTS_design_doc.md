@@ -81,6 +81,17 @@ Current v0 progression structure is intentionally placeholder-driven:
 - No hard branch exclusivity by default; opportunity cost drives branch differentiation.
 - Exact timing windows and per-node values are deferred until faction/combat/map integration pass.
 
+## Combat
+
+The operational combat baseline contract is defined in [RTS_combat_spec.md](RTS_combat_spec.md).
+
+Current v0 combat direction:
+
+- Fast, readable combat pacing with explicit TTK target envelopes by phase.
+- Soft-counter first philosophy with room to evolve to mixed counter anchors later.
+- Deterministic guaranteed-hit timing, flat armor reduction, and additive aura stacking.
+- Heavy emphasis on supply-line disruption as a combat objective, not only a macro objective.
+
 ## Economy
 
 Detailed economy mechanics are specified in RTS_economy_design.md.

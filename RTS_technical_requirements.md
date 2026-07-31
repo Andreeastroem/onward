@@ -48,6 +48,12 @@ This document locks the core presentation and simulation constraints that shape 
 - Carrier death vs deposit outcomes must use atomic resolution-tick checks to remain replay-consistent.
 - Bank raid actions (steal/deny) and processing channels must use explicit timed interactions, not instant one-frame transfers.
 
+### Deterministic Combat Requirements
+
+- Combat systems must follow the baseline contract in [RTS_combat_spec.md](RTS_combat_spec.md).
+- Deterministic guarantees are required for damage outcomes, status duration/expiration, and aura application order.
+- Combat readability constraints (including projectile visibility and effect telegraph distinction) are production requirements, not optional polish.
+
 ### Resource Audit Requirements
 
 - Replay and telemetry output must include the audit-grade resource event set defined in [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md).
@@ -72,3 +78,4 @@ This document locks the core presentation and simulation constraints that shape 
 - [RTS_match_termination_spec.md](RTS_match_termination_spec.md)
 - [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md)
 - [RTS_tech_tree_operational_spec.md](RTS_tech_tree_operational_spec.md)
+- [RTS_combat_spec.md](RTS_combat_spec.md)
