@@ -71,3 +71,4 @@ This document locks the core presentation and simulation constraints that shape 
 - [RTS_economy_design.md](RTS_economy_design.md)
 - [RTS_match_termination_spec.md](RTS_match_termination_spec.md)
 - [RTS_resource_ownership_spec.md](RTS_resource_ownership_spec.md)
+- [RTS_tech_tree_operational_spec.md](RTS_tech_tree_operational_spec.md)

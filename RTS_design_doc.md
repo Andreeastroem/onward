@@ -59,6 +59,8 @@ This keeps the game anchored in a classic RTS loop: economy, scouting, tech, mil
 
 The recommended tech structure is a classic building-gated tree.
 
+The operational baseline contract is defined in [RTS_tech_tree_operational_spec.md](RTS_tech_tree_operational_spec.md).
+
 Reasoning:
 
 - It is easier to read than a more abstract age-up system.
@@ -71,6 +73,13 @@ Possible pattern:
 - Basic hatchery / nest unlocks early worker and combat basics.
 - Advanced brood / chamber / nest structures unlock specialized roles.
 - Higher-tier structures unlock aerial, ground, and water-adapted lines, plus stronger logistics or combat options.
+
+Current v0 progression structure is intentionally placeholder-driven:
+
+- Shared baseline graph with faction overlays.
+- Three progression tiers: Establishing, Expanding, Thriving.
+- No hard branch exclusivity by default; opportunity cost drives branch differentiation.
+- Exact timing windows and per-node values are deferred until faction/combat/map integration pass.
 
 ## Economy
 

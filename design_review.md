@@ -168,6 +168,8 @@ Definition of done:
 
 ## 5) Tech Tree Operational Spec (High)
 
+Status: Resolved in v0 structural baseline. See [RTS_tech_tree_operational_spec.md](RTS_tech_tree_operational_spec.md).
+
 Why this matters:
 
 - Building-gated approach is directionally good, but not yet operational for implementation.
@@ -191,6 +193,32 @@ Grill questions:
 Definition of done:
 
 - Publishable tech graph with costs, prerequisites, expected timing windows, and counterplay notes.
+
+Resolution locked:
+
+- Tech progression uses one shared baseline graph with faction overlays; full faction-specific graphs are deferred until later faction design.
+- Tier model is locked to three tiers: Establishing, Expanding, Thriving.
+- Tier transitions are hybrid by intent: power unlock plus economic/logistics scaling.
+- Branch policy in v0 is no hard exclusivity; all branches are reachable and differentiated by opportunity cost.
+- Upgrade scaling policy is mixed by default (cheap entry, steeper specialization), with convex scaling allowed for repeatable infinite-tier stat lines.
+- Normal build spend target by minute 10 is 15% to 20% into tech/upgrades.
+- High-impact disruptive unit mechanics (flyers, burrowers, ranged AoE, behemoth-class swing units) must use stronger composite gating.
+- Failed tech-rush vulnerability target is locked to 40 to 80 seconds.
+- Failed rush is defined as no meaningful damage to enemy logistics or resource-site flow.
+- Salvage/refund recovery for canceled or destroyed in-progress tech is allowed.
+- Soft rubber-band via shorter defender corpse-return distance is intentional.
+- Counterplay requirements for major spike tech include scoutable prereq buildings, build-time vulnerability, and counter-tech response paths.
+- Information visibility baseline is structure scouting; preferred extension is active-structure VFX and upgrade-driven unit visual readability.
+- AI v1 should execute curated archetypes for one faction first, with at least economic, aggressive, balanced, and raiding-focused profiles.
+- Multiplayer v1 uses shared timing models across 1v1 and team modes, with fun-forward balance priority over strict competitive split tables.
+- Publishable artifact requirement is accepted as template-first, with placeholder nodes/values to be filled when faction design is finalized.
+
+Deferred to next pass:
+
+- Exact earliest tech timestamps.
+- Exact tier gate thresholds for biomass-per-minute and related economy conditions.
+- Concrete branch-by-branch opportunity-cost delay targets.
+- Final expansion semantics and explicit relation to bank structures in risk/recovery language.
 
 ---
 
