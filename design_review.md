@@ -370,6 +370,8 @@ Deferred to next pass:
 
 ## 10) Building And Unit Production Operations (High)
 
+Status: Resolved in v0 production baseline. See [RTS_production_operations_spec.md](RTS_production_operations_spec.md).
+
 Why this matters:
 
 - Production rules are a core RTS identity system and currently under-specified.
@@ -402,6 +404,26 @@ Grill questions:
 Definition of done:
 
 - A dedicated production operations specification with deterministic state machines for construction and training, plus cost/refund tables, queue rules, and counterplay notes.
+
+Resolution locked:
+
+- Construction model is multi-worker acceleration with continuous diminishing returns per added worker.
+- Worker 1 has baseline speed contribution and no surcharge.
+- Workers 2+ apply escalating ticking surcharge with baseline formula `k * (n - 1)^2`.
+- Builder hard cap is one global mid-tens value in v0 baseline (default 24), with faction exceptions allowed.
+- Base construction cost commits over progress ticks; cancel refunds only unspent base progress share.
+- Paid ticking surcharge is sunk and never refunded.
+- Under-construction destruction grants no refund in v0.
+- On surcharge insolvency, site auto-throttles to highest affordable active builder count and continues construction.
+- Construction progress persists indefinitely when unstaffed; no passive decay in v0.
+- Placement uses adjacency projection from owned buildings; no enemy exclusion zone in v0.
+- Connectivity requirement applies to most factions; disconnected structures are non-functional unless faction exceptions apply.
+- Unit production topology is hybrid: most combat units from hive, structure-local queues mainly for upgrades/special exceptions.
+- Queue model is single queue per production source.
+- Rally supports point rally and rally-to-unit follow target.
+- Spawn policy is always-spawn with deterministic collision-push resolution under congestion.
+- No additional global anti-proxy constraints in v0 beyond adjacency and economics.
+- Replay/telemetry requirements include full audit-grade production and construction event traces.
 
 ---
 

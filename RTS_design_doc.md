@@ -81,6 +81,18 @@ Current v0 progression structure is intentionally placeholder-driven:
 - No hard branch exclusivity by default; opportunity cost drives branch differentiation.
 - Exact timing windows and per-node values are deferred until faction/combat/map integration pass.
 
+## Production Operations
+
+The operational production baseline contract is defined in [RTS_production_operations_spec.md](RTS_production_operations_spec.md).
+
+Current v0 production direction:
+
+- Multi-worker construction acceleration with diminishing returns and escalating surcharge starting at worker 2.
+- Adjacency-projected placement expansion (creep-style) without a global enemy exclusion zone.
+- Hybrid production topology where hive production is primary for combat units while structures primarily handle upgrades and exceptions.
+- Single-queue deterministic production sources with always-spawn behavior under deterministic collision-push resolution.
+- Connectivity-sensitive structure functionality for most factions, with explicit faction exception hooks.
+
 ## Combat
 
 The operational combat baseline contract is defined in [RTS_combat_spec.md](RTS_combat_spec.md).
@@ -200,6 +212,66 @@ Examples:
 - Black ants may be stronger in territorial defense and corpse hauling.
 
 The asymmetry should remain readable and not turn into a full ruleset per faction.
+
+### Faction Exception Templates (Production And Connectivity)
+
+Use these templates when defining faction-specific rule exceptions from the shared production baseline in [RTS_production_operations_spec.md](RTS_production_operations_spec.md).
+
+Template A: Construction And Placement Exception
+
+- Faction:
+- Exception id:
+- Baseline rule overridden:
+- New rule text:
+- Scope:
+  - All structures or listed structure classes
+  - Early-only, mid-only, late-only, or full match
+- Counterplay expectation:
+- Readability requirement:
+- Determinism notes:
+
+Template B: Connectivity Exception
+
+- Faction:
+- Exception id:
+- Default connectivity behavior:
+- Exception behavior while disconnected:
+  - Non-functional
+  - Partial functional
+  - Fully functional
+- Affected structure classes:
+- Reconnect transition behavior:
+- Counterplay expectation:
+- Telemetry flags required:
+
+Template C: Production Topology Exception
+
+- Faction:
+- Exception id:
+- Baseline topology overridden:
+- Additional local production lanes (if any):
+- Hive-only unit classes (if any):
+- Queue behavior override (if any):
+- Spawn/rally behavior override (if any):
+- Counterplay expectation:
+- Determinism notes:
+
+Template D: Builder Cap And Surcharge Exception
+
+- Faction:
+- Exception id:
+- Baseline overridden:
+  - `max_builders_per_site`
+  - `k` class constants
+  - both
+- New values:
+- Intended gameplay identity impact:
+- Known exploit risk:
+- Mitigation:
+- Telemetry watch metrics:
+  - Average builders per site
+  - Time spent above 8/12/16 builders
+  - Surcharge insolvency frequency
 
 ## Game Modes
 
