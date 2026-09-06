@@ -21,7 +21,7 @@ This document records the long-form vision of the project, not a versioned relea
 ## Technical Requirements
 
 - See [RTS_technical_requirements.md](RTS_technical_requirements.md) for locked presentation and scale decisions.
-- The current baseline is full 2D with a high-angle oblique top-down camera.
+- The current baseline is full 3D with a fixed isometric camera.
 - The game uses individual-unit control rather than squad-based control.
 - The current per-player unit scale target is 200 soft cap and 260 hard cap.
 

@@ -8,9 +8,10 @@ This document locks the core presentation and simulation constraints that shape 
 
 ### Presentation
 
-- The game is full 2D.
-- The camera uses a high-angle oblique top-down view.
-- Strict art rules are required to preserve readability at scale.
+- The game is full 3D.
+- The camera uses a fixed isometric view.
+- Units, buildings, terrain, and effects must use 3D representation while remaining readable from the fixed camera angle.
+- Strict art and lighting rules are required to preserve readability at scale.
 
 ### Simulation Scale
 
@@ -22,6 +23,9 @@ This document locks the core presentation and simulation constraints that shape 
 - The visual language must remain clear under swarm density.
 - Large battles should stay legible without requiring squad-level unit grouping.
 - The cap exists to keep pathfinding, selection, and AI behavior within a manageable RTS budget.
+- Unit and building silhouettes, material and color separation, animation, and ground contact must remain distinguishable at the fixed isometric viewing distance.
+- Building geometry must communicate footprint, construction state, ownership, connectivity, and functional state without relying on camera rotation.
+- Terrain, shadows, and effects must not obscure unit selection, pathing affordances, or combat telegraphs.
 
 ### Deterministic Match Termination
 
@@ -67,7 +71,8 @@ This document locks the core presentation and simulation constraints that shape 
 
 ## Production Implications
 
-- Unit silhouettes, color coding, and motion clarity must be strong enough to support dense 2D combat.
+- Unit and building silhouettes, material/color coding, animation, and motion clarity must be strong enough to support dense 3D combat from the fixed isometric camera.
+- Structure footprints and collision volumes must align with their visible 3D geometry so placement, adjacency projection, and walkability remain readable and deterministic.
 - Pathfinding and combat AI should assume individual units, not squad containers.
 - Match pacing and map size should be tuned around the 200 / 260 scale target rather than around mass-squad abstraction.
 
