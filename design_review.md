@@ -261,7 +261,8 @@ What to flesh out:
 
 - FPS and frametime targets at population caps.
 - Pathfinding budget and unit-order responsiveness thresholds.
-- Rendering readability thresholds (minimum silhouette contrast, selection clarity).
+- 3D rendering and asset budgets at population caps.
+- Rendering readability thresholds (unit/building silhouette and material contrast, selection clarity, and effect visibility from the fixed isometric camera).
 - Determinism requirements for multiplayer simulation outcomes.
 
 Grill questions:
@@ -269,6 +270,7 @@ Grill questions:
 - What are min/target FPS thresholds at 200 soft cap and 260 hard cap per player?
 - What is the max acceptable command-to-action latency under heavy load?
 - What objective readability tests define "legible swarm combat"?
+- What geometry, lighting, shadow, and effect budgets preserve unit, building, and pathing readability from the fixed isometric camera?
 - Which systems must be deterministic for lockstep or replay integrity?
 - What is the fallback quality strategy if budget is exceeded?
 
