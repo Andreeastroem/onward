@@ -81,7 +81,7 @@ Reliable territorial logistics faction. Converts defended fights into stable eco
 
 ### Macro hook
 
-Route efficiency and connected infrastructure reliability.
+Route efficiency, connected infrastructure reliability, and corridor-based logistics bonuses.
 
 ### Play pattern
 
@@ -110,6 +110,26 @@ Route efficiency and connected infrastructure reliability.
 ### First 8-minute strategic incentive
 
 Secure map-near carcass routes, establish one safe pass-through bank lane, and force fights near own logistics cover.
+
+### Black Ant faction expression
+
+Black Ant bonuses should amplify the player's logistics setup, not automate it. The faction should still require the player to choose routes, assign escorts, and decide when to risk longer transfers.
+
+Recommended faction-facing bonuses:
+
+- Connected Route Bonus: biomass carriers gain a modest movement speed bonus and carry-capacity bonus while traveling through a fully connected Black logistics network.
+- Assigned Escort Bonus: units manually assigned to guard a carrier, bank, or logistics structure gain a small damage bonus and a small armor bonus while in that escort role.
+- Home-Ground Conversion Bonus: harvest, pickup, and handoff interactions complete faster near friendly Black logistics structures, improving practical gather rate without changing combat tempo.
+- Corridor Efficiency: banks, relays, and core-linked logistics structures provide slightly faster transfer and withdrawal throughput when they remain part of a continuous connected corridor.
+
+Design intent:
+
+- No automatic rerouting.
+- No automatic retreat.
+- No automatic escort assignment.
+- The faction rewards good setup and disciplined player orders, rather than replacing them.
+
+This keeps the faction snappy in combat while making the economy and convoy game feel more efficient only when the player has built and defended the right network.
 
 ---
 
