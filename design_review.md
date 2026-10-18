@@ -140,6 +140,8 @@ Resolution locked:
 
 ## 4) Faction Scope And Asymmetry Budget (High)
 
+Status: In grill session.
+
 Why this matters:
 
 - Species-led identity is clear, but publish-ready GDD needs concrete launch faction contracts.
@@ -163,6 +165,39 @@ Grill questions:
 Definition of done:
 
 - One-page contract per launch faction: identity, roster, macro hook, counters, and no-go rules.
+
+Decisions locked:
+
+- v1 launches with three factions: Black Ants, Fire Ants, and Weaver Ants.
+- Each faction receives one primary macro hook, differentiated combat-role mapping, and no more than two explicit shared-rule exceptions.
+- Black Ants' primary macro hook is connected-corridor efficiency: carrier capacity/speed and transfer throughput improve only along continuous owned logistics routes.
+- Black Ants' hard weakness is route fragility under multi-lane pressure; any disconnected corridor immediately loses its efficiency benefits.
+- Fire Ants' primary macro hook is accelerated light-unit production: their early units are cheaper, individually weaker, and train faster.
+- Fire Ants' hard weakness is reduced harvesting rate and carrier haul capacity.
+- Weaver Ants' primary macro hook is constructible, destructible traversal networks that provide route bypasses and faster redeployment between owned anchors.
+- Weaver Ants' hard weakness is inferior frontal sustain and siege reliability.
+- Black Ants' first-eight-minute plan is to secure nearby carcass routes, establish one defended pass-through bank lane, and take fights under logistics cover.
+- Fire Ants' first-eight-minute plan is to maintain repeated skirmish pressure, delay exposed enemy banking, and secure short-haul pickups before their harvesting weakness compounds.
+- Weaver Ants' first-eight-minute plan is to place a traversal network on a contested edge, use it for off-angle bank-line raids, and avoid prolonged central fights.
+- All launch factions retain the shared baseline: one biomass resource with core-credit authority, deterministic single-queue production, Worker/Warrior/Air/Anti-air/Behemoth capability coverage, soft-counter combat, and impassable-water chokepoints.
+- Rule exceptions are optional, limited to two per faction, and require contract-level justification; they are not a faction quota.
+- Black Ants have one justified rule exception: carriers use manual, auto-managed, or route-locked modes. Auto mode can assign escorts and choose the best connected route; route lock prevents automatic rerouting.
+- Fire Ant production benefits apply only to designated early light ground and air units; specialists, late heavy units, and behemoths use baseline production economics.
+- Weaver traversal networks use paired visible anchors and a short transfer channel; they cannot cross impassable water or bypass chokepoint rules.
+- Weaver traversal networks may move combat units and empty workers only; biomass carriers and workers holding biomass cannot use them.
+- Each launch faction has one worker and eight combat units, excluding buildings and upgrades.
+- Each faction roster must cover five mandatory capabilities: ground line warrior, air unit, anti-air unit, behemoth, and a siege-capable answer. These capabilities may overlap with faction-expression roles, and multiple units may cover the same capability.
+- Black Ant expression slots are an escort tank with a telegraphed taunt, a healer, and a durable logistics skirmisher.
+- Fire Ant expression slots are a medium-health, low-armor melee cleave DPS unit; slow flying suicide bombers with telegraphed AoE damage; and an AoE support buffer.
+- Weaver Ant expression slots are a ground suicide bomber enabling flank swings, a high-health transport unit with low damage and high haul capacity that can carry both biomass and allied units, and a caster with debuff spells.
+- A Weaver transport may use traversal anchors only while carrying no biomass; it may carry allied units through the anchor transfer.
+- Weaver caster debuffs are limited to slow and armor break.
+- Black Ants versus Weaver Ants is the first high-risk matchup and receives the first dedicated anti-degeneracy balance test suite.
+- Weaver anchor counterplay uses a minimap ping when an opposing player has a friendly unit or structure within the anchor's detection radius, plus a single-file, punishable exit. Placement buffers and post-transfer cooldowns are deferred unless playtests show that these interaction rules are insufficient.
+- The anchor's initial detection radius is 1.5 times standard ground-unit vision.
+- Conditional anchor warnings reveal an approximate minimap sector, not the exact construction position.
+- Launch faction contracts use role-first placeholder unit names until visual and art direction is finalized.
+- Faction-expression units may satisfy mandatory capability coverage, but each required capability must remain viably represented; rosters may intentionally include redundant coverage.
 
 ---
 
