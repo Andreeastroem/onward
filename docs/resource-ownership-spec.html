@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Resource Ownership And Logistics Specification (v0) - Onward</title>
+<meta name="description" content="Resource ownership, pickup conflicts, bank raids, processing, and audit logging.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Resource Ownership And Logistics Specification (v0)",
+  "description": "Resource ownership, pickup conflicts, bank raids, processing, and audit logging.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": []
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "resource-ownership-spec",
+  "title": "Ant RTS Resource Ownership And Logistics Specification (v0)",
+  "group": "Systems",
+  "status": {
+    "key": "locked",
+    "label": "Locked for v0"
+  },
+  "references": [],
+  "referencedBy": [
+    "combat-spec",
+    "design-doc",
+    "design-review",
+    "economy-design",
+    "index",
+    "potential-factions",
+    "production-operations-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "constants": {
+    "process_time_seconds": "clamp(min_process_seconds, max_process_seconds, base_process_seconds + k * ln(1 + corpse_mass / mass_ref))",
+    "resource_ownership_spec_version": "1"
+  },
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "scope",
+      "title": "Scope",
+      "level": 2
+    },
+    {
+      "id": "ownership-model",
+      "title": "Ownership Model",
+      "level": 2
+    },
+    {
+      "id": "resource-state-machine",
+      "title": "Resource State Machine",
+      "level": 2
+    },
+    {
+      "id": "deterministic-tie-break-rules",
+      "title": "Deterministic Tie-Break Rules",
+      "level": 2
+    },
+    {
+      "id": "bank-raid-semantics",
+      "title": "Bank Raid Semantics",
+      "level": 2
+    },
+    {
+      "id": "anti-exploit-handling-times-v0-baseline",
+      "title": "Anti-Exploit Handling Times (v0 Baseline)",
+      "level": 2
+    },
+    {
+      "id": "corpse-conversion-and-processing",
+      "title": "Corpse Conversion And Processing",
+      "level": 2
+    },
+    {
+      "id": "replay-and-dispute-audit-logging-audit-grade",
+      "title": "Replay And Dispute Audit Logging (Audit Grade)",
+      "level": 2
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html" aria-current="page">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#scope">Scope</a>
+</li>
+<li><a href="#ownership-model">Ownership Model</a>
+</li>
+<li><a href="#resource-state-machine">Resource State Machine</a>
+</li>
+<li><a href="#deterministic-tie-break-rules">Deterministic Tie-Break Rules</a>
+<ul>
+<li><a href="#same-frame-pickup-conflicts">Same-Frame Pickup Conflicts</a></li>
+<li><a href="#near-simultaneous-death-and-deposit">Near-Simultaneous Death And Deposit</a></li>
+</ul></li>
+<li><a href="#bank-raid-semantics">Bank Raid Semantics</a>
+</li>
+<li><a href="#anti-exploit-handling-times-v0-baseline">Anti-Exploit Handling Times (v0 Baseline)</a>
+</li>
+<li><a href="#corpse-conversion-and-processing">Corpse Conversion And Processing</a>
+</li>
+<li><a href="#replay-and-dispute-audit-logging-audit-grade">Replay And Dispute Audit Logging (Audit Grade)</a>
+</li>
+<li><a href="#versioning">Versioning</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-resource-ownership-and-logistics-specification-v0">Ant RTS Resource Ownership And Logistics Specification (v0)</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="locked">Locked for v0</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define deterministic ownership, theft, denial, and logistics resolution for biomass resources across dropped corpses, carriers, banks, and core deposit.</p>
+</section>
+<section aria-labelledby="scope">
+<h2 id="scope">Scope <a class="anchor" href="#scope" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Applies to AI and multiplayer skirmish.</li>
+<li>Covers ownership and transfer rules for resource interactions.</li>
+<li>Does not define combat balance, map generation, or matchmaking rules.</li>
+</ul>
+</section>
+<section aria-labelledby="ownership-model">
+<h2 id="ownership-model">Ownership Model <a class="anchor" href="#ownership-model" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Core-credit authoritative model is locked for v0.</li>
+<li>Biomass is spendable only after credit at colony core.</li>
+<li>Banks are pass-through caches and raid targets, not final spend authorities.</li>
+<li>Bank inventory is universally visible to the owning player but remains uncredited until core deposit.</li>
+</ul>
+</section>
+<section aria-labelledby="resource-state-machine">
+<h2 id="resource-state-machine">Resource State Machine <a class="anchor" href="#resource-state-machine" aria-label="Link to this section">#</a></h2>
+<p>Resource states:</p>
+<ol>
+<li><code>DroppedUnclaimed</code></li>
+<li><code>ClaimedInTransit</code></li>
+<li><code>BankCachedRaw</code></li>
+<li><code>BankCachedProcessed</code></li>
+<li><code>CoreCredited</code></li>
+<li><code>DestroyedDenied</code></li>
+</ol>
+<p>Allowed transitions:</p>
+<ol>
+<li>
+<p><code>DroppedUnclaimed -&gt; ClaimedInTransit</code></p>
+<ul>
+<li>Trigger: pickup lock resolved</li>
+</ul>
+</li>
+<li>
+<p><code>ClaimedInTransit -&gt; DroppedUnclaimed</code></p>
+<ul>
+<li>Trigger: carrier death, interruption, or forced drop</li>
+</ul>
+</li>
+<li>
+<p><code>ClaimedInTransit -&gt; BankCachedRaw</code></p>
+<ul>
+<li>Trigger: corpse delivered to bank</li>
+<li>Exception: small single-carrier corpses auto-convert directly to <code>BankCachedProcessed</code></li>
+</ul>
+</li>
+<li>
+<p><code>BankCachedRaw -&gt; BankCachedProcessed</code></p>
+<ul>
+<li>Trigger: processing complete at bank</li>
+</ul>
+</li>
+<li>
+<p><code>BankCachedProcessed -&gt; ClaimedInTransit</code></p>
+<ul>
+<li>Trigger: withdraw by friendly carrier up to carrier capacity</li>
+</ul>
+</li>
+<li>
+<p><code>ClaimedInTransit -&gt; CoreCredited</code></p>
+<ul>
+<li>Trigger: carrier reaches core and deposit resolves</li>
+</ul>
+</li>
+<li>
+<p><code>BankCachedRaw|BankCachedProcessed -&gt; DestroyedDenied</code></p>
+<ul>
+<li>Trigger: successful deny action during raid</li>
+</ul>
+</li>
+</ol>
+</section>
+<section aria-labelledby="deterministic-tie-break-rules">
+<h2 id="deterministic-tie-break-rules">Deterministic Tie-Break Rules <a class="anchor" href="#deterministic-tie-break-rules" aria-label="Link to this section">#</a></h2>
+<h3 id="same-frame-pickup-conflicts">Same-Frame Pickup Conflicts <a class="anchor" href="#same-frame-pickup-conflicts" aria-label="Link to this section">#</a></h3>
+<p>If multiple players attempt pickup in the same frame window, resolve ownership by this priority tuple:</p>
+<ol>
+<li>Earliest simulation tick/substep interaction</li>
+<li>Shortest path-distance to resource at lock tick</li>
+<li>Lower unit id</li>
+</ol>
+<p>No split payout and no no-winner lock state in v0.</p>
+<h3 id="near-simultaneous-death-and-deposit">Near-Simultaneous Death And Deposit <a class="anchor" href="#near-simultaneous-death-and-deposit" aria-label="Link to this section">#</a></h3>
+<p>Use an atomic position check at resolution tick:</p>
+<ul>
+<li>If carrier is alive and within valid deposit radius at resolution tick, deposit succeeds.</li>
+<li>Otherwise biomass drops at death position.</li>
+</ul>
+</section>
+<section aria-labelledby="bank-raid-semantics">
+<h2 id="bank-raid-semantics">Bank Raid Semantics <a class="anchor" href="#bank-raid-semantics" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Fortified bank contents support both steal and deny actions.</li>
+<li>Steal transfers biomass to attacker carriers (subject to channel and carry limits).</li>
+<li>Deny destroys target biomass from the bank cache.</li>
+<li>Bank cannot be instantly emptied by a single discrete action; channeling and throughput limits apply.</li>
+</ul>
+</section>
+<section aria-labelledby="anti-exploit-handling-times-v0-baseline">
+<h2 id="anti-exploit-handling-times-v0-baseline">Anti-Exploit Handling Times (v0 Baseline) <a class="anchor" href="#anti-exploit-handling-times-v0-baseline" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Pickup lock: 0.35s</li>
+<li>Handoff lock between carriers: 0.50s</li>
+<li>Bank steal channel: 1.00s per chunk</li>
+<li>Bank deny channel: 1.50s per chunk</li>
+</ul>
+<p>Values are baseline tuning defaults and may be adjusted through balance passes.</p>
+</section>
+<section aria-labelledby="corpse-conversion-and-processing">
+<h2 id="corpse-conversion-and-processing">Corpse Conversion And Processing <a class="anchor" href="#corpse-conversion-and-processing" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Small corpses (single-carrier class) auto-convert on bank arrival.</li>
+<li>Medium and larger corpses require processing duty.</li>
+<li>Processing time uses logarithmic scaling with deterministic clamps:</li>
+</ul>
+<p><code data-constant="process_time_seconds" data-value="clamp(min_process_seconds, max_process_seconds, base_process_seconds + k * ln(1 + corpse_mass / mass_ref))">process_time_seconds = clamp(min_process_seconds, max_process_seconds, base_process_seconds + k * ln(1 + corpse_mass / mass_ref))</code></p>
+<p>This preserves high payoff for large creatures without linear runaway processing time.</p>
+</section>
+<section aria-labelledby="replay-and-dispute-audit-logging-audit-grade">
+<h2 id="replay-and-dispute-audit-logging-audit-grade">Replay And Dispute Audit Logging (Audit Grade) <a class="anchor" href="#replay-and-dispute-audit-logging-audit-grade" aria-label="Link to this section">#</a></h2>
+<p>Required events:</p>
+<ul>
+<li>Pickup attempts, including losing contenders</li>
+<li>Ownership lock resolution tuple outcome</li>
+<li>Drop events with cause and position</li>
+<li>Core deposit events with credited amounts</li>
+<li>Bank withdraw events with amounts</li>
+<li>Bank steal/deny channel start, cancel, complete</li>
+<li>Bank processing queue enqueue, start, complete</li>
+<li>Relay/handoff events</li>
+<li>Interruption reasons (death, stun, command cancel, out-of-range)</li>
+</ul>
+</section>
+<section aria-labelledby="versioning">
+<h2 id="versioning">Versioning <a class="anchor" href="#versioning" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Initial release: <code data-constant="resource_ownership_spec_version" data-value="1">resource_ownership_spec_version = 1</code>.</li>
+<li>Any change to tie-break priority, ownership authority, or channel timing requires version increment.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

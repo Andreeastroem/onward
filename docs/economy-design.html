@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Economy Design - Onward</title>
+<meta name="description" content="Economy, biomass recovery, upkeep, logistics, and economy telemetry.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Economy Design",
+  "description": "Economy, biomass recovery, upkeep, logistics, and economy telemetry.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "resource-ownership-spec.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "economy-design",
+  "title": "Ant RTS Economy Design",
+  "group": "Systems",
+  "status": {
+    "key": "locked",
+    "label": "Locked v0 constants"
+  },
+  "references": [
+    "resource-ownership-spec"
+  ],
+  "referencedBy": [
+    "combat-spec",
+    "design-doc",
+    "design-review",
+    "index",
+    "potential-factions",
+    "production-operations-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "constants": {
+    "economy_constants_version": "1"
+  },
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "economy-goals",
+      "title": "Economy Goals",
+      "level": 2
+    },
+    {
+      "id": "core-resource-model",
+      "title": "Core Resource Model",
+      "level": 2
+    },
+    {
+      "id": "economy-loop",
+      "title": "Economy Loop",
+      "level": 2
+    },
+    {
+      "id": "biomass-objects",
+      "title": "Biomass Objects",
+      "level": 2
+    },
+    {
+      "id": "collection-and-logistics-rules",
+      "title": "Collection And Logistics Rules",
+      "level": 2
+    },
+    {
+      "id": "regenerative-economy-sites",
+      "title": "Regenerative Economy Sites",
+      "level": 2
+    },
+    {
+      "id": "upkeep-and-population-pressure",
+      "title": "Upkeep And Population Pressure",
+      "level": 2
+    },
+    {
+      "id": "suggested-baseline-formulas",
+      "title": "Suggested Baseline Formulas",
+      "level": 2
+    },
+    {
+      "id": "match-phase-behavior",
+      "title": "Match Phase Behavior",
+      "level": 2
+    },
+    {
+      "id": "snowball-control-toolkit",
+      "title": "Snowball Control Toolkit",
+      "level": 2
+    },
+    {
+      "id": "anti-turtle-and-anti-rush-safeguards",
+      "title": "Anti-Turtle And Anti-Rush Safeguards",
+      "level": 2
+    },
+    {
+      "id": "visibility-and-ux-requirements",
+      "title": "Visibility And UX Requirements",
+      "level": 2
+    },
+    {
+      "id": "ai-requirements-for-skirmish",
+      "title": "AI Requirements For Skirmish",
+      "level": 2
+    },
+    {
+      "id": "metrics-to-track-during-prototyping",
+      "title": "Metrics To Track During Prototyping",
+      "level": 2
+    },
+    {
+      "id": "economy-constants-locked-for-faction-design",
+      "title": "Economy Constants Locked For Faction Design",
+      "level": 2
+    },
+    {
+      "id": "open-questions-additional-locked-decisions-grill-session",
+      "title": "Open Questions: Additional Locked Decisions (Grill Session)",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html" aria-current="page">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#economy-goals">Economy Goals</a>
+</li>
+<li><a href="#core-resource-model">Core Resource Model</a>
+<ul>
+<li><a href="#main-resource">Main Resource</a></li>
+<li><a href="#what-generates-biomass">What Generates Biomass</a></li>
+<li><a href="#why-single-resource">Why Single Resource</a></li>
+</ul></li>
+<li><a href="#economy-loop">Economy Loop</a>
+</li>
+<li><a href="#biomass-objects">Biomass Objects</a>
+<ul>
+<li><a href="#corpse-value">Corpse Value</a></li>
+<li><a href="#mass-classes">Mass Classes</a></li>
+<li><a href="#decay-rules">Decay Rules</a></li>
+</ul></li>
+<li><a href="#collection-and-logistics-rules">Collection And Logistics Rules</a>
+<ul>
+<li><a href="#core-hook">Core Hook</a></li>
+<li><a href="#gatherer-roles">Gatherer Roles</a></li>
+<li><a href="#delivery-rules">Delivery Rules</a></li>
+<li><a href="#transfer-chain-rules">Transfer Chain Rules</a></li>
+<li><a href="#drop-off-structures">Drop-off Structures</a></li>
+</ul></li>
+<li><a href="#regenerative-economy-sites">Regenerative Economy Sites</a>
+<ul>
+<li><a href="#intent">Intent</a></li>
+<li><a href="#site-types">Site Types</a></li>
+<li><a href="#site-behavior">Site Behavior</a></li>
+<li><a href="#friction-role">Friction Role</a></li>
+</ul></li>
+<li><a href="#upkeep-and-population-pressure">Upkeep And Population Pressure</a>
+<ul>
+<li><a href="#hard-upkeep">Hard Upkeep</a></li>
+<li><a href="#goal">Goal</a></li>
+<li><a href="#failure-state">Failure State</a></li>
+</ul></li>
+<li><a href="#suggested-baseline-formulas">Suggested Baseline Formulas</a>
+<ul>
+<li><a href="#unit-economy-categories-v0">Unit Economy Categories (v0)</a></li>
+<li><a href="#regenerative-site-share-target-v0">Regenerative Site Share Target (v0)</a></li>
+<li><a href="#allowed-tuning-bands-for-patches">Allowed Tuning Bands For Patches</a></li>
+</ul></li>
+<li><a href="#match-phase-behavior">Match Phase Behavior</a>
+<ul>
+<li><a href="#early-game-0-to-8-min">Early Game (0 to 8 min)</a></li>
+<li><a href="#mid-game-8-to-25-min">Mid Game (8 to 25 min)</a></li>
+<li><a href="#late-game-25-min">Late Game (25+ min)</a></li>
+</ul></li>
+<li><a href="#snowball-control-toolkit">Snowball Control Toolkit</a>
+</li>
+<li><a href="#anti-turtle-and-anti-rush-safeguards">Anti-Turtle And Anti-Rush Safeguards</a>
+<ul>
+<li><a href="#anti-turtle">Anti-Turtle</a></li>
+<li><a href="#anti-rush">Anti-Rush</a></li>
+</ul></li>
+<li><a href="#visibility-and-ux-requirements">Visibility And UX Requirements</a>
+</li>
+<li><a href="#ai-requirements-for-skirmish">AI Requirements For Skirmish</a>
+</li>
+<li><a href="#metrics-to-track-during-prototyping">Metrics To Track During Prototyping</a>
+</li>
+<li><a href="#economy-constants-locked-for-faction-design">Economy Constants Locked For Faction Design</a>
+</li>
+<li><a href="#open-questions-additional-locked-decisions-grill-session">Open Questions: Additional Locked Decisions (Grill Session)</a>
+<ul>
+<li><a href="#1-worker-upkeep-model">1) Worker upkeep model</a></li>
+<li><a href="#2-corpse-terrain-interaction">2) Corpse terrain interaction</a></li>
+<li><a href="#3-aerial-logistics-and-survivability">3) Aerial logistics and survivability</a></li>
+<li><a href="#4-water-edge-biomass-routes">4) Water-edge biomass routes</a></li>
+</ul></li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-economy-design">Ant RTS Economy Design</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="locked">Locked v0 constants</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define a complete economy model that is deep enough to drive strategy and simple enough to read at RTS speed. This document is intended to be the baseline for later ant-species asymmetry design.</p>
+</section>
+<section aria-labelledby="economy-goals">
+<h2 id="economy-goals">Economy Goals <a class="anchor" href="#economy-goals" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Keep one primary resource for clarity.</li>
+<li>Make map control and supply lines matter as much as combat power.</li>
+<li>Reward good macro with compounding growth, but prevent runaway snowball.</li>
+<li>Create frequent battlefield contact points through reclaimable biomass.</li>
+<li>Support match lengths from 15 to 60+ minutes.</li>
+</ul>
+</section>
+<section aria-labelledby="core-resource-model">
+<h2 id="core-resource-model">Core Resource Model <a class="anchor" href="#core-resource-model" aria-label="Link to this section">#</a></h2>
+<h3 id="main-resource">Main Resource <a class="anchor" href="#main-resource" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Biomass is the only spendable strategic resource.</li>
+</ul>
+<h3 id="what-generates-biomass">What Generates Biomass <a class="anchor" href="#what-generates-biomass" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Corpses from enemy ant units.</li>
+<li>Corpses from friendly ant units.</li>
+<li>Corpses from neutral creatures.</li>
+<li>Secondary regenerative map objectives such as aphid farms.</li>
+</ul>
+<h3 id="why-single-resource">Why Single Resource <a class="anchor" href="#why-single-resource" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Reduces player bookkeeping.</li>
+<li>Keeps attention on map movement, scouting, and logistics.</li>
+<li>Makes balance easier early in development.</li>
+</ul>
+</section>
+<section aria-labelledby="economy-loop">
+<h2 id="economy-loop">Economy Loop <a class="anchor" href="#economy-loop" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Scout and identify biomass opportunities.</li>
+<li>Secure or contest the area.</li>
+<li>Assign gatherers and transport biomass toward drop-off.</li>
+<li>Protect carriers and routes.</li>
+<li>Deposit biomass into colony stockpile.</li>
+<li>Convert stockpile into workers, military, and tech.</li>
+<li>Pay ongoing food upkeep on army size.</li>
+</ol>
+<p>This creates continuous economy-combat coupling: fights generate resources, and resources enable the next fight.</p>
+</section>
+<section aria-labelledby="biomass-objects">
+<h2 id="biomass-objects">Biomass Objects <a class="anchor" href="#biomass-objects" aria-label="Link to this section">#</a></h2>
+<h3 id="corpse-value">Corpse Value <a class="anchor" href="#corpse-value" aria-label="Link to this section">#</a></h3>
+<p>Each dead unit creates a corpse object with:</p>
+<ul>
+<li>Biomass value.</li>
+<li>Mass class.</li>
+<li>Decay timer.</li>
+</ul>
+<h3 id="mass-classes">Mass Classes <a class="anchor" href="#mass-classes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Small corpse: one gatherer can carry.</li>
+<li>Medium corpse: multiple gatherers required.</li>
+<li>Large corpse: team carry or staged harvesting at site.</li>
+</ul>
+<h3 id="decay-rules">Decay Rules <a class="anchor" href="#decay-rules" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Corpse biomass decays over time.</li>
+<li>Decay starts after a short grace period.</li>
+<li>Remaining value is visible to both players.</li>
+</ul>
+<p>Decay forces decision speed and creates tactical pressure after every engagement.</p>
+</section>
+<section aria-labelledby="collection-and-logistics-rules">
+<h2 id="collection-and-logistics-rules">Collection And Logistics Rules <a class="anchor" href="#collection-and-logistics-rules" aria-label="Link to this section">#</a></h2>
+<h3 id="core-hook">Core Hook <a class="anchor" href="#core-hook" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>The main hook is supply-line mastery: simple to understand, hard to master.</li>
+<li>Biomass is only real when it reaches the hive.</li>
+<li>Every stage between source and hive is raidable.</li>
+</ul>
+<h3 id="gatherer-roles">Gatherer Roles <a class="anchor" href="#gatherer-roles" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>All units can gather biomass, but hauling strength differs by unit type.</li>
+<li>Worker units are cheap, scout-like, and low hauling strength when used en masse.</li>
+<li>Combat units generally haul more per trip, but committing them to logistics weakens frontline pressure.</li>
+<li>This creates a deliberate economy-vs-frontline tension where strong hauling choices can open tactical vulnerability.</li>
+</ul>
+<h3 id="delivery-rules">Delivery Rules <a class="anchor" href="#delivery-rules" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Biomass is not credited until delivered to the colony core.</li>
+<li>If a carrier dies, carried biomass is dropped at death position.</li>
+<li>Dropped biomass can be reclaimed by either side.</li>
+<li>Near-simultaneous death and deposit is resolved by an atomic position check at resolution tick.</li>
+<li>If carrier is alive and within valid deposit radius at resolution tick, deposit succeeds; otherwise biomass drops.</li>
+</ul>
+<h3 id="transfer-chain-rules">Transfer Chain Rules <a class="anchor" href="#transfer-chain-rules" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Biomass can pass through intermediate storage, but ownership is not finalized there.</li>
+<li>Any intermediate stock can be stolen, destroyed, or interrupted before final hive delivery.</li>
+<li>Long routes increase throughput potential but also increase raid exposure.</li>
+<li>Same-frame pickup conflicts use deterministic tie-break resolution.</li>
+</ul>
+<h3 id="drop-off-structures">Drop-off Structures <a class="anchor" href="#drop-off-structures" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Colony core hive is the only final deposit point.</li>
+<li>Forward structures are fortified banks, not final drop-offs.</li>
+<li>Fortified banks act as pass-through caches and must be emptied by logistics workers.</li>
+<li>Fortified banks reduce front-line congestion but increase total route complexity.</li>
+<li>Fortified banks and bank-to-core routes are high-value raid targets.</li>
+<li>Bank inventory is visible to the owner as universal cached stock, but remains uncredited until core deposit.</li>
+<li>Friendly carriers can withdraw up to their carry capacity from processed bank stock.</li>
+<li>Bank raid actions support both steal and deny with channel constraints.</li>
+</ul>
+<p>Locked detailed behavior for ownership, theft, denial, and tie-break logic is defined in <a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a>.</p>
+</section>
+<section aria-labelledby="regenerative-economy-sites">
+<h2 id="regenerative-economy-sites">Regenerative Economy Sites <a class="anchor" href="#regenerative-economy-sites" aria-label="Link to this section">#</a></h2>
+<h3 id="intent">Intent <a class="anchor" href="#intent" aria-label="Link to this section">#</a></h3>
+<p>Provide stable, contestable income without replacing corpse economy.</p>
+<h3 id="site-types">Site Types <a class="anchor" href="#site-types" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Aphid farm nodes.</li>
+<li>Neutral nest grounds.</li>
+<li>Biome-specific feeding patches.</li>
+</ul>
+<h3 id="site-behavior">Site Behavior <a class="anchor" href="#site-behavior" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Produce biomass in pulses.</li>
+<li>Require occupancy or worker assignment.</li>
+<li>Stop producing while contested.</li>
+<li>Biomass from sites must be physically transported through the supply line.</li>
+<li>No biomass from sites is credited until delivered to the hive.</li>
+</ul>
+<h3 id="friction-role">Friction Role <a class="anchor" href="#friction-role" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Early game: clear and visible points of first conflict.</li>
+<li>Mid to late game: predictable, raidable economic arteries.</li>
+<li>They are intended to teach and reinforce supply-line play.</li>
+</ul>
+<p>Recommended frequency:</p>
+<ul>
+<li>Regenerative sites should be rare map features rather than common background income.</li>
+<li>They should feel like strategic anomalies when present, not a second baseline economy.</li>
+</ul>
+<p>Recommended share of total biomass over a match:</p>
+<ul>
+<li>Corpses and reclaimed battlefield mass: primary share.</li>
+<li>Regenerative sites: secondary stabilizer.</li>
+</ul>
+</section>
+<section aria-labelledby="upkeep-and-population-pressure">
+<h2 id="upkeep-and-population-pressure">Upkeep And Population Pressure <a class="anchor" href="#upkeep-and-population-pressure" aria-label="Link to this section">#</a></h2>
+<h3 id="hard-upkeep">Hard Upkeep <a class="anchor" href="#hard-upkeep" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Every non-worker military unit consumes food upkeep per second.</li>
+<li>Upkeep is paid in biomass equivalent.</li>
+</ul>
+<h3 id="goal">Goal <a class="anchor" href="#goal" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Cap unchecked exponential growth.</li>
+<li>Make oversized armies expensive to idle.</li>
+<li>Reward map control and active pressure.</li>
+</ul>
+<h3 id="failure-state">Failure State <a class="anchor" href="#failure-state" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>If upkeep cannot be paid, penalties apply in stages:</li>
+</ul>
+<ol>
+<li>Production speed penalty.</li>
+<li>Unit regeneration disabled.</li>
+<li>Combat efficiency reduction.</li>
+</ol>
+<p>This avoids instant army deletion while still enforcing macro discipline.</p>
+</section>
+<section aria-labelledby="suggested-baseline-formulas">
+<h2 id="suggested-baseline-formulas">Suggested Baseline Formulas <a class="anchor" href="#suggested-baseline-formulas" aria-label="Link to this section">#</a></h2>
+<p>These are locked v0 baseline formulas and constants.</p>
+<p>Economy constants version: <code data-constant="economy_constants_version" data-value="1">economy_constants_version = 1</code>.</p>
+<h3 id="unit-economy-categories-v0">Unit Economy Categories (v0) <a class="anchor" href="#unit-economy-categories-v0" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>
+<p>Unit economy classes are exactly two values: <code>Worker</code> and <code>Warrior</code>.</p>
+</li>
+<li>
+<p>Each unit must declare an explicit <code>economy_class</code> tag.</p>
+</li>
+<li>
+<p>Queen/core entities are excluded from reclaim economy class calculations.</p>
+</li>
+<li>
+<p>Corpse biomass value:</p>
+<ul>
+<li>biomass_value = unit_cost_biomass x reclaim_ratio</li>
+<li>reclaim_ratio by economy class:
+<ul>
+<li>Worker: 0.40</li>
+<li>Warrior: 0.65</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Carry requirement:</p>
+<ul>
+<li>carriers_required = ceil(corpse_mass / carrier_capacity)</li>
+</ul>
+</li>
+<li>
+<p>Corpse decay:</p>
+<ul>
+<li>grace_period_seconds = 12</li>
+<li>half_life_seconds = 40</li>
+<li>remaining_value(t) = initial_value x 0.5 ^ ((t - grace_period_seconds) / half_life_seconds), for t &gt; grace_period_seconds</li>
+<li>remaining_value(t) = initial_value, for t &lt;= grace_period_seconds</li>
+</ul>
+</li>
+<li>
+<p>Upkeep:</p>
+<ul>
+<li>worker progressive upkeep starts at worker 11 (workers 1 to 10 are free)</li>
+<li>only workers above each threshold receive the increased upkeep for that threshold bracket</li>
+<li>worker upkeep brackets (applied only to workers inside each bracket):
+<ul>
+<li>workers 11 to 16: +0.02 multiplier per worker</li>
+<li>workers 17 to 22: +0.03 multiplier per worker</li>
+<li>workers 23 and above: +0.05 multiplier per worker</li>
+</ul>
+</li>
+<li>military upkeep base factor = 0.90</li>
+<li>military upkeep scaling by total military supply:
+<ul>
+<li>at 120 supply: +0.20</li>
+<li>at 180 supply: +0.25</li>
+<li>at 230 supply: +0.30</li>
+</ul>
+</li>
+<li>upkeep_per_second = unit_supply_weight x military_upkeep_factor</li>
+</ul>
+</li>
+<li>
+<p>Resource handling minimums:</p>
+<ul>
+<li>pickup lock = 0.35s</li>
+<li>handoff lock = 0.50s</li>
+<li>bank steal channel = 1.00s per chunk</li>
+<li>bank deny channel = 1.50s per chunk</li>
+</ul>
+</li>
+<li>
+<p>Bank processing rule:</p>
+<ul>
+<li>small corpses auto-convert on bank arrival</li>
+<li>medium and larger corpses require processing</li>
+<li>processing time = clamp(min_process_seconds, max_process_seconds, base_process_seconds + k * ln(1 + corpse_mass / mass_ref))</li>
+</ul>
+</li>
+</ul>
+<h3 id="regenerative-site-share-target-v0">Regenerative Site Share Target (v0) <a class="anchor" href="#regenerative-site-share-target-v0" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Target share of total biomass over full matches: 20% to 30%.</li>
+<li>Cap guideline: should rarely exceed 35% over a rolling 5-minute window.</li>
+<li>v0 enforcement policy is design-time telemetry and balancing, not runtime clamping.</li>
+</ul>
+<h3 id="allowed-tuning-bands-for-patches">Allowed Tuning Bands For Patches <a class="anchor" href="#allowed-tuning-bands-for-patches" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Reclaim ratios: plus/minus 0.05.</li>
+<li>Decay grace and half-life: plus/minus 20%.</li>
+<li>Worker free baseline and bracket thresholds: plus/minus 1 worker.</li>
+<li>Upkeep factors and tier increments: plus/minus 0.05.</li>
+<li>Regenerative share target window: plus/minus 5 percentage points.</li>
+</ul>
+<p>Values outside these bands require an explicit constants-version increment.</p>
+</section>
+<section aria-labelledby="match-phase-behavior">
+<h2 id="match-phase-behavior">Match Phase Behavior <a class="anchor" href="#match-phase-behavior" aria-label="Link to this section">#</a></h2>
+<h3 id="early-game-0-to-8-min">Early Game (0 to 8 min) <a class="anchor" href="#early-game-0-to-8-min" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Starting stockpile funds first worker and scout setup.</li>
+<li>Neutral creature hunting is a key opener.</li>
+<li>First skirmishes produce critical early biomass spikes.</li>
+</ul>
+<h3 id="mid-game-8-to-25-min">Mid Game (8 to 25 min) <a class="anchor" href="#mid-game-8-to-25-min" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Supply line warfare becomes central.</li>
+<li>Fortified pass-through banks and raid routes matter.</li>
+<li>Control of regenerative sites stabilizes army tech transition.</li>
+</ul>
+<h3 id="late-game-25-min">Late Game (25+ min) <a class="anchor" href="#late-game-25-min" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Large corpse fights and route denial dominate macro.</li>
+<li>Upkeep pressure punishes passive maxed armies.</li>
+<li>Tactical wins near enemy territory can produce decisive swing income.</li>
+</ul>
+</section>
+<section aria-labelledby="snowball-control-toolkit">
+<h2 id="snowball-control-toolkit">Snowball Control Toolkit <a class="anchor" href="#snowball-control-toolkit" aria-label="Link to this section">#</a></h2>
+<p>Use these levers in order before adding more resource types:</p>
+<ul>
+<li>Increase corpse decay speed.</li>
+<li>Reduce reclaim ratio on cheap expendable units.</li>
+<li>Raise upkeep_factor at high population tiers.</li>
+<li>Increase vulnerability and theft risk of fortified banks.</li>
+<li>Reduce income from over-saturated regenerative sites.</li>
+</ul>
+</section>
+<section aria-labelledby="anti-turtle-and-anti-rush-safeguards">
+<h2 id="anti-turtle-and-anti-rush-safeguards">Anti-Turtle And Anti-Rush Safeguards <a class="anchor" href="#anti-turtle-and-anti-rush-safeguards" aria-label="Link to this section">#</a></h2>
+<h3 id="anti-turtle">Anti-Turtle <a class="anchor" href="#anti-turtle" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Local corpse fields near defenders decay if not converted quickly.</li>
+<li>Bank-to-hive lanes remain raidable and cannot be bypassed by instant deposit.</li>
+<li>Upkeep pressures static max-pop armies.</li>
+</ul>
+<h3 id="anti-rush">Anti-Rush <a class="anchor" href="#anti-rush" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Starting stockpile and neutral creature hunting provide recovery options.</li>
+<li>Core drop-off remains safe even if outer routes are denied.</li>
+<li>Early military upkeep is intentionally modest.</li>
+</ul>
+</section>
+<section aria-labelledby="visibility-and-ux-requirements">
+<h2 id="visibility-and-ux-requirements">Visibility And UX Requirements <a class="anchor" href="#visibility-and-ux-requirements" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Every biomass object displays remaining value and decay state.</li>
+<li>Carrier units visually show when loaded.</li>
+<li>Route lines or flow overlays show logistic throughput.</li>
+<li>Economy panel shows:
+<ul>
+<li>Income by source (corpses, neutral sites, regen sites).</li>
+<li>In-transit and banked-but-uncredited biomass.</li>
+<li>Upkeep drain.</li>
+<li>Net biomass per second.</li>
+</ul>
+</li>
+</ul>
+<p>Without these signals, economy depth becomes hidden complexity.</p>
+</section>
+<section aria-labelledby="ai-requirements-for-skirmish">
+<h2 id="ai-requirements-for-skirmish">AI Requirements For Skirmish <a class="anchor" href="#ai-requirements-for-skirmish" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>AI must prioritize reclaiming nearby corpses after battles.</li>
+<li>AI must raid exposed carrier routes.</li>
+<li>AI must pressure fortified banks and bank-to-hive corridors.</li>
+<li>AI must retask workers when upkeep pressure rises.</li>
+<li>AI should contest a regenerative site when one is present and strategically relevant, but the map must not assume one exists.</li>
+</ul>
+<p>These are required for economy mechanics to feel meaningful in single-player skirmish.</p>
+</section>
+<section aria-labelledby="metrics-to-track-during-prototyping">
+<h2 id="metrics-to-track-during-prototyping">Metrics To Track During Prototyping <a class="anchor" href="#metrics-to-track-during-prototyping" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Average biomass income per minute by phase.</li>
+<li>Percent of total biomass from corpses vs regenerative sites.</li>
+<li>Average carrier travel time.</li>
+<li>Carrier death rate while loaded.</li>
+<li>Upkeep share of total spending.</li>
+<li>Comeback rate from 20 percent army value deficit.</li>
+</ul>
+<p>Target outcome: high interaction and comeback potential without nullifying good macro play.</p>
+</section>
+<section aria-labelledby="economy-constants-locked-for-faction-design">
+<h2 id="economy-constants-locked-for-faction-design">Economy Constants Locked For Faction Design <a class="anchor" href="#economy-constants-locked-for-faction-design" aria-label="Link to this section">#</a></h2>
+<p>The following economy constants are locked in <code data-constant="economy_constants_version" data-value="1">economy_constants_version = 1</code> and define the baseline that factions can tune around:</p>
+<ol>
+<li>Reclaim ratios by explicit economy class tag (<code>Worker</code>, <code>Warrior</code>).</li>
+<li>Corpse decay model with 12-second grace and 40-second half-life.</li>
+<li>Worker free baseline (10) and progressive bracket upkeep from worker 11 onward.</li>
+<li>Military upkeep base factor and tier scaling breakpoints/increments.</li>
+<li>Regenerative site share target and cap guideline.</li>
+<li>Patch tuning bands and versioning discipline.</li>
+</ol>
+<p>These constants define the strategic foundation that faction bonuses should modify, not replace.</p>
+</section>
+<section aria-labelledby="open-questions-additional-locked-decisions-grill-session">
+<h2 id="open-questions-additional-locked-decisions-grill-session">Open Questions: Additional Locked Decisions (Grill Session) <a class="anchor" href="#open-questions-additional-locked-decisions-grill-session" aria-label="Link to this section">#</a></h2>
+<h3 id="1-worker-upkeep-model">1) Worker upkeep model <a class="anchor" href="#1-worker-upkeep-model" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Workers are not exempt from upkeep.</li>
+<li>Workers 1 to 10 are free.</li>
+<li>Workers above 10 use bracketed progressive upkeep.</li>
+<li>Bracket increases apply only to workers inside their own bracket range.</li>
+</ul>
+<h3 id="2-corpse-terrain-interaction">2) Corpse terrain interaction <a class="anchor" href="#2-corpse-terrain-interaction" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Corpses do not hard-block movement.</li>
+<li>Corpses create temporary friction zones (movement slow), marked as a nice-to-have feature.</li>
+<li>If performance budget is tight, friction zones can be disabled without breaking core economy rules.</li>
+</ul>
+<h3 id="3-aerial-logistics-and-survivability">3) Aerial logistics and survivability <a class="anchor" href="#3-aerial-logistics-and-survivability" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>No special economic or survivability bonus is granted for aerial carriers.</li>
+<li>Flying ants are planned as later-tier flexible raiders, not tanky logistics units.</li>
+</ul>
+<p>Related locked combat verb (cross-system note):</p>
+<ul>
+<li>Universal anti-air action is <code>Latch and Grab</code>.</li>
+<li>Intended effect: short-range latch stacks that can force a temporary landing window.</li>
+</ul>
+<h3 id="4-water-edge-biomass-routes">4) Water-edge biomass routes <a class="anchor" href="#4-water-edge-biomass-routes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Water-edge routes use conditional, volatile high-yield biomass patterns.</li>
+<li>They should create &quot;something is happening&quot; contest moments.</li>
+<li>Design goal: increase scouting pressure and force selective unit commitment to contest windows.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="resource-ownership-spec.html">Resource ownership</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

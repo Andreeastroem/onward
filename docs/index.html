@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onward - Onward</title>
+<meta name="description" content="Onward project overview, documentation status, open work, and scope.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Onward",
+  "description": "Onward project overview, documentation status, open work, and scope.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "combat-spec.html",
+    "design-doc.html",
+    "design-review.html",
+    "economy-design.html",
+    "match-termination-spec.html",
+    "potential-factions.html",
+    "production-operations-spec.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "index",
+  "title": "Onward",
+  "group": null,
+  "status": {
+    "key": "documented",
+    "label": "Documented"
+  },
+  "references": [
+    "combat-spec",
+    "design-doc",
+    "design-review",
+    "economy-design",
+    "match-termination-spec",
+    "potential-factions",
+    "production-operations-spec",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [],
+  "constants": {},
+  "sections": [
+    {
+      "id": "documents",
+      "title": "Documents",
+      "level": 2
+    },
+    {
+      "id": "documentation-status",
+      "title": "Documentation Status",
+      "level": 2
+    },
+    {
+      "id": "left-to-document",
+      "title": "Left To Document",
+      "level": 2
+    },
+    {
+      "id": "current-scope",
+      "title": "Current Scope",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html" aria-current="page">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#documents">Documents</a>
+</li>
+<li><a href="#documentation-status">Documentation Status</a>
+</li>
+<li><a href="#left-to-document">Left To Document</a>
+</li>
+<li><a href="#current-scope">Current Scope</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="onward">Onward</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="documented">Documented</span></dd></dl></div>
+<section aria-labelledby="documents"><h2 id="documents">Documents</h2>
+<h3>Design</h3>
+<ul class="card-grid"><li><a class="card" href="design-doc.html"><strong>Design document</strong><span>Project vision, gameplay loop, factions, modes, and victory condition.</span><span class="badge" data-status="documented">Documented</span></a></li><li><a class="card" href="level-design.html"><strong>Level design</strong><span>Map-design principles and individual map concepts.</span><span class="badge" data-status="draft">Exploration draft</span></a></li><li><a class="card" href="potential-factions.html"><strong>Potential factions</strong><span>Candidate ant factions, asymmetry directions, matchup intent, and exception candidates.</span><span class="badge" data-status="direction">Design direction</span></a></li></ul>
+<h3>Systems</h3>
+<ul class="card-grid"><li><a class="card" href="economy-design.html"><strong>Economy design</strong><span>Economy, biomass recovery, upkeep, logistics, and economy telemetry.</span><span class="badge" data-status="locked">Locked v0 constants</span></a></li><li><a class="card" href="resource-ownership-spec.html"><strong>Resource ownership</strong><span>Resource ownership, pickup conflicts, bank raids, processing, and audit logging.</span><span class="badge" data-status="locked">Locked for v0</span></a></li><li><a class="card" href="combat-spec.html"><strong>Combat</strong><span>Combat roles, damage model, counterplay, TTK targets, and determinism.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="production-operations-spec.html"><strong>Production operations</strong><span>Construction, production queues, placement, refunds, spawning, and connectivity.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="tech-tree-operational-spec.html"><strong>Tech tree</strong><span>Tech tiers, prerequisite structure, gating, and recovery policy.</span><span class="badge" data-status="placeholder">Placeholder-based v0 baseline</span></a></li><li><a class="card" href="match-termination-spec.html"><strong>Match termination</strong><span>Match outcomes, surrender, disconnects, resume flow, and replay metadata.</span><span class="badge" data-status="locked">Locked for v0</span></a></li></ul>
+<h3>Technical</h3>
+<ul class="card-grid"><li><a class="card" href="technical-requirements.html"><strong>Technical requirements</strong><span>Presentation, unit scale, terrain constraints, and deterministic simulation requirements.</span><span class="badge" data-status="documented">Documented</span></a></li></ul>
+<h3>Process</h3>
+<ul class="card-grid"><li><a class="card" href="design-review.html"><strong>Design review</strong><span>Design-review decisions, gaps, and prioritization.</span><span class="badge" data-status="review">Review log</span></a></li></ul>
+<h3>Art</h3>
+<ul class="card-grid"><li><a class="card" href="art-direction.html"><strong>Art direction</strong><span>Art direction and visual identity (to be written).</span><span class="badge" data-status="draft">Placeholder</span></a></li></ul>
+</section>
+<p>Onward is a design project for a 3D, fixed-isometric real-time strategy game about ant colonies competing to survive in a living ecosystem. Players build colonies, scout and contest the map, recover biomass from corpses and regenerative sites, defend vulnerable supply lines, advance through tech, and destroy the opposing colony core.</p>
+<p>The design aims for readable classic RTS play at high unit density: individual-unit control, logistics-driven economy, distinct ant-species factions, meaningful macro and micro decisions, and deterministic behavior suitable for skirmish, multiplayer, and replay verification.</p>
+<section aria-labelledby="documentation-status">
+<h2 id="documentation-status">Documentation Status <a class="anchor" href="#documentation-status" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Status</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Project vision, gameplay loop, factions, modes, and victory condition</td>
+<td>Documented</td>
+<td><a href="design-doc.html"><a href="design-doc.html">design-doc.html</a></a></td>
+</tr>
+<tr>
+<td>Economy, biomass recovery, upkeep, logistics, and economy telemetry</td>
+<td>Documented with locked v0 constants</td>
+<td><a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a></td>
+</tr>
+<tr>
+<td>Resource ownership, pickup conflicts, bank raids, processing, and audit logging</td>
+<td>Documented and locked for v0</td>
+<td><a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a></td>
+</tr>
+<tr>
+<td>Combat roles, damage model, counterplay, TTK targets, and determinism</td>
+<td>Documented as a v0 baseline</td>
+<td><a href="combat-spec.html"><a href="combat-spec.html">combat-spec.html</a></a></td>
+</tr>
+<tr>
+<td>Construction, production queues, placement, refunds, spawning, and connectivity</td>
+<td>Documented as a v0 baseline</td>
+<td><a href="production-operations-spec.html"><a href="production-operations-spec.html">production-operations-spec.html</a></a></td>
+</tr>
+<tr>
+<td>Tech tiers, prerequisite structure, gating, and recovery policy</td>
+<td>Documented as a placeholder-based v0 baseline</td>
+<td><a href="tech-tree-operational-spec.html"><a href="tech-tree-operational-spec.html">tech-tree-operational-spec.html</a></a></td>
+</tr>
+<tr>
+<td>Match outcomes, surrender, disconnects, resume flow, and replay metadata</td>
+<td>Documented and locked for v0</td>
+<td><a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a></td>
+</tr>
+<tr>
+<td>Presentation, unit scale, terrain constraints, and deterministic simulation requirements</td>
+<td>Documented</td>
+<td><a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a></td>
+</tr>
+<tr>
+<td>Candidate factions, asymmetry directions, matchup intent, and exception candidates</td>
+<td>Documented as design direction</td>
+<td><a href="potential-factions.html"><a href="potential-factions.html">potential-factions.html</a></a></td>
+</tr>
+<tr>
+<td>Design-review decisions, gaps, and prioritization</td>
+<td>Documented</td>
+<td><a href="design-review.html"><a href="design-review.html">design-review.html</a></a></td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section aria-labelledby="left-to-document">
+<h2 id="left-to-document">Left To Document <a class="anchor" href="#left-to-document" aria-label="Link to this section">#</a></h2>
+<p>The following work is explicitly deferred or still identified as a gap:</p>
+<ul>
+<li>Final launch faction count, named faction rosters, unit stats, costs, and faction-specific production or connectivity exceptions.</li>
+<li>Concrete tech-tree artifacts: named nodes, costs, build times, economy thresholds, earliest unlock timings, opportunity-cost targets, and a graph diagram.</li>
+<li>AI specification with measurable difficulty tiers, behavioral KPIs, exploit handling, and regression scenarios.</li>
+<li>Technical performance and readability budget with FPS, frame-time, pathfinding, command-latency, 3D rendering and asset budgets, visual-legibility, and fallback-quality acceptance criteria.</li>
+<li>Map-generation and fairness specification covering spawn parity, route availability, biome variance, shoreline-event rules, and validation.</li>
+<li>Multiplayer skirmish requirements covering initial modes and team sizes, networking and desync strategy, lobby or matchmaking scope, anti-cheat boundaries, and v1 exclusions.</li>
+<li>Final combat readability limits for overlapping AoE, plus balance validation using faction-specific unit data.</li>
+</ul>
+</section>
+<section aria-labelledby="current-scope">
+<h2 id="current-scope">Current Scope <a class="anchor" href="#current-scope" aria-label="Link to this section">#</a></h2>
+<p>The immediate product focus is skirmish against AI, with multiplayer skirmish treated as a product target. Campaign, narrative progression, ranked systems, and a regional-conquest mode are not part of the current v0 scope.</p>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

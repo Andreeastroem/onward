@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Production Operations Specification (v0) - Onward</title>
+<meta name="description" content="Construction, production queues, placement, refunds, spawning, and connectivity.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Production Operations Specification (v0)",
+  "description": "Construction, production queues, placement, refunds, spawning, and connectivity.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "design-doc.html",
+    "economy-design.html",
+    "resource-ownership-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "production-operations-spec",
+  "title": "Ant RTS Production Operations Specification (v0)",
+  "group": "Systems",
+  "status": {
+    "key": "baseline",
+    "label": "v0 baseline"
+  },
+  "references": [
+    "design-doc",
+    "economy-design",
+    "resource-ownership-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [
+    "design-doc",
+    "design-review",
+    "index",
+    "potential-factions"
+  ],
+  "constants": {
+    "max_builders_per_site": "24",
+    "k": "0.60",
+    "n": "24",
+    "base_spent": "base_cost * p",
+    "base_unspent": "base_cost * (1 - p)",
+    "production_operations_spec_version": "1"
+  },
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "scope",
+      "title": "Scope",
+      "level": 2
+    },
+    {
+      "id": "locked-production-model",
+      "title": "Locked Production Model",
+      "level": 2
+    },
+    {
+      "id": "construction-placement-rules",
+      "title": "Construction Placement Rules",
+      "level": 2
+    },
+    {
+      "id": "builder-assignment-and-scaling",
+      "title": "Builder Assignment And Scaling",
+      "level": 2
+    },
+    {
+      "id": "initial-balancing-appendix-v0-defaults",
+      "title": "Initial Balancing Appendix (v0 Defaults)",
+      "level": 2
+    },
+    {
+      "id": "cost-commitment-and-refund-policy",
+      "title": "Cost Commitment And Refund Policy",
+      "level": 2
+    },
+    {
+      "id": "insolvency-and-auto-throttle-behavior",
+      "title": "Insolvency And Auto-Throttle Behavior",
+      "level": 2
+    },
+    {
+      "id": "construction-interruption-and-persistence",
+      "title": "Construction Interruption And Persistence",
+      "level": 2
+    },
+    {
+      "id": "connectivity-policy",
+      "title": "Connectivity Policy",
+      "level": 2
+    },
+    {
+      "id": "unit-production-topology",
+      "title": "Unit Production Topology",
+      "level": 2
+    },
+    {
+      "id": "queue-semantics",
+      "title": "Queue Semantics",
+      "level": 2
+    },
+    {
+      "id": "rally-behavior",
+      "title": "Rally Behavior",
+      "level": 2
+    },
+    {
+      "id": "spawn-resolution",
+      "title": "Spawn Resolution",
+      "level": 2
+    },
+    {
+      "id": "forward-proxy-construction-policy",
+      "title": "Forward Proxy Construction Policy",
+      "level": 2
+    },
+    {
+      "id": "deterministic-state-machines",
+      "title": "Deterministic State Machines",
+      "level": 2
+    },
+    {
+      "id": "replay-and-telemetry-requirements-audit-grade",
+      "title": "Replay And Telemetry Requirements (Audit Grade)",
+      "level": 2
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "level": 2
+    },
+    {
+      "id": "related-documents",
+      "title": "Related Documents",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html" aria-current="page">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#scope">Scope</a>
+</li>
+<li><a href="#locked-production-model">Locked Production Model</a>
+</li>
+<li><a href="#construction-placement-rules">Construction Placement Rules</a>
+</li>
+<li><a href="#builder-assignment-and-scaling">Builder Assignment And Scaling</a>
+<ul>
+<li><a href="#builder-count">Builder Count</a></li>
+<li><a href="#speed-multiplier">Speed Multiplier</a></li>
+<li><a href="#ticking-surcharge">Ticking Surcharge</a></li>
+</ul></li>
+<li><a href="#initial-balancing-appendix-v0-defaults">Initial Balancing Appendix (v0 Defaults)</a>
+<ul>
+<li><a href="#baseline-k-constants-by-building-class">Baseline `k` Constants By Building Class</a></li>
+<li><a href="#sample-surcharge-multipliers-relative-to-k">Sample Surcharge Multipliers Relative To `k`</a></li>
+<li><a href="#balance-safety-notes">Balance Safety Notes</a></li>
+</ul></li>
+<li><a href="#cost-commitment-and-refund-policy">Cost Commitment And Refund Policy</a>
+<ul>
+<li><a href="#base-construction-cost-commitment">Base Construction Cost Commitment</a></li>
+<li><a href="#cancel-refund-rule">Cancel Refund Rule</a></li>
+<li><a href="#under-construction-destruction-rule">Under-Construction Destruction Rule</a></li>
+</ul></li>
+<li><a href="#insolvency-and-auto-throttle-behavior">Insolvency And Auto-Throttle Behavior</a>
+</li>
+<li><a href="#construction-interruption-and-persistence">Construction Interruption And Persistence</a>
+</li>
+<li><a href="#connectivity-policy">Connectivity Policy</a>
+</li>
+<li><a href="#unit-production-topology">Unit Production Topology</a>
+</li>
+<li><a href="#queue-semantics">Queue Semantics</a>
+</li>
+<li><a href="#rally-behavior">Rally Behavior</a>
+</li>
+<li><a href="#spawn-resolution">Spawn Resolution</a>
+</li>
+<li><a href="#forward-proxy-construction-policy">Forward Proxy Construction Policy</a>
+</li>
+<li><a href="#deterministic-state-machines">Deterministic State Machines</a>
+<ul>
+<li><a href="#construction-state-machine">Construction State Machine</a></li>
+<li><a href="#production-state-machine">Production State Machine</a></li>
+</ul></li>
+<li><a href="#replay-and-telemetry-requirements-audit-grade">Replay And Telemetry Requirements (Audit Grade)</a>
+</li>
+<li><a href="#versioning">Versioning</a>
+</li>
+<li><a href="#related-documents">Related Documents</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-production-operations-specification-v0">Ant RTS Production Operations Specification (v0)</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="baseline">v0 baseline</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define deterministic construction and unit production behavior for skirmish, including worker-assisted build acceleration, ticking surcharge rules, queue semantics, spawn resolution, and replay-grade event logging.</p>
+</section>
+<section aria-labelledby="scope">
+<h2 id="scope">Scope <a class="anchor" href="#scope" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Applies to AI and multiplayer skirmish.</li>
+<li>Covers building construction and unit production operations.</li>
+<li>Does not define faction-final unit stats, combat tuning, or matchmaking.</li>
+</ul>
+</section>
+<section aria-labelledby="locked-production-model">
+<h2 id="locked-production-model">Locked Production Model <a class="anchor" href="#locked-production-model" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Construction model is multi-worker acceleration.</li>
+<li>Worker 1 contributes baseline build speed and has no surcharge.</li>
+<li>Workers 2+ add both speed and a ticking surcharge.</li>
+<li>Build placement uses adjacency projection from owned structures (creep-style footprint expansion).</li>
+<li>No global enemy exclusion zone is used in v0.</li>
+<li>Connectivity is required for most factions; disconnected structures are non-functional until reconnect.</li>
+<li>Faction exceptions are allowed through explicit per-faction rule flags.</li>
+</ul>
+</section>
+<section aria-labelledby="construction-placement-rules">
+<h2 id="construction-placement-rules">Construction Placement Rules <a class="anchor" href="#construction-placement-rules" aria-label="Link to this section">#</a></h2>
+<p>Placement preconditions:</p>
+<ol>
+<li>Candidate footprint must fit walkability and static occupancy rules.</li>
+<li>Candidate footprint must be adjacent to at least one valid friendly projection source.</li>
+<li>Candidate footprint must not overlap blocked terrain or existing permanent footprint.</li>
+</ol>
+<p>Adjacency projection:</p>
+<ul>
+<li>Each completed structure projects a placement ring.</li>
+<li>Placement is valid if any tile in the candidate footprint intersects any friendly projection ring.</li>
+<li>Projection updates are evaluated on simulation ticks and are replay deterministic.</li>
+</ul>
+</section>
+<section aria-labelledby="builder-assignment-and-scaling">
+<h2 id="builder-assignment-and-scaling">Builder Assignment And Scaling <a class="anchor" href="#builder-assignment-and-scaling" aria-label="Link to this section">#</a></h2>
+<h3 id="builder-count">Builder Count <a class="anchor" href="#builder-count" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Per-site builder hard cap uses one global value in v0.</li>
+<li>Baseline default is <code data-constant="max_builders_per_site" data-value="24">max_builders_per_site = 24</code> (mid-tens target).</li>
+<li>Factions may override this through explicit exception data.</li>
+</ul>
+<h3 id="speed-multiplier">Speed Multiplier <a class="anchor" href="#speed-multiplier" aria-label="Link to this section">#</a></h3>
+<p>For <code>n</code> active builders on one site:</p>
+<p><code>S(n) = 1 + 0.55 * sqrt(n - 1)</code>, for <code>n &gt;= 1</code></p>
+<p>Where:</p>
+<ul>
+<li><code>S(1) = 1.0</code> baseline speed.</li>
+<li>Additional builders give diminishing returns at every step.</li>
+</ul>
+<h3 id="ticking-surcharge">Ticking Surcharge <a class="anchor" href="#ticking-surcharge" aria-label="Link to this section">#</a></h3>
+<p>For <code>n</code> active builders on one site:</p>
+<p><code>TickSurcharge(n) = k * (n - 1)^2</code>, for <code>n &gt;= 2</code></p>
+<p>Where:</p>
+<ul>
+<li><code>k</code> is a building-specific surcharge constant.</li>
+<li>Worker 1 has no surcharge.</li>
+<li>Surcharge starts at worker 2.</li>
+</ul>
+</section>
+<section aria-labelledby="initial-balancing-appendix-v0-defaults">
+<h2 id="initial-balancing-appendix-v0-defaults">Initial Balancing Appendix (v0 Defaults) <a class="anchor" href="#initial-balancing-appendix-v0-defaults" aria-label="Link to this section">#</a></h2>
+<p>This appendix defines default starting values for <code>k</code> by building class so tuning can begin from a consistent baseline.</p>
+<h3 id="baseline-k-constants-by-building-class">Baseline <code>k</code> Constants By Building Class <a class="anchor" href="#baseline-k-constants-by-building-class" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Economy/utility structures: <code data-constant="k" data-value="0.35">k = 0.35</code></li>
+<li>Military production structures: <code data-constant="k" data-value="0.50">k = 0.50</code></li>
+<li>Tech/advanced unlock structures: <code data-constant="k" data-value="0.70">k = 0.70</code></li>
+<li>Defensive/control structures: <code data-constant="k" data-value="0.60">k = 0.60</code></li>
+</ul>
+<p>Interpretation:</p>
+<ul>
+<li>Lower <code>k</code> values permit longer multi-builder acceleration windows before heavy economic pain.</li>
+<li>Higher <code>k</code> values preserve strategic commitment and make burst-build decisions more punishable.</li>
+</ul>
+<h3 id="sample-surcharge-multipliers-relative-to-k">Sample Surcharge Multipliers Relative To <code>k</code> <a class="anchor" href="#sample-surcharge-multipliers-relative-to-k" aria-label="Link to this section">#</a></h3>
+<p>Using <code>TickSurcharge(n) = k * (n - 1)^2</code>:</p>
+<ul>
+<li><code data-constant="n" data-value="1">n = 1</code>: <code>0 * k</code></li>
+<li><code data-constant="n" data-value="2">n = 2</code>: <code>1 * k</code></li>
+<li><code data-constant="n" data-value="4">n = 4</code>: <code>9 * k</code></li>
+<li><code data-constant="n" data-value="8">n = 8</code>: <code>49 * k</code></li>
+<li><code data-constant="n" data-value="12">n = 12</code>: <code>121 * k</code></li>
+<li><code data-constant="n" data-value="16">n = 16</code>: <code>225 * k</code></li>
+<li><code data-constant="n" data-value="20">n = 20</code>: <code>361 * k</code></li>
+<li><code data-constant="n" data-value="24">n = 24</code>: <code>529 * k</code></li>
+</ul>
+<h3 id="balance-safety-notes">Balance Safety Notes <a class="anchor" href="#balance-safety-notes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Keep <code>k</code> shared by class (not per individual structure) in early balancing to reduce tuning noise.</li>
+<li>Avoid lowering <code>k</code> and increasing <code>max_builders_per_site</code> in the same patch unless playtests explicitly require it.</li>
+<li>If proxy snowball appears in testing, raise <code>k</code> for military and defensive classes before changing speed curve <code>S(n)</code>.</li>
+</ul>
+</section>
+<section aria-labelledby="cost-commitment-and-refund-policy">
+<h2 id="cost-commitment-and-refund-policy">Cost Commitment And Refund Policy <a class="anchor" href="#cost-commitment-and-refund-policy" aria-label="Link to this section">#</a></h2>
+<h3 id="base-construction-cost-commitment">Base Construction Cost Commitment <a class="anchor" href="#base-construction-cost-commitment" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Base construction cost is committed progressively by build progress ticks.</li>
+<li>At progress <code>p</code> in <code>[0, 1]</code>:
+<ul>
+<li><code data-constant="base_spent" data-value="base_cost * p">base_spent = base_cost * p</code></li>
+<li><code data-constant="base_unspent" data-value="base_cost * (1 - p)">base_unspent = base_cost * (1 - p)</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="cancel-refund-rule">Cancel Refund Rule <a class="anchor" href="#cancel-refund-rule" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Cancel refunds only remaining unspent base cost.</li>
+<li>Spent base cost is not refunded.</li>
+<li>Paid ticking surcharge is never refunded.</li>
+</ul>
+<h3 id="under-construction-destruction-rule">Under-Construction Destruction Rule <a class="anchor" href="#under-construction-destruction-rule" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>If a structure is destroyed while under construction:
+<ul>
+<li>No refund is granted in v0.</li>
+<li>Any already-paid surcharge remains sunk.</li>
+</ul>
+</li>
+</ul>
+</section>
+<section aria-labelledby="insolvency-and-auto-throttle-behavior">
+<h2 id="insolvency-and-auto-throttle-behavior">Insolvency And Auto-Throttle Behavior <a class="anchor" href="#insolvency-and-auto-throttle-behavior" aria-label="Link to this section">#</a></h2>
+<p>If stockpile cannot pay current tick surcharge for assigned builders:</p>
+<ol>
+<li>The site auto-throttles to the highest affordable active builder count.</li>
+<li>At least one builder remains active if builder 1 assignment is valid.</li>
+<li>Construction continues at the resulting reduced speed.</li>
+</ol>
+<p>Deterministic throttle selection:</p>
+<ol>
+<li>Preserve earliest-assigned builders first.</li>
+<li>If tie, preserve lowest unit id first.</li>
+<li>Remaining builders enter <code>ThrottleIdle</code> state for that site.</li>
+</ol>
+<p>Readability requirements:</p>
+<ul>
+<li>Site UI must display surcharge shortfall reason.</li>
+<li>Site UI must display <code>active_builders / assigned_builders</code>.</li>
+<li>Throttled builders must show an explicit suppressed/idle reason code.</li>
+</ul>
+</section>
+<section aria-labelledby="construction-interruption-and-persistence">
+<h2 id="construction-interruption-and-persistence">Construction Interruption And Persistence <a class="anchor" href="#construction-interruption-and-persistence" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>If all builders leave, construction progress persists indefinitely.</li>
+<li>Returning valid builders resume from saved progress.</li>
+<li>No passive decay of build progress in v0.</li>
+</ul>
+</section>
+<section aria-labelledby="connectivity-policy">
+<h2 id="connectivity-policy">Connectivity Policy <a class="anchor" href="#connectivity-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Most factions require connected structure networks for functionality.</li>
+<li>Disconnected structures remain present but non-functional.</li>
+<li>Reconnection restores functionality on deterministic tick transition.</li>
+<li>Faction exceptions may allow partial or full operation while disconnected.</li>
+</ul>
+</section>
+<section aria-labelledby="unit-production-topology">
+<h2 id="unit-production-topology">Unit Production Topology <a class="anchor" href="#unit-production-topology" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Topology is hybrid.</li>
+<li>Most combat units are produced from the hive.</li>
+<li>Structure-local queues are primarily used for upgrades and special exceptions.</li>
+<li>Faction exceptions may enable additional local unit production lanes.</li>
+</ul>
+</section>
+<section aria-labelledby="queue-semantics">
+<h2 id="queue-semantics">Queue Semantics <a class="anchor" href="#queue-semantics" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Queue model is single queue per production source.</li>
+<li>No parallel slots in baseline v0.</li>
+<li>Queue operations are deterministic FIFO unless a source-specific override is explicitly defined.</li>
+</ul>
+<p>Required queue operations:</p>
+<ol>
+<li>Enqueue request.</li>
+<li>Dequeue/cancel specific entry.</li>
+<li>Start production.</li>
+<li>Complete production.</li>
+</ol>
+</section>
+<section aria-labelledby="rally-behavior">
+<h2 id="rally-behavior">Rally Behavior <a class="anchor" href="#rally-behavior" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Rally supports both:
+<ul>
+<li>Rally to map point.</li>
+<li>Rally to unit follow target.</li>
+</ul>
+</li>
+<li>If rally-to-unit target becomes invalid, fallback is last valid map-point rally for that source.</li>
+</ul>
+</section>
+<section aria-labelledby="spawn-resolution">
+<h2 id="spawn-resolution">Spawn Resolution <a class="anchor" href="#spawn-resolution" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Production completion always spawns the unit.</li>
+<li>If spawn area is occupied, deterministic collision-push resolution is applied.</li>
+</ul>
+<p>Deterministic collision-push contract:</p>
+<ol>
+<li>Spawn unit at source spawn origin.</li>
+<li>Resolve overlaps by deterministic displacement order (lowest unit id first among colliders).</li>
+<li>Apply bounded push steps until no overlap or max push iterations reached.</li>
+<li>If max iterations reached, mark congested state and continue deterministic push on subsequent ticks.</li>
+</ol>
+<p>This keeps &quot;always spawn&quot; behavior while preserving replay parity.</p>
+</section>
+<section aria-labelledby="forward-proxy-construction-policy">
+<h2 id="forward-proxy-construction-policy">Forward Proxy Construction Policy <a class="anchor" href="#forward-proxy-construction-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>No special anti-proxy exclusion radius is applied in v0.</li>
+<li>Proxy pressure is countered by combat/logistics interaction, adjacency dependency, and surcharge economics.</li>
+<li>Faction-specific anti-proxy or proxy-enhancing exceptions are allowed later.</li>
+</ul>
+</section>
+<section aria-labelledby="deterministic-state-machines">
+<h2 id="deterministic-state-machines">Deterministic State Machines <a class="anchor" href="#deterministic-state-machines" aria-label="Link to this section">#</a></h2>
+<h3 id="construction-state-machine">Construction State Machine <a class="anchor" href="#construction-state-machine" aria-label="Link to this section">#</a></h3>
+<p>States:</p>
+<ol>
+<li><code>PlacementPreview</code></li>
+<li><code>PlacedUnstarted</code></li>
+<li><code>Constructing</code></li>
+<li><code>ConstructingThrottled</code></li>
+<li><code>PausedNoBuilders</code></li>
+<li><code>Completed</code></li>
+<li><code>Canceled</code></li>
+<li><code>DestroyedUnderConstruction</code></li>
+</ol>
+<p>Core transitions:</p>
+<ol>
+<li>
+<p><code>PlacementPreview -&gt; PlacedUnstarted</code></p>
+<ul>
+<li>Trigger: valid placement confirm</li>
+</ul>
+</li>
+<li>
+<p><code>PlacedUnstarted -&gt; Constructing</code></p>
+<ul>
+<li>Trigger: at least one valid builder assigned</li>
+</ul>
+</li>
+<li>
+<p><code>Constructing -&gt; ConstructingThrottled</code></p>
+<ul>
+<li>Trigger: surcharge insolvency detected</li>
+</ul>
+</li>
+<li>
+<p><code>ConstructingThrottled -&gt; Constructing</code></p>
+<ul>
+<li>Trigger: surcharge affordability restored</li>
+</ul>
+</li>
+<li>
+<p><code>Constructing|ConstructingThrottled -&gt; PausedNoBuilders</code></p>
+<ul>
+<li>Trigger: active builder count reaches zero</li>
+</ul>
+</li>
+<li>
+<p><code>PausedNoBuilders -&gt; Constructing</code></p>
+<ul>
+<li>Trigger: builder assignment restored</li>
+</ul>
+</li>
+<li>
+<p><code>Constructing|ConstructingThrottled|PausedNoBuilders -&gt; Completed</code></p>
+<ul>
+<li>Trigger: progress reaches 1.0</li>
+</ul>
+</li>
+<li>
+<p><code>PlacedUnstarted|Constructing|ConstructingThrottled|PausedNoBuilders -&gt; Canceled</code></p>
+<ul>
+<li>Trigger: player cancel; refund <code>base_unspent</code></li>
+</ul>
+</li>
+<li>
+<p><code>PlacedUnstarted|Constructing|ConstructingThrottled|PausedNoBuilders -&gt; DestroyedUnderConstruction</code></p>
+<ul>
+<li>Trigger: HP reaches 0 before completion; no refund</li>
+</ul>
+</li>
+</ol>
+<h3 id="production-state-machine">Production State Machine <a class="anchor" href="#production-state-machine" aria-label="Link to this section">#</a></h3>
+<p>States:</p>
+<ol>
+<li><code>Idle</code></li>
+<li><code>Queued</code></li>
+<li><code>Producing</code></li>
+<li><code>ReadyToSpawn</code></li>
+<li><code>SpawnResolving</code></li>
+</ol>
+<p>Core transitions:</p>
+<ol>
+<li>
+<p><code>Idle -&gt; Queued</code></p>
+<ul>
+<li>Trigger: first enqueue</li>
+</ul>
+</li>
+<li>
+<p><code>Queued -&gt; Producing</code></p>
+<ul>
+<li>Trigger: queue head starts</li>
+</ul>
+</li>
+<li>
+<p><code>Producing -&gt; ReadyToSpawn</code></p>
+<ul>
+<li>Trigger: production timer complete</li>
+</ul>
+</li>
+<li>
+<p><code>ReadyToSpawn -&gt; SpawnResolving</code></p>
+<ul>
+<li>Trigger: spawn attempt</li>
+</ul>
+</li>
+<li>
+<p><code>SpawnResolving -&gt; Idle|Queued</code></p>
+<ul>
+<li>Trigger: spawn success and dequeue next</li>
+</ul>
+</li>
+</ol>
+</section>
+<section aria-labelledby="replay-and-telemetry-requirements-audit-grade">
+<h2 id="replay-and-telemetry-requirements-audit-grade">Replay And Telemetry Requirements (Audit Grade) <a class="anchor" href="#replay-and-telemetry-requirements-audit-grade" aria-label="Link to this section">#</a></h2>
+<p>Mandatory events:</p>
+<ol>
+<li>Build placed.</li>
+<li>Builder assigned and unassigned.</li>
+<li>Tick surcharge charged with stockpile delta.</li>
+<li>Auto-throttle trigger and release.</li>
+<li>Cancel event with refund amount.</li>
+<li>Under-construction destruction with refund/salvage result.</li>
+<li>Queue enqueue, dequeue, start, complete.</li>
+<li>Spawn blocked/congested and resolution result.</li>
+<li>Rally set and rally changed.</li>
+<li>Connectivity lost/restored and functional disable/enable.</li>
+</ol>
+</section>
+<section aria-labelledby="versioning">
+<h2 id="versioning">Versioning <a class="anchor" href="#versioning" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Initial release: <code data-constant="production_operations_spec_version" data-value="1">production_operations_spec_version = 1</code>.</li>
+<li>Any change to scaling formulas, refund policy, queue semantics, or spawn resolution ordering requires version increment.</li>
+</ul>
+</section>
+<section aria-labelledby="related-documents">
+<h2 id="related-documents">Related Documents <a class="anchor" href="#related-documents" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><a href="design-doc.html"><a href="design-doc.html">design-doc.html</a></a></li>
+<li><a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a></li>
+<li><a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a></li>
+<li><a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a></li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

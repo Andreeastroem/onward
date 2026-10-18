@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Technical Requirements - Onward</title>
+<meta name="description" content="Presentation, unit scale, terrain constraints, and deterministic simulation requirements.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Technical Requirements",
+  "description": "Presentation, unit scale, terrain constraints, and deterministic simulation requirements.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "combat-spec.html",
+    "design-doc.html",
+    "economy-design.html",
+    "match-termination-spec.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "technical-requirements",
+  "title": "Ant RTS Technical Requirements",
+  "group": "Technical",
+  "status": {
+    "key": "documented",
+    "label": "Documented"
+  },
+  "references": [
+    "combat-spec",
+    "design-doc",
+    "economy-design",
+    "match-termination-spec",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec"
+  ],
+  "referencedBy": [
+    "art-direction",
+    "combat-spec",
+    "design-doc",
+    "index",
+    "potential-factions",
+    "production-operations-spec",
+    "tech-tree-operational-spec"
+  ],
+  "constants": {},
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "locked-decisions",
+      "title": "Locked Decisions",
+      "level": 2
+    },
+    {
+      "id": "production-implications",
+      "title": "Production Implications",
+      "level": 2
+    },
+    {
+      "id": "related-design-documents",
+      "title": "Related Design Documents",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html" aria-current="page">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#locked-decisions">Locked Decisions</a>
+<ul>
+<li><a href="#presentation">Presentation</a></li>
+<li><a href="#simulation-scale">Simulation Scale</a></li>
+<li><a href="#readability-and-performance-intent">Readability And Performance Intent</a></li>
+<li><a href="#deterministic-match-termination">Deterministic Match Termination</a></li>
+<li><a href="#disconnect-and-resume-requirements">Disconnect And Resume Requirements</a></li>
+<li><a href="#replay-audit-requirements">Replay Audit Requirements</a></li>
+<li><a href="#deterministic-resource-interaction-requirements">Deterministic Resource Interaction Requirements</a></li>
+<li><a href="#deterministic-combat-requirements">Deterministic Combat Requirements</a></li>
+<li><a href="#resource-audit-requirements">Resource Audit Requirements</a></li>
+<li><a href="#terrain-constraints">Terrain Constraints</a></li>
+</ul></li>
+<li><a href="#production-implications">Production Implications</a>
+</li>
+<li><a href="#related-design-documents">Related Design Documents</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-technical-requirements">Ant RTS Technical Requirements</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="documented">Documented</span></dd><dt>Area</dt><dd>Technical</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>This document locks the core presentation and simulation constraints that shape production scope, readability, and performance targets.</p>
+</section>
+<section aria-labelledby="locked-decisions">
+<h2 id="locked-decisions">Locked Decisions <a class="anchor" href="#locked-decisions" aria-label="Link to this section">#</a></h2>
+<h3 id="presentation">Presentation <a class="anchor" href="#presentation" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>The game is full 3D.</li>
+<li>The camera uses a fixed isometric view.</li>
+<li>Units, buildings, terrain, and effects must use 3D representation while remaining readable from the fixed camera angle.</li>
+<li>Strict art and lighting rules are required to preserve readability at scale.</li>
+</ul>
+<h3 id="simulation-scale">Simulation Scale <a class="anchor" href="#simulation-scale" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>The game does not use squad-based control as the primary abstraction.</li>
+<li>The recommended scale target is 200 soft cap and 260 hard cap per player.</li>
+</ul>
+<h3 id="readability-and-performance-intent">Readability And Performance Intent <a class="anchor" href="#readability-and-performance-intent" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>The visual language must remain clear under swarm density.</li>
+<li>Large battles should stay legible without requiring squad-level unit grouping.</li>
+<li>The cap exists to keep pathfinding, selection, and AI behavior within a manageable RTS budget.</li>
+<li>Unit and building silhouettes, material and color separation, animation, and ground contact must remain distinguishable at the fixed isometric viewing distance.</li>
+<li>Building geometry must communicate footprint, construction state, ownership, connectivity, and functional state without relying on camera rotation.</li>
+<li>Terrain, shadows, and effects must not obscure unit selection, pathing affordances, or combat telegraphs.</li>
+</ul>
+<h3 id="deterministic-match-termination">Deterministic Match Termination <a class="anchor" href="#deterministic-match-termination" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Match end resolution must follow a deterministic state machine defined in <a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a>.</li>
+<li>Same-tick termination conflicts must use explicit priority ordering rather than network receive order.</li>
+<li>Draw outcomes are first-class results and must be represented consistently in UI, save data, and replay output.</li>
+</ul>
+<h3 id="disconnect-and-resume-requirements">Disconnect And Resume Requirements <a class="anchor" href="#disconnect-and-resume-requirements" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Multiplayer disconnect must pause simulation and open a reconnect grace window of at least 90 seconds.</li>
+<li>Entering reconnect grace must create a deterministic resume snapshot with stable content hashing.</li>
+<li>Reconnect timeout must resolve to deterministic forfeit for the disconnected player.</li>
+</ul>
+<h3 id="replay-audit-requirements">Replay Audit Requirements <a class="anchor" href="#replay-audit-requirements" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>End-state replay metadata must include termination cause, final tick, trigger event id(s), and same-tick priority trace.</li>
+<li>Disconnect and surrender timelines must be included in replay metadata for dispute/debug verification.</li>
+<li>Match termination ruleset version must be persisted with replay output.</li>
+</ul>
+<h3 id="deterministic-resource-interaction-requirements">Deterministic Resource Interaction Requirements <a class="anchor" href="#deterministic-resource-interaction-requirements" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Resource ownership transitions and tie-break behavior must follow <a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a>.</li>
+<li>Same-frame pickup conflicts must resolve from simulation state only, never network receive order.</li>
+<li>Carrier death vs deposit outcomes must use atomic resolution-tick checks to remain replay-consistent.</li>
+<li>Bank raid actions (steal/deny) and processing channels must use explicit timed interactions, not instant one-frame transfers.</li>
+</ul>
+<h3 id="deterministic-combat-requirements">Deterministic Combat Requirements <a class="anchor" href="#deterministic-combat-requirements" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Combat systems must follow the baseline contract in <a href="combat-spec.html"><a href="combat-spec.html">combat-spec.html</a></a>.</li>
+<li>Deterministic guarantees are required for damage outcomes, status duration/expiration, and aura application order.</li>
+<li>Combat readability constraints (including projectile visibility and effect telegraph distinction) are production requirements, not optional polish.</li>
+</ul>
+<h3 id="resource-audit-requirements">Resource Audit Requirements <a class="anchor" href="#resource-audit-requirements" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Replay and telemetry output must include the audit-grade resource event set defined in <a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a>.</li>
+<li>Event payloads must be sufficient to reconstruct ownership disputes and interruption causes without relying on client logs.</li>
+</ul>
+<h3 id="terrain-constraints">Terrain Constraints <a class="anchor" href="#terrain-constraints" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Water is impassable in the baseline rules.</li>
+<li>Impassable water should be used to create chokepoints and shape early map flow.</li>
+<li>Shoreline biomass events, including fish-like supply drops, are allowed as narrative map dressing and resource opportunities.</li>
+</ul>
+</section>
+<section aria-labelledby="production-implications">
+<h2 id="production-implications">Production Implications <a class="anchor" href="#production-implications" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Unit and building silhouettes, material/color coding, animation, and motion clarity must be strong enough to support dense 3D combat from the fixed isometric camera.</li>
+<li>Structure footprints and collision volumes must align with their visible 3D geometry so placement, adjacency projection, and walkability remain readable and deterministic.</li>
+<li>Pathfinding and combat AI should assume individual units, not squad containers.</li>
+<li>Match pacing and map size should be tuned around the 200 / 260 scale target rather than around mass-squad abstraction.</li>
+</ul>
+</section>
+<section aria-labelledby="related-design-documents">
+<h2 id="related-design-documents">Related Design Documents <a class="anchor" href="#related-design-documents" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><a href="design-doc.html"><a href="design-doc.html">design-doc.html</a></a></li>
+<li><a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a></li>
+<li><a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a></li>
+<li><a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a></li>
+<li><a href="tech-tree-operational-spec.html"><a href="tech-tree-operational-spec.html">tech-tree-operational-spec.html</a></a></li>
+<li><a href="combat-spec.html"><a href="combat-spec.html">combat-spec.html</a></a></li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

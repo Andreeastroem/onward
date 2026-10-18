@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Potential Factions - Onward</title>
+<meta name="description" content="Candidate ant factions, asymmetry directions, matchup intent, and exception candidates.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Potential Factions",
+  "description": "Candidate ant factions, asymmetry directions, matchup intent, and exception candidates.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "combat-spec.html",
+    "design-doc.html",
+    "economy-design.html",
+    "match-termination-spec.html",
+    "production-operations-spec.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "potential-factions",
+  "title": "Ant RTS Potential Factions",
+  "group": "Design",
+  "status": {
+    "key": "direction",
+    "label": "Design direction"
+  },
+  "references": [
+    "combat-spec",
+    "design-doc",
+    "economy-design",
+    "match-termination-spec",
+    "production-operations-spec",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [
+    "art-direction",
+    "index"
+  ],
+  "constants": {},
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "recommended-faction-set",
+      "title": "Recommended Faction Set",
+      "level": 2
+    },
+    {
+      "id": "shared-rules-and-asymmetry-budget",
+      "title": "Shared Rules And Asymmetry Budget",
+      "level": 2
+    },
+    {
+      "id": "faction-contracts",
+      "title": "Faction Contracts",
+      "level": 2
+    },
+    {
+      "id": "1-black-ants",
+      "title": "1) Black Ants",
+      "level": 2
+    },
+    {
+      "id": "2-fire-ants",
+      "title": "2) Fire Ants",
+      "level": 2
+    },
+    {
+      "id": "3-weaver-ants",
+      "title": "3) Weaver Ants",
+      "level": 2
+    },
+    {
+      "id": "4-army-ants",
+      "title": "4) Army Ants",
+      "level": 2
+    },
+    {
+      "id": "5-leafcutter-ants",
+      "title": "5) Leafcutter Ants",
+      "level": 2
+    },
+    {
+      "id": "6-trap-jaw-ants-primary-sixth",
+      "title": "6) Trap-jaw Ants (Primary Sixth)",
+      "level": 2
+    },
+    {
+      "id": "6b-honeypot-ants-alternate-sixth",
+      "title": "6B) Honeypot Ants (Alternate Sixth)",
+      "level": 2
+    },
+    {
+      "id": "interaction-matrix-behavioral-asymmetry",
+      "title": "Interaction Matrix (Behavioral Asymmetry)",
+      "level": 2
+    },
+    {
+      "id": "black-vs-fire",
+      "title": "Black vs Fire",
+      "level": 2
+    },
+    {
+      "id": "black-vs-weaver",
+      "title": "Black vs Weaver",
+      "level": 2
+    },
+    {
+      "id": "black-vs-army",
+      "title": "Black vs Army",
+      "level": 2
+    },
+    {
+      "id": "black-vs-leafcutter",
+      "title": "Black vs Leafcutter",
+      "level": 2
+    },
+    {
+      "id": "black-vs-trap-jaw",
+      "title": "Black vs Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "fire-vs-weaver",
+      "title": "Fire vs Weaver",
+      "level": 2
+    },
+    {
+      "id": "fire-vs-army",
+      "title": "Fire vs Army",
+      "level": 2
+    },
+    {
+      "id": "fire-vs-leafcutter",
+      "title": "Fire vs Leafcutter",
+      "level": 2
+    },
+    {
+      "id": "fire-vs-trap-jaw",
+      "title": "Fire vs Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "weaver-vs-army",
+      "title": "Weaver vs Army",
+      "level": 2
+    },
+    {
+      "id": "weaver-vs-leafcutter",
+      "title": "Weaver vs Leafcutter",
+      "level": 2
+    },
+    {
+      "id": "weaver-vs-trap-jaw",
+      "title": "Weaver vs Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "army-vs-leafcutter",
+      "title": "Army vs Leafcutter",
+      "level": 2
+    },
+    {
+      "id": "army-vs-trap-jaw",
+      "title": "Army vs Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "leafcutter-vs-trap-jaw",
+      "title": "Leafcutter vs Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "productionconnectivity-exception-candidates",
+      "title": "Production/Connectivity Exception Candidates",
+      "level": 2
+    },
+    {
+      "id": "black",
+      "title": "Black",
+      "level": 2
+    },
+    {
+      "id": "fire",
+      "title": "Fire",
+      "level": 2
+    },
+    {
+      "id": "weaver",
+      "title": "Weaver",
+      "level": 2
+    },
+    {
+      "id": "army",
+      "title": "Army",
+      "level": 2
+    },
+    {
+      "id": "leafcutter",
+      "title": "Leafcutter",
+      "level": 2
+    },
+    {
+      "id": "trap-jaw",
+      "title": "Trap-jaw",
+      "level": 2
+    },
+    {
+      "id": "honeypot-alternate",
+      "title": "Honeypot (alternate)",
+      "level": 2
+    },
+    {
+      "id": "suggested-implementation-order",
+      "title": "Suggested Implementation Order",
+      "level": 2
+    },
+    {
+      "id": "open-design-questions",
+      "title": "Open Design Questions",
+      "level": 2
+    },
+    {
+      "id": "success-criteria-for-asymmetry",
+      "title": "Success Criteria For Asymmetry",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html" aria-current="page">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#recommended-faction-set">Recommended Faction Set</a>
+<ul>
+<li><a href="#core-5-recommended">Core 5 (recommended)</a></li>
+<li><a href="#sixth-slot-recommended-timing-after-core-5-is-stable">Sixth slot (recommended timing: after core 5 is stable)</a></li>
+</ul></li>
+<li><a href="#shared-rules-and-asymmetry-budget">Shared Rules And Asymmetry Budget</a>
+<ul>
+<li><a href="#shared-non-negotiables">Shared non-negotiables</a></li>
+<li><a href="#asymmetry-budget">Asymmetry budget</a></li>
+</ul></li>
+<li><a href="#faction-contracts">Faction Contracts</a>
+</li>
+<li><a href="#1-black-ants">1) Black Ants</a>
+<ul>
+<li><a href="#identity">Identity</a></li>
+<li><a href="#macro-hook">Macro hook</a></li>
+<li><a href="#play-pattern">Play pattern</a></li>
+<li><a href="#strengths">Strengths</a></li>
+<li><a href="#weaknesses">Weaknesses</a></li>
+<li><a href="#counterplay-windows">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive">First 8-minute strategic incentive</a></li>
+<li><a href="#black-ant-faction-expression">Black Ant faction expression</a></li>
+</ul></li>
+<li><a href="#2-fire-ants">2) Fire Ants</a>
+<ul>
+<li><a href="#identity-2">Identity</a></li>
+<li><a href="#macro-hook-2">Macro hook</a></li>
+<li><a href="#play-pattern-2">Play pattern</a></li>
+<li><a href="#strengths-2">Strengths</a></li>
+<li><a href="#weaknesses-2">Weaknesses</a></li>
+<li><a href="#counterplay-windows-2">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-2">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#3-weaver-ants">3) Weaver Ants</a>
+<ul>
+<li><a href="#identity-3">Identity</a></li>
+<li><a href="#macro-hook-3">Macro hook</a></li>
+<li><a href="#play-pattern-3">Play pattern</a></li>
+<li><a href="#strengths-3">Strengths</a></li>
+<li><a href="#weaknesses-3">Weaknesses</a></li>
+<li><a href="#counterplay-windows-3">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-3">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#4-army-ants">4) Army Ants</a>
+<ul>
+<li><a href="#identity-4">Identity</a></li>
+<li><a href="#macro-hook-4">Macro hook</a></li>
+<li><a href="#play-pattern-4">Play pattern</a></li>
+<li><a href="#strengths-4">Strengths</a></li>
+<li><a href="#weaknesses-4">Weaknesses</a></li>
+<li><a href="#counterplay-windows-4">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-4">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#5-leafcutter-ants">5) Leafcutter Ants</a>
+<ul>
+<li><a href="#identity-5">Identity</a></li>
+<li><a href="#macro-hook-5">Macro hook</a></li>
+<li><a href="#play-pattern-5">Play pattern</a></li>
+<li><a href="#strengths-5">Strengths</a></li>
+<li><a href="#weaknesses-5">Weaknesses</a></li>
+<li><a href="#counterplay-windows-5">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-5">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#6-trap-jaw-ants-primary-sixth">6) Trap-jaw Ants (Primary Sixth)</a>
+<ul>
+<li><a href="#identity-6">Identity</a></li>
+<li><a href="#macro-hook-6">Macro hook</a></li>
+<li><a href="#play-pattern-6">Play pattern</a></li>
+<li><a href="#strengths-6">Strengths</a></li>
+<li><a href="#weaknesses-6">Weaknesses</a></li>
+<li><a href="#counterplay-windows-6">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-6">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#6b-honeypot-ants-alternate-sixth">6B) Honeypot Ants (Alternate Sixth)</a>
+<ul>
+<li><a href="#identity-7">Identity</a></li>
+<li><a href="#macro-hook-7">Macro hook</a></li>
+<li><a href="#play-pattern-7">Play pattern</a></li>
+<li><a href="#strengths-7">Strengths</a></li>
+<li><a href="#weaknesses-7">Weaknesses</a></li>
+<li><a href="#counterplay-windows-7">Counterplay windows</a></li>
+<li><a href="#first-8-minute-strategic-incentive-7">First 8-minute strategic incentive</a></li>
+</ul></li>
+<li><a href="#interaction-matrix-behavioral-asymmetry">Interaction Matrix (Behavioral Asymmetry)</a>
+</li>
+<li><a href="#black-vs-fire">Black vs Fire</a>
+</li>
+<li><a href="#black-vs-weaver">Black vs Weaver</a>
+</li>
+<li><a href="#black-vs-army">Black vs Army</a>
+</li>
+<li><a href="#black-vs-leafcutter">Black vs Leafcutter</a>
+</li>
+<li><a href="#black-vs-trap-jaw">Black vs Trap-jaw</a>
+</li>
+<li><a href="#fire-vs-weaver">Fire vs Weaver</a>
+</li>
+<li><a href="#fire-vs-army">Fire vs Army</a>
+</li>
+<li><a href="#fire-vs-leafcutter">Fire vs Leafcutter</a>
+</li>
+<li><a href="#fire-vs-trap-jaw">Fire vs Trap-jaw</a>
+</li>
+<li><a href="#weaver-vs-army">Weaver vs Army</a>
+</li>
+<li><a href="#weaver-vs-leafcutter">Weaver vs Leafcutter</a>
+</li>
+<li><a href="#weaver-vs-trap-jaw">Weaver vs Trap-jaw</a>
+</li>
+<li><a href="#army-vs-leafcutter">Army vs Leafcutter</a>
+</li>
+<li><a href="#army-vs-trap-jaw">Army vs Trap-jaw</a>
+</li>
+<li><a href="#leafcutter-vs-trap-jaw">Leafcutter vs Trap-jaw</a>
+</li>
+<li><a href="#productionconnectivity-exception-candidates">Production/Connectivity Exception Candidates</a>
+</li>
+<li><a href="#black">Black</a>
+</li>
+<li><a href="#fire">Fire</a>
+</li>
+<li><a href="#weaver">Weaver</a>
+</li>
+<li><a href="#army">Army</a>
+</li>
+<li><a href="#leafcutter">Leafcutter</a>
+</li>
+<li><a href="#trap-jaw">Trap-jaw</a>
+</li>
+<li><a href="#honeypot-alternate">Honeypot (alternate)</a>
+</li>
+<li><a href="#suggested-implementation-order">Suggested Implementation Order</a>
+</li>
+<li><a href="#open-design-questions">Open Design Questions</a>
+</li>
+<li><a href="#success-criteria-for-asymmetry">Success Criteria For Asymmetry</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-potential-factions">Ant RTS Potential Factions</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="direction">Design direction</span></dd><dt>Area</dt><dd>Design</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define a comprehensive faction direction using ant species identity, with explicit asymmetry in:</p>
+<ul>
+<li>Logistics and supply-line behavior.</li>
+<li>Resource conversion and bank pressure.</li>
+<li>Map-shape interaction and traversal.</li>
+<li>Production/connectivity exception hooks.</li>
+<li>Counterplay readability under high-unit-density RTS conditions.</li>
+</ul>
+<p>This document assumes and extends the locked v0 system contracts in:</p>
+<ul>
+<li><a href="design-doc.html"><code>design-doc.html</code></a></li>
+<li><a href="combat-spec.html"><code>combat-spec.html</code></a></li>
+<li><a href="economy-design.html"><code>economy-design.html</code></a></li>
+<li><a href="resource-ownership-spec.html"><code>resource-ownership-spec.html</code></a></li>
+<li><a href="production-operations-spec.html"><code>production-operations-spec.html</code></a></li>
+<li><a href="tech-tree-operational-spec.html"><code>tech-tree-operational-spec.html</code></a></li>
+<li><a href="match-termination-spec.html"><code>match-termination-spec.html</code></a></li>
+<li><a href="technical-requirements.html"><code>technical-requirements.html</code></a></li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="recommended-faction-set">
+<h2 id="recommended-faction-set">Recommended Faction Set <a class="anchor" href="#recommended-faction-set" aria-label="Link to this section">#</a></h2>
+<h3 id="core-5-recommended">Core 5 (recommended) <a class="anchor" href="#core-5-recommended" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Black Ants (baseline logistics-control)</li>
+<li>Fire Ants (tempo swarm pressure)</li>
+<li>Weaver Ants (mobility and route-shape manipulation)</li>
+<li>Army Ants (forward pressure, low-stability macro)</li>
+<li>Leafcutter Ants (industrial throughput and large-corpse economy)</li>
+</ol>
+<h3 id="sixth-slot-recommended-timing-after-core-5-is-stable">Sixth slot (recommended timing: after core 5 is stable) <a class="anchor" href="#sixth-slot-recommended-timing-after-core-5-is-stable" aria-label="Link to this section">#</a></h3>
+<p>Primary sixth:</p>
+<ul>
+<li>Trap-jaw Ants (precision interception and logistics denial)</li>
+</ul>
+<p>Alternate sixth (if a defensive macro faction is preferred):</p>
+<ul>
+<li>Honeypot Ants (storage resilience and delayed-income stability)</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="shared-rules-and-asymmetry-budget">
+<h2 id="shared-rules-and-asymmetry-budget">Shared Rules And Asymmetry Budget <a class="anchor" href="#shared-rules-and-asymmetry-budget" aria-label="Link to this section">#</a></h2>
+<h3 id="shared-non-negotiables">Shared non-negotiables <a class="anchor" href="#shared-non-negotiables" aria-label="Link to this section">#</a></h3>
+<p>All factions obey the baseline rule set:</p>
+<ul>
+<li>One spendable strategic resource: biomass.</li>
+<li>Core-credit authority (banked biomass is not spendable until core deposit).</li>
+<li>Single-queue deterministic production sources.</li>
+<li>Soft-counter-first combat model with deterministic outcomes.</li>
+<li>Impassable water chokepoints in baseline map rules.</li>
+<li>Mandatory role-family coverage: Worker, Warrior, Air, Anti-air, Behemoth.</li>
+</ul>
+<h3 id="asymmetry-budget">Asymmetry budget <a class="anchor" href="#asymmetry-budget" aria-label="Link to this section">#</a></h3>
+<p>Each faction should vary mainly on:</p>
+<ul>
+<li>One macro hook (economy/logistics/production/connectivity behavior).</li>
+<li>Route-shape strengths and weaknesses.</li>
+<li>Unit role mapping and tactical profile.</li>
+<li>A limited set of explicit faction exceptions in production/connectivity.</li>
+</ul>
+<p>Avoid full-ruleset divergence. Keep faction readability high and onboarding clear.</p>
+<hr />
+</section>
+<section aria-labelledby="faction-contracts">
+<h2 id="faction-contracts">Faction Contracts <a class="anchor" href="#faction-contracts" aria-label="Link to this section">#</a></h2>
+</section>
+<section aria-labelledby="1-black-ants">
+<h2 id="1-black-ants">1) Black Ants <a class="anchor" href="#1-black-ants" aria-label="Link to this section">#</a></h2>
+<h3 id="identity">Identity <a class="anchor" href="#identity" aria-label="Link to this section">#</a></h3>
+<p>Reliable territorial logistics faction. Converts defended fights into stable economy gains.</p>
+<h3 id="macro-hook">Macro hook <a class="anchor" href="#macro-hook" aria-label="Link to this section">#</a></h3>
+<p>Route efficiency, connected infrastructure reliability, and corridor-based logistics bonuses.</p>
+<h3 id="play-pattern">Play pattern <a class="anchor" href="#play-pattern" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Build defensible mid-length route networks.</li>
+<li>Stabilize banks and bank-to-core transfer reliability.</li>
+<li>Win by maintaining consistent reclaim conversion over time.</li>
+</ul>
+<h3 id="strengths">Strengths <a class="anchor" href="#strengths" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Strong core-to-frontline logistics discipline.</li>
+<li>Good defensive posture around banks/chokepoints.</li>
+<li>High conversion rate from won or neutralized engagements.</li>
+</ul>
+<h3 id="weaknesses">Weaknesses <a class="anchor" href="#weaknesses" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Predictable route architecture.</li>
+<li>Lower ability to bypass map geometry compared with mobility factions.</li>
+<li>Can be overtaxed by many simultaneous side threats.</li>
+</ul>
+<h3 id="counterplay-windows">Counterplay windows <a class="anchor" href="#counterplay-windows" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Break route continuity in multiple lanes.</li>
+<li>Force rapid map reorientation (multi-prong harassment).</li>
+<li>Avoid prolonged direct efficiency fights on Black-controlled ground.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive" aria-label="Link to this section">#</a></h3>
+<p>Secure map-near carcass routes, establish one safe pass-through bank lane, and force fights near own logistics cover.</p>
+<h3 id="black-ant-faction-expression">Black Ant faction expression <a class="anchor" href="#black-ant-faction-expression" aria-label="Link to this section">#</a></h3>
+<p>Black Ant bonuses should amplify the player's logistics setup, not automate it. The faction should still require the player to choose routes, assign escorts, and decide when to risk longer transfers.</p>
+<p>Recommended faction-facing bonuses:</p>
+<ul>
+<li>Connected Route Bonus: biomass carriers gain a modest movement speed bonus and carry-capacity bonus while traveling through a fully connected Black logistics network.</li>
+<li>Assigned Escort Bonus: units manually assigned to guard a carrier, bank, or logistics structure gain a small damage bonus and a small armor bonus while in that escort role.</li>
+<li>Home-Ground Conversion Bonus: harvest, pickup, and handoff interactions complete faster near friendly Black logistics structures, improving practical gather rate without changing combat tempo.</li>
+<li>Corridor Efficiency: banks, relays, and core-linked logistics structures provide slightly faster transfer and withdrawal throughput when they remain part of a continuous connected corridor.</li>
+</ul>
+<p>Design intent:</p>
+<ul>
+<li>No automatic rerouting.</li>
+<li>No automatic retreat.</li>
+<li>No automatic escort assignment.</li>
+<li>The faction rewards good setup and disciplined player orders, rather than replacing them.</li>
+</ul>
+<p>This keeps the faction snappy in combat while making the economy and convoy game feel more efficient only when the player has built and defended the right network.</p>
+<hr />
+</section>
+<section aria-labelledby="2-fire-ants">
+<h2 id="2-fire-ants">2) Fire Ants <a class="anchor" href="#2-fire-ants" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-2">Identity <a class="anchor" href="#identity-2" aria-label="Link to this section">#</a></h3>
+<p>High-tempo pressure faction that thrives on frequent skirmish conversion and front-loaded momentum.</p>
+<h3 id="macro-hook-2">Macro hook <a class="anchor" href="#macro-hook-2" aria-label="Link to this section">#</a></h3>
+<p>Tempo conversion: quick pressure into immediate pickup/deny/raid opportunities.</p>
+<h3 id="play-pattern-2">Play pattern <a class="anchor" href="#play-pattern-2" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Force repeated early contacts.</li>
+<li>Convert short windows into biomass denial and bank harassment.</li>
+<li>Maintain initiative through sustained movement pressure.</li>
+</ul>
+<h3 id="strengths-2">Strengths <a class="anchor" href="#strengths-2" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Strong early swarm and surround potential.</li>
+<li>Fast local conversion after tactical wins.</li>
+<li>Excellent at destabilizing under-defended routes.</li>
+</ul>
+<h3 id="weaknesses-2">Weaknesses <a class="anchor" href="#weaknesses-2" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Less efficient at long-haul logistics.</li>
+<li>Worse scaling if forced into slow macro-only states.</li>
+<li>Vulnerable to disciplined defensive attrition if momentum stalls.</li>
+</ul>
+<h3 id="counterplay-windows-2">Counterplay windows <a class="anchor" href="#counterplay-windows-2" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Shorten fronts and deny free surrounds.</li>
+<li>Force Fire into longer transfer distances and escort tax.</li>
+<li>Trade defensively around protected banks and punish overextension.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-2">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-2" aria-label="Link to this section">#</a></h3>
+<p>Open with map pressure and rapid skirmish cadence, delay enemy banking infrastructure, and keep all lanes tactically hot.</p>
+<hr />
+</section>
+<section aria-labelledby="3-weaver-ants">
+<h2 id="3-weaver-ants">3) Weaver Ants <a class="anchor" href="#3-weaver-ants" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-3">Identity <a class="anchor" href="#identity-3" aria-label="Link to this section">#</a></h3>
+<p>Map-geometry manipulation faction that wins by route-shape advantage rather than frontal force.</p>
+<h3 id="macro-hook-3">Macro hook <a class="anchor" href="#macro-hook-3" aria-label="Link to this section">#</a></h3>
+<p>Traversal/control via networked mobility infrastructure and route-bypass options.</p>
+<h3 id="play-pattern-3">Play pattern <a class="anchor" href="#play-pattern-3" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Re-shape movement lanes to create off-angle pressure.</li>
+<li>Attack route geometry and reinforcement timing.</li>
+<li>Prefer distributed pressure over central slugging.</li>
+</ul>
+<h3 id="strengths-3">Strengths <a class="anchor" href="#strengths-3" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>High route flexibility and flank access.</li>
+<li>Strong side-lane harassment and redeploy speed.</li>
+<li>Good at creating asymmetric engagements.</li>
+</ul>
+<h3 id="weaknesses-3">Weaknesses <a class="anchor" href="#weaknesses-3" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Lower frontal siege reliability.</li>
+<li>Reduced performance in forced direct sustain fights.</li>
+<li>Can underperform if the opponent compresses the map effectively.</li>
+</ul>
+<h3 id="counterplay-windows-3">Counterplay windows <a class="anchor" href="#counterplay-windows-3" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Collapse fronts into constrained high-commitment engagements.</li>
+<li>Deny route-construction opportunities near critical lanes.</li>
+<li>Force Weaver into direct, symmetric trades.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-3">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-3" aria-label="Link to this section">#</a></h3>
+<p>Secure traversal options early, contest route edges, and convert mobility advantage into repeated bank-line disruptions.</p>
+<hr />
+</section>
+<section aria-labelledby="4-army-ants">
+<h2 id="4-army-ants">4) Army Ants <a class="anchor" href="#4-army-ants" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-4">Identity <a class="anchor" href="#identity-4" aria-label="Link to this section">#</a></h3>
+<p>Forward-pressure destabilization faction. Trades stability for persistent offensive presence.</p>
+<h3 id="macro-hook-4">Macro hook <a class="anchor" href="#macro-hook-4" aria-label="Link to this section">#</a></h3>
+<p>Low dependence on stable static infrastructure; stronger field pressure posture.</p>
+<h3 id="play-pattern-4">Play pattern <a class="anchor" href="#play-pattern-4" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Operate aggressively in enemy half-map.</li>
+<li>Sustain pressure through repeated forward engagements.</li>
+<li>Convert map disorder into economic and positional advantage.</li>
+</ul>
+<h3 id="strengths-4">Strengths <a class="anchor" href="#strengths-4" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Strong distributed pressure and proxy threat.</li>
+<li>Effective at keeping opponents in emergency-defense loops.</li>
+<li>Good at exploiting disconnected map states.</li>
+</ul>
+<h3 id="weaknesses-4">Weaknesses <a class="anchor" href="#weaknesses-4" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Weaker static defense and long-game stability.</li>
+<li>Punishable if pressure cadence drops.</li>
+<li>Higher strategic risk profile if early/mid commitments fail.</li>
+</ul>
+<h3 id="counterplay-windows-4">Counterplay windows <a class="anchor" href="#counterplay-windows-4" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Weather first pressure cycle, then reclaim map structure.</li>
+<li>Punish over-forward rally positions and unsupported pushes.</li>
+<li>Force longer engagements where stability outvalues chaos.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-4">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-4" aria-label="Link to this section">#</a></h3>
+<p>Deny enemy setup time, contest expansions before completion, and maintain multi-lane threat so no lane fully stabilizes.</p>
+<hr />
+</section>
+<section aria-labelledby="5-leafcutter-ants">
+<h2 id="5-leafcutter-ants">5) Leafcutter Ants <a class="anchor" href="#5-leafcutter-ants" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-5">Identity <a class="anchor" href="#identity-5" aria-label="Link to this section">#</a></h3>
+<p>Industrial throughput faction focused on heavy conversion and protected macro scaling.</p>
+<h3 id="macro-hook-5">Macro hook <a class="anchor" href="#macro-hook-5" aria-label="Link to this section">#</a></h3>
+<p>Superior medium/large corpse handling and processing throughput.</p>
+<h3 id="play-pattern-5">Play pattern <a class="anchor" href="#play-pattern-5" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Prioritize high-value objective fights and large biomass opportunities.</li>
+<li>Build protected processing and transfer lanes.</li>
+<li>Outscale through superior conversion of high-mass resource events.</li>
+</ul>
+<h3 id="strengths-5">Strengths <a class="anchor" href="#strengths-5" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Excellent value extraction from medium/large corpse classes.</li>
+<li>Stronger macro payoffs from defended objective control.</li>
+<li>Robust mid/late economy if route integrity is maintained.</li>
+</ul>
+<h3 id="weaknesses-5">Weaknesses <a class="anchor" href="#weaknesses-5" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Slower early tempo.</li>
+<li>Vulnerable to sustained early raid pressure.</li>
+<li>High dependence on defended logistics depth.</li>
+</ul>
+<h3 id="counterplay-windows-5">Counterplay windows <a class="anchor" href="#counterplay-windows-5" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Deny setup and route hardening before throughput engine forms.</li>
+<li>Split pressure across processing lanes to overload defense.</li>
+<li>Force many small fights instead of fewer large-payoff contests.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-5">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-5" aria-label="Link to this section">#</a></h3>
+<p>Stabilize safely, secure one reliable large-corpse conversion lane, and avoid early spiral losses from repeated route interruption.</p>
+<hr />
+</section>
+<section aria-labelledby="6-trap-jaw-ants-primary-sixth">
+<h2 id="6-trap-jaw-ants-primary-sixth">6) Trap-jaw Ants (Primary Sixth) <a class="anchor" href="#6-trap-jaw-ants-primary-sixth" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-6">Identity <a class="anchor" href="#identity-6" aria-label="Link to this section">#</a></h3>
+<p>Precision interception faction that weaponizes narrow punish windows.</p>
+<h3 id="macro-hook-6">Macro hook <a class="anchor" href="#macro-hook-6" aria-label="Link to this section">#</a></h3>
+<p>Carrier interception, channel interruption, and chokepoint punishment.</p>
+<h3 id="play-pattern-6">Play pattern <a class="anchor" href="#play-pattern-6" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Hunt transport and processing vulnerabilities.</li>
+<li>Deny/interrupt high-value transfers.</li>
+<li>Convert picks into cascading route instability.</li>
+</ul>
+<h3 id="strengths-6">Strengths <a class="anchor" href="#strengths-6" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>High-value target elimination and disruption pressure.</li>
+<li>Strong chokepoint control through ambush threat.</li>
+<li>Excellent at punishing overextension and exposed logistics.</li>
+</ul>
+<h3 id="weaknesses-6">Weaknesses <a class="anchor" href="#weaknesses-6" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Lower efficiency in broad sustained army trades.</li>
+<li>Weaker direct siege identity.</li>
+<li>Requires precision and map-reading to peak.</li>
+</ul>
+<h3 id="counterplay-windows-6">Counterplay windows <a class="anchor" href="#counterplay-windows-6" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Increase escort density and route redundancy.</li>
+<li>Avoid predictable single-path convoy movement.</li>
+<li>Force wide-front engagements where precision pick tools dilute.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-6">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-6" aria-label="Link to this section">#</a></h3>
+<p>Scout transfer timings, establish ambush control on key lane intersections, and repeatedly tax enemy transport flow.</p>
+<hr />
+</section>
+<section aria-labelledby="6b-honeypot-ants-alternate-sixth">
+<h2 id="6b-honeypot-ants-alternate-sixth">6B) Honeypot Ants (Alternate Sixth) <a class="anchor" href="#6b-honeypot-ants-alternate-sixth" aria-label="Link to this section">#</a></h2>
+<h3 id="identity-7">Identity <a class="anchor" href="#identity-7" aria-label="Link to this section">#</a></h3>
+<p>Defensive resilience faction focused on storage stability and raid tolerance.</p>
+<h3 id="macro-hook-7">Macro hook <a class="anchor" href="#macro-hook-7" aria-label="Link to this section">#</a></h3>
+<p>Improved storage resilience and delayed-income stabilization.</p>
+<h3 id="play-pattern-7">Play pattern <a class="anchor" href="#play-pattern-7" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Absorb harassment without total flow collapse.</li>
+<li>Gradually outlast high-variance raid factions.</li>
+<li>Prefer structured defensive macro progression.</li>
+</ul>
+<h3 id="strengths-7">Strengths <a class="anchor" href="#strengths-7" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Better tolerance to small or repeated raids.</li>
+<li>Higher economy stability under attrition pressure.</li>
+<li>Strong in controlled, prolonged map states.</li>
+</ul>
+<h3 id="weaknesses-7">Weaknesses <a class="anchor" href="#weaknesses-7" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Lower initiative and tempo.</li>
+<li>Reduced map reach and slower punishment profile.</li>
+<li>Can be outmaneuvered by geometry/mobility factions.</li>
+</ul>
+<h3 id="counterplay-windows-7">Counterplay windows <a class="anchor" href="#counterplay-windows-7" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Force rapid multi-lane tactical pivots.</li>
+<li>Deny map space before defensive lattice forms.</li>
+<li>Keep pressure mobile instead of committing to static sieges.</li>
+</ul>
+<h3 id="first-8-minute-strategic-incentive-7">First 8-minute strategic incentive <a class="anchor" href="#first-8-minute-strategic-incentive-7" aria-label="Link to this section">#</a></h3>
+<p>Establish resilient storage-transfer posture, prevent early snowball damage, and aim for controlled midgame stability.</p>
+<hr />
+</section>
+<section aria-labelledby="interaction-matrix-behavioral-asymmetry">
+<h2 id="interaction-matrix-behavioral-asymmetry">Interaction Matrix (Behavioral Asymmetry) <a class="anchor" href="#interaction-matrix-behavioral-asymmetry" aria-label="Link to this section">#</a></h2>
+<p>These matchup notes describe strategic behavior differences, not balance outcomes.</p>
+</section>
+<section aria-labelledby="black-vs-fire">
+<h2 id="black-vs-fire">Black vs Fire <a class="anchor" href="#black-vs-fire" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Fire seeks early tempo, route disruption, and frequent contact.</li>
+<li>Black seeks stable lanes and efficient reclaim conversion.</li>
+<li>Black is advantaged if early chaos is contained.</li>
+<li>Fire is advantaged if map stability is prevented.</li>
+</ul>
+</section>
+<section aria-labelledby="black-vs-weaver">
+<h2 id="black-vs-weaver">Black vs Weaver <a class="anchor" href="#black-vs-weaver" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Weaver attacks route shape and reinforcement geometry.</li>
+<li>Black defends linear reliability and positional control.</li>
+<li>Black wins by compressing fronts into direct trades.</li>
+<li>Weaver wins by forcing constant reorientation.</li>
+</ul>
+</section>
+<section aria-labelledby="black-vs-army">
+<h2 id="black-vs-army">Black vs Army <a class="anchor" href="#black-vs-army" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Army pressures setup windows and route completion.</li>
+<li>Black seeks to survive first pressure cycles then stabilize.</li>
+<li>Black wins if it restores structured lane integrity.</li>
+<li>Army wins if it keeps the map in persistent disorder.</li>
+</ul>
+</section>
+<section aria-labelledby="black-vs-leafcutter">
+<h2 id="black-vs-leafcutter">Black vs Leafcutter <a class="anchor" href="#black-vs-leafcutter" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Black prefers repeated efficient skirmish reclaim.</li>
+<li>Leafcutter prefers fewer high-mass payoff battles.</li>
+<li>Black wins by fragmenting engagements and denying large conversions.</li>
+<li>Leafcutter wins by securing objective-scale transfers.</li>
+</ul>
+</section>
+<section aria-labelledby="black-vs-trap-jaw">
+<h2 id="black-vs-trap-jaw">Black vs Trap-jaw <a class="anchor" href="#black-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Trap-jaw seeks picks and transfer interruptions.</li>
+<li>Black seeks escort discipline and lane redundancy.</li>
+<li>Black wins by reducing high-value intercept windows.</li>
+<li>Trap-jaw wins by repeatedly taxing flow efficiency.</li>
+</ul>
+</section>
+<section aria-labelledby="fire-vs-weaver">
+<h2 id="fire-vs-weaver">Fire vs Weaver <a class="anchor" href="#fire-vs-weaver" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Fire wants broad direct contact and tempo snowball.</li>
+<li>Weaver wants off-angle pressure and selective fights.</li>
+<li>Fire wins if it repeatedly forces symmetric engagements.</li>
+<li>Weaver wins if it dictates where fights can occur.</li>
+</ul>
+</section>
+<section aria-labelledby="fire-vs-army">
+<h2 id="fire-vs-army">Fire vs Army <a class="anchor" href="#fire-vs-army" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Both favor tempo, but through different vectors.</li>
+<li>Fire spikes harder in immediate swarms.</li>
+<li>Army sustains broader multi-lane disruption.</li>
+<li>Winner is typically whoever better converts pressure into lasting logistics damage.</li>
+</ul>
+</section>
+<section aria-labelledby="fire-vs-leafcutter">
+<h2 id="fire-vs-leafcutter">Fire vs Leafcutter <a class="anchor" href="#fire-vs-leafcutter" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Fire aims to deny setup and processing safety.</li>
+<li>Leafcutter aims to survive early disruption and outscale.</li>
+<li>Fire wins when it prevents stable throughput formation.</li>
+<li>Leafcutter wins after defended heavy-conversion windows.</li>
+</ul>
+</section>
+<section aria-labelledby="fire-vs-trap-jaw">
+<h2 id="fire-vs-trap-jaw">Fire vs Trap-jaw <a class="anchor" href="#fire-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Trap-jaw punishes overcommit and exposed route tails.</li>
+<li>Fire tries to saturate with too many simultaneous threats.</li>
+<li>Fire wins in wide chaotic fronts.</li>
+<li>Trap-jaw wins when fights fragment into pick scenarios.</li>
+</ul>
+</section>
+<section aria-labelledby="weaver-vs-army">
+<h2 id="weaver-vs-army">Weaver vs Army <a class="anchor" href="#weaver-vs-army" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Weaver pressures geometry and timing windows.</li>
+<li>Army pressures presence and persistence.</li>
+<li>Weaver wins with selective cuts and map shaping.</li>
+<li>Army wins by overwhelming with simultaneous threat density.</li>
+</ul>
+</section>
+<section aria-labelledby="weaver-vs-leafcutter">
+<h2 id="weaver-vs-leafcutter">Weaver vs Leafcutter <a class="anchor" href="#weaver-vs-leafcutter" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Weaver attacks long processing and transfer chains.</li>
+<li>Leafcutter defends for high-value conversion moments.</li>
+<li>Weaver wins by denying route consistency.</li>
+<li>Leafcutter wins by anchoring objective zones and forcing value fights.</li>
+</ul>
+</section>
+<section aria-labelledby="weaver-vs-trap-jaw">
+<h2 id="weaver-vs-trap-jaw">Weaver vs Trap-jaw <a class="anchor" href="#weaver-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Trap-jaw controls narrow punish zones.</li>
+<li>Weaver avoids predictable movement signatures.</li>
+<li>Trap-jaw wins if chokepoints become mandatory transit.</li>
+<li>Weaver wins if route optionality remains high.</li>
+</ul>
+</section>
+<section aria-labelledby="army-vs-leafcutter">
+<h2 id="army-vs-leafcutter">Army vs Leafcutter <a class="anchor" href="#army-vs-leafcutter" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Army wants permanent instability and no setup windows.</li>
+<li>Leafcutter wants one or two stabilized conversion cycles.</li>
+<li>Army wins if tempo remains permanently high.</li>
+<li>Leafcutter wins if midgame route structure is secured.</li>
+</ul>
+</section>
+<section aria-labelledby="army-vs-trap-jaw">
+<h2 id="army-vs-trap-jaw">Army vs Trap-jaw <a class="anchor" href="#army-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Army applies simultaneous pressure in many locations.</li>
+<li>Trap-jaw removes key links and punishable overextensions.</li>
+<li>Army wins via saturation.</li>
+<li>Trap-jaw wins via precision attrition on pressure logistics.</li>
+</ul>
+</section>
+<section aria-labelledby="leafcutter-vs-trap-jaw">
+<h2 id="leafcutter-vs-trap-jaw">Leafcutter vs Trap-jaw <a class="anchor" href="#leafcutter-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Leafcutter field value is concentrated in larger escorted transfers.</li>
+<li>Trap-jaw seeks to break those transfers before conversion.</li>
+<li>Leafcutter wins with robust escort and lane depth.</li>
+<li>Trap-jaw wins with repeated interception and channel denial.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="productionconnectivity-exception-candidates">
+<h2 id="productionconnectivity-exception-candidates">Production/Connectivity Exception Candidates <a class="anchor" href="#productionconnectivity-exception-candidates" aria-label="Link to this section">#</a></h2>
+<p>Use these as initial faction-exception directions against the shared baseline.</p>
+</section>
+<section aria-labelledby="black">
+<h2 id="black">Black <a class="anchor" href="#black" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Connectivity: strict baseline (disconnect significantly degrades function).</li>
+<li>Production: no major queue rule changes; reliability-focused defaults.</li>
+</ul>
+</section>
+<section aria-labelledby="fire">
+<h2 id="fire">Fire <a class="anchor" href="#fire" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Construction: stronger early pressure-friendly build cadence on select military structures, balanced by escalating surcharge sensitivity.</li>
+<li>Connectivity: mostly baseline.</li>
+</ul>
+</section>
+<section aria-labelledby="weaver">
+<h2 id="weaver">Weaver <a class="anchor" href="#weaver" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Placement: expanded projection behavior tied to traversal-network structures.</li>
+<li>Connectivity: partial function on select peripheral structures if network condition is met.</li>
+</ul>
+</section>
+<section aria-labelledby="army">
+<h2 id="army">Army <a class="anchor" href="#army" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Connectivity: targeted partial functionality while disconnected for specific forward classes.</li>
+<li>Production topology: more operational flexibility in forward pressure lanes.</li>
+</ul>
+</section>
+<section aria-labelledby="leafcutter">
+<h2 id="leafcutter">Leafcutter <a class="anchor" href="#leafcutter" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Construction: throughput-oriented economy/processing build incentives; vulnerable if interrupted mid-ramp.</li>
+<li>Connectivity: baseline or stricter on industrial chain integrity.</li>
+</ul>
+</section>
+<section aria-labelledby="trap-jaw">
+<h2 id="trap-jaw">Trap-jaw <a class="anchor" href="#trap-jaw" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Production: limited exception enabling faster deployment of interception specialists, with tradeoffs in broad-line throughput.</li>
+<li>Connectivity: baseline.</li>
+</ul>
+</section>
+<section aria-labelledby="honeypot-alternate">
+<h2 id="honeypot-alternate">Honeypot (alternate) <a class="anchor" href="#honeypot-alternate" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Bank/storage behavior: resilience-oriented raid interaction profile.</li>
+<li>Connectivity: strong dependence on defended structure network.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="suggested-implementation-order">
+<h2 id="suggested-implementation-order">Suggested Implementation Order <a class="anchor" href="#suggested-implementation-order" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Lock core 5 faction contracts (Black, Fire, Weaver, Army, Leafcutter).</li>
+<li>Prototype 5-faction role matrices with shared baseline tech skeleton.</li>
+<li>Validate early/mid timing windows and route-pressure signatures per faction.</li>
+<li>Add Trap-jaw as sixth once raid/intercept readability is proven stable.</li>
+<li>Keep Honeypot as alternate sixth if testing shows need for a defensive macro archetype.</li>
+</ol>
+<hr />
+</section>
+<section aria-labelledby="open-design-questions">
+<h2 id="open-design-questions">Open Design Questions <a class="anchor" href="#open-design-questions" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Which exact faction gets the strongest connectivity exception budget without reducing clarity?</li>
+<li>Should Army and Weaver both have connectivity exceptions, or should one rely only on mobility and topology?</li>
+<li>How much bank-raid asymmetry can be introduced before ownership model readability degrades?</li>
+<li>Do we want one faction with a stronger anti-air identity early, or preserve tighter parity until Tier 2?</li>
+<li>Which matchup pair should anchor first balance pass telemetry (recommended: Fire vs Leafcutter, Army vs Black)?</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="success-criteria-for-asymmetry">
+<h2 id="success-criteria-for-asymmetry">Success Criteria For Asymmetry <a class="anchor" href="#success-criteria-for-asymmetry" aria-label="Link to this section">#</a></h2>
+<p>Faction asymmetry is successful if:</p>
+<ul>
+<li>Matchups feel strategically different by minute 4, not only by late-game stats.</li>
+<li>Supply-line decisions differ significantly by faction identity.</li>
+<li>Counterplay windows are scoutable and punishable in all matchups.</li>
+<li>No faction bypasses core system rules enough to become a separate game.</li>
+<li>Readability remains high at 200 soft cap / 260 hard cap conditions.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

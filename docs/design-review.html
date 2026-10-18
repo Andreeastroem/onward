@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Review: Grill Checklist - Onward</title>
+<meta name="description" content="Design-review decisions, gaps, and prioritization.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Design Review: Grill Checklist",
+  "description": "Design-review decisions, gaps, and prioritization.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "combat-spec.html",
+    "economy-design.html",
+    "match-termination-spec.html",
+    "production-operations-spec.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "design-review",
+  "title": "Design Review: Grill Checklist",
+  "group": "Process",
+  "status": {
+    "key": "review",
+    "label": "Review log"
+  },
+  "references": [
+    "combat-spec",
+    "economy-design",
+    "match-termination-spec",
+    "production-operations-spec",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec"
+  ],
+  "referencedBy": [
+    "index"
+  ],
+  "constants": {},
+  "sections": [
+    {
+      "id": "1-match-termination-and-victory-rules-high",
+      "title": "1) Match Termination And Victory Rules (High)",
+      "level": 2
+    },
+    {
+      "id": "2-economy-constants-lock-table-high",
+      "title": "2) Economy Constants Lock Table (High)",
+      "level": 2
+    },
+    {
+      "id": "3-resource-ownership-theft-and-logistics-edge-cases-high",
+      "title": "3) Resource Ownership, Theft, And Logistics Edge Cases (High)",
+      "level": 2
+    },
+    {
+      "id": "4-faction-scope-and-asymmetry-budget-high",
+      "title": "4) Faction Scope And Asymmetry Budget (High)",
+      "level": 2
+    },
+    {
+      "id": "5-tech-tree-operational-spec-high",
+      "title": "5) Tech Tree Operational Spec (High)",
+      "level": 2
+    },
+    {
+      "id": "6-ai-design-for-playtesting-and-productization-high",
+      "title": "6) AI Design For Playtesting And Productization (High)",
+      "level": 2
+    },
+    {
+      "id": "7-technical-readability-and-performance-budgets-high",
+      "title": "7) Technical Readability And Performance Budgets (High)",
+      "level": 2
+    },
+    {
+      "id": "8-map-generation-and-fairness-constraints-medium",
+      "title": "8) Map Generation And Fairness Constraints (Medium)",
+      "level": 2
+    },
+    {
+      "id": "9-new-required-document-combat-specification-high",
+      "title": "9) New Required Document: Combat Specification (High)",
+      "level": 2
+    },
+    {
+      "id": "10-building-and-unit-production-operations-high",
+      "title": "10) Building And Unit Production Operations (High)",
+      "level": 2
+    },
+    {
+      "id": "11-multiplayer-skirmish-requirements-to-add-to-gdd-high",
+      "title": "11) Multiplayer Skirmish Requirements To Add To GDD (High)",
+      "level": 2
+    },
+    {
+      "id": "suggested-grill-order",
+      "title": "Suggested Grill Order",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html" aria-current="page">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#1-match-termination-and-victory-rules-high">1) Match Termination And Victory Rules (High)</a>
+</li>
+<li><a href="#2-economy-constants-lock-table-high">2) Economy Constants Lock Table (High)</a>
+</li>
+<li><a href="#3-resource-ownership-theft-and-logistics-edge-cases-high">3) Resource Ownership, Theft, And Logistics Edge Cases (High)</a>
+</li>
+<li><a href="#4-faction-scope-and-asymmetry-budget-high">4) Faction Scope And Asymmetry Budget (High)</a>
+</li>
+<li><a href="#5-tech-tree-operational-spec-high">5) Tech Tree Operational Spec (High)</a>
+</li>
+<li><a href="#6-ai-design-for-playtesting-and-productization-high">6) AI Design For Playtesting And Productization (High)</a>
+</li>
+<li><a href="#7-technical-readability-and-performance-budgets-high">7) Technical Readability And Performance Budgets (High)</a>
+</li>
+<li><a href="#8-map-generation-and-fairness-constraints-medium">8) Map Generation And Fairness Constraints (Medium)</a>
+</li>
+<li><a href="#9-new-required-document-combat-specification-high">9) New Required Document: Combat Specification (High)</a>
+</li>
+<li><a href="#10-building-and-unit-production-operations-high">10) Building And Unit Production Operations (High)</a>
+</li>
+<li><a href="#11-multiplayer-skirmish-requirements-to-add-to-gdd-high">11) Multiplayer Skirmish Requirements To Add To GDD (High)</a>
+</li>
+<li><a href="#suggested-grill-order">Suggested Grill Order</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="design-review-grill-checklist">Design Review: Grill Checklist</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="review">Review log</span></dd><dt>Area</dt><dd>Process</dd></dl></div>
+<p>Purpose: turn review findings into focused grill sessions so each gap can be resolved independently and folded into a publish-ready GDD.</p>
+<p>Status updates from author:</p>
+<ul>
+<li>Target quality is publish-ready GDD (Game Design Document), not prototype-only notes.</li>
+<li>Multiplayer skirmish is a product target and must be reflected in the GDD.</li>
+<li>AI skirmish remains critical path for playtesting quality.</li>
+<li>No separate combat spec exists yet and should be created.</li>
+</ul>
+<hr />
+<section aria-labelledby="1-match-termination-and-victory-rules-high">
+<h2 id="1-match-termination-and-victory-rules-high">1) Match Termination And Victory Rules (High) <a class="anchor" href="#1-match-termination-and-victory-rules-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 ruleset. See <a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>The current victory condition is clear at a headline level, but edge cases are not fully specified.</li>
+<li>Missing resolution rules will create ambiguous outcomes in multiplayer and unstable QA coverage.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Simultaneous colony-core destruction resolution.</li>
+<li>Time-limit behavior and tie-breaker hierarchy.</li>
+<li>Surrender, disconnect, reconnection, and rematch flow.</li>
+<li>Observer/replay end-state semantics.</li>
+<li>Stalemate detection and anti-stall rules.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What is the exact winner selection if both cores die in the same simulation tick?</li>
+<li>If match timer expires, what are tie-breakers in order (core HP, army value, biomass, map control)?</li>
+<li>Is voluntary surrender always immediate, and does it differ in ranked/unranked?</li>
+<li>What happens on network disconnect in multiplayer skirmish (pause, AI takeover, grace timer, forfeit)?</li>
+<li>What replay metadata is required to verify final outcome deterministically?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>One deterministic match termination state machine with explicit priority order for all outcomes.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Same-tick dual core destruction resolves to draw.</li>
+<li>Timer expiry resolves to draw with no tie-breakers.</li>
+<li>Voluntary surrender uses a 3-second countdown before loss is committed.</li>
+<li>Disconnect pauses match with a 90+ second reconnect window; timeout causes forfeit.</li>
+<li>Disconnect triggers deterministic resume snapshot creation.</li>
+<li>Authoritative resume is enabled for friend/custom contexts and can be disabled for competitive contexts.</li>
+<li>Same-tick priority order is: core destruction, surrender completion, disconnect forfeit, timer expiry.</li>
+<li>No separate stalemate detector in v0.</li>
+<li>Replay output requires audit-grade termination metadata including trigger trace and snapshot hash.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="2-economy-constants-lock-table-high">
+<h2 id="2-economy-constants-lock-table-high">2) Economy Constants Lock Table (High) <a class="anchor" href="#2-economy-constants-lock-table-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 constants ruleset. See <a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>Economy model is strong, but several values are still ranges/placeholders.</li>
+<li>Faction bonuses, AI tuning, and multiplayer fairness all depend on fixed baseline constants.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Initial reclaim ratio by unit category.</li>
+<li>Decay curve constants and grace period.</li>
+<li>Worker free baseline X and progressive upkeep curve constants.</li>
+<li>Military upkeep factor and tier scaling policy.</li>
+<li>Regenerative-site expected share target and cap behavior.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What exact reclaim ratio values ship in v0 for cheap, standard, and elite units?</li>
+<li>What is the maximum acceptable corpse decision window before decay creates no meaningful contest?</li>
+<li>At what worker count does progressive upkeep begin to feel like discipline instead of punishment?</li>
+<li>How should upkeep scale in late game to avoid passive max-pop stalemates?</li>
+<li>What is the acceptable income split target over full matches (corpse vs regenerative)?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A single versioned table of locked numbers plus allowed tuning bands for patches.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Economy classes are <code>Worker</code> and <code>Warrior</code> only, with explicit per-unit class tags.</li>
+<li>Reclaim ratios are locked at Worker 0.40 and Warrior 0.65.</li>
+<li>Corpse decay is locked at 12-second grace period and 40-second half-life.</li>
+<li>Worker upkeep baseline is 10 free workers; progressive bracket upkeep starts at worker 11.</li>
+<li>Worker bracket rule is explicit: only workers inside each bracket get that bracket's increased upkeep.</li>
+<li>Military upkeep is aggressive profile: base factor 0.90 with scaling increments +0.20, +0.25, +0.30 at 120, 180, and 230 supply.</li>
+<li>Regenerative sites target 20% to 30% match income share with 35% rolling 5-minute cap guideline.</li>
+<li>Regenerative cap enforcement in v0 is telemetry-driven balancing (design-time), not runtime clamping.</li>
+<li>Allowed tuning bands are locked for patching; out-of-band changes require constants-version increment.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="3-resource-ownership-theft-and-logistics-edge-cases-high">
+<h2 id="3-resource-ownership-theft-and-logistics-edge-cases-high">3) Resource Ownership, Theft, And Logistics Edge Cases (High) <a class="anchor" href="#3-resource-ownership-theft-and-logistics-edge-cases-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 ruleset. See <a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>Deposit and pass-through rules are good, but contested interactions need deterministic ownership logic.</li>
+<li>Without this, players will discover exploit loops and disputes.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Ownership transitions for dropped biomass, cached biomass, and in-transit biomass.</li>
+<li>Priority and timing rules when multiple players interact with the same resource object.</li>
+<li>Raid/destruction semantics for fortified banks.</li>
+<li>Anti-exploit guardrails for relay chains and grief loops.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>Who owns dropped biomass if both players issue pickup in the same frame window?</li>
+<li>Can fortified bank contents be partially stolen, fully denied, or both?</li>
+<li>What is the interruption rule if carrier death and deposit occur in near-simultaneous timing?</li>
+<li>Are there minimum handling times to prevent instant chain-relay abuse?</li>
+<li>Which events must be logged for post-match dispute analysis?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A resource state machine document with deterministic tie-breaking and anti-exploit constraints.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Core-credit ownership remains authoritative; bank stock is cached, visible, and uncredited until core deposit.</li>
+<li>Same-frame pickup conflicts resolve deterministically by tuple: interaction tick/substep, path-distance, then lower unit id.</li>
+<li>No split payout and no no-winner lock state for pickup ties in v0.</li>
+<li>Near-simultaneous death/deposit uses atomic resolution-tick position check.</li>
+<li>Fortified bank contents support both steal and deny actions.</li>
+<li>Anti-exploit minimum handling times are locked for pickup, handoff, steal, and deny channels.</li>
+<li>Small corpses auto-convert at bank; larger corpses require logarithmic processing with deterministic clamps.</li>
+<li>Audit-grade dispute logging is required for pickup contention, lock outcome, bank actions, processing, and interruptions.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="4-faction-scope-and-asymmetry-budget-high">
+<h2 id="4-faction-scope-and-asymmetry-budget-high">4) Faction Scope And Asymmetry Budget (High) <a class="anchor" href="#4-faction-scope-and-asymmetry-budget-high" aria-label="Link to this section">#</a></h2>
+<p>Status: In grill session.</p>
+<p>Why this matters:</p>
+<ul>
+<li>Species-led identity is clear, but publish-ready GDD needs concrete launch faction contracts.</li>
+<li>Multiplayer balance and onboarding rely on explicit strengths, weaknesses, and counters.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Launch faction count and exact roster per faction.</li>
+<li>One macro hook per faction with strict boundaries.</li>
+<li>Required hard weakness and counterplay windows per faction.</li>
+<li>Shared baseline rules that cannot be faction-bypassed.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What are the non-negotiable identity verbs for each launch faction?</li>
+<li>Which mechanics are globally shared to preserve readability?</li>
+<li>What hard weakness keeps each faction from solving all map states?</li>
+<li>What is the first 8-minute gameplan each faction should naturally incentivize?</li>
+<li>Which mirror-match and cross-matchups are highest risk for degenerate play?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>One-page contract per launch faction: identity, roster, macro hook, counters, and no-go rules.</li>
+</ul>
+<p>Decisions locked:</p>
+<ul>
+<li>v1 launches with three factions: Black Ants, Fire Ants, and Weaver Ants.</li>
+<li>Each faction receives one primary macro hook, differentiated combat-role mapping, and no more than two explicit shared-rule exceptions.</li>
+<li>Black Ants' primary macro hook is connected-corridor efficiency: carrier capacity/speed and transfer throughput improve only along continuous owned logistics routes.</li>
+<li>Black Ants' hard weakness is route fragility under multi-lane pressure; any disconnected corridor immediately loses its efficiency benefits.</li>
+<li>Fire Ants' primary macro hook is accelerated light-unit production: their early units are cheaper, individually weaker, and train faster.</li>
+<li>Fire Ants' hard weakness is reduced harvesting rate and carrier haul capacity.</li>
+<li>Weaver Ants' primary macro hook is constructible, destructible traversal networks that provide route bypasses and faster redeployment between owned anchors.</li>
+<li>Weaver Ants' hard weakness is inferior frontal sustain and siege reliability.</li>
+<li>Black Ants' first-eight-minute plan is to secure nearby carcass routes, establish one defended pass-through bank lane, and take fights under logistics cover.</li>
+<li>Fire Ants' first-eight-minute plan is to maintain repeated skirmish pressure, delay exposed enemy banking, and secure short-haul pickups before their harvesting weakness compounds.</li>
+<li>Weaver Ants' first-eight-minute plan is to place a traversal network on a contested edge, use it for off-angle bank-line raids, and avoid prolonged central fights.</li>
+<li>All launch factions retain the shared baseline: one biomass resource with core-credit authority, deterministic single-queue production, Worker/Warrior/Air/Anti-air/Behemoth capability coverage, soft-counter combat, and impassable-water chokepoints.</li>
+<li>Rule exceptions are optional, limited to two per faction, and require contract-level justification; they are not a faction quota.</li>
+<li>Black Ants have one justified rule exception: carriers use manual, auto-managed, or route-locked modes. Auto mode can assign escorts and choose the best connected route; route lock prevents automatic rerouting.</li>
+<li>Fire Ant production benefits apply only to designated early light ground and air units; specialists, late heavy units, and behemoths use baseline production economics.</li>
+<li>Weaver traversal networks use paired visible anchors and a short transfer channel; they cannot cross impassable water or bypass chokepoint rules.</li>
+<li>Weaver traversal networks may move combat units and empty workers only; biomass carriers and workers holding biomass cannot use them.</li>
+<li>Each launch faction has one worker and eight combat units, excluding buildings and upgrades.</li>
+<li>Each faction roster must cover five mandatory capabilities: ground line warrior, air unit, anti-air unit, behemoth, and a siege-capable answer. These capabilities may overlap with faction-expression roles, and multiple units may cover the same capability.</li>
+<li>Black Ant expression slots are an escort tank with a telegraphed taunt, a healer, and a durable logistics skirmisher.</li>
+<li>Fire Ant expression slots are a medium-health, low-armor melee cleave DPS unit; slow flying suicide bombers with telegraphed AoE damage; and an AoE support buffer.</li>
+<li>Weaver Ant expression slots are a ground suicide bomber enabling flank swings, a high-health transport unit with low damage and high haul capacity that can carry both biomass and allied units, and a caster with debuff spells.</li>
+<li>A Weaver transport may use traversal anchors only while carrying no biomass; it may carry allied units through the anchor transfer.</li>
+<li>Weaver caster debuffs are limited to slow and armor break.</li>
+<li>Black Ants versus Weaver Ants is the first high-risk matchup and receives the first dedicated anti-degeneracy balance test suite.</li>
+<li>Weaver anchor counterplay uses a minimap ping when an opposing player has a friendly unit or structure within the anchor's detection radius, plus a single-file, punishable exit. Placement buffers and post-transfer cooldowns are deferred unless playtests show that these interaction rules are insufficient.</li>
+<li>The anchor's initial detection radius is 1.5 times standard ground-unit vision.</li>
+<li>Conditional anchor warnings reveal an approximate minimap sector, not the exact construction position.</li>
+<li>Launch faction contracts use role-first placeholder unit names until visual and art direction is finalized.</li>
+<li>Faction-expression units may satisfy mandatory capability coverage, but each required capability must remain viably represented; rosters may intentionally include redundant coverage.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="5-tech-tree-operational-spec-high">
+<h2 id="5-tech-tree-operational-spec-high">5) Tech Tree Operational Spec (High) <a class="anchor" href="#5-tech-tree-operational-spec-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 structural baseline. See <a href="tech-tree-operational-spec.html"><a href="tech-tree-operational-spec.html">tech-tree-operational-spec.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>Building-gated approach is directionally good, but not yet operational for implementation.</li>
+<li>Missing prerequisites/cost windows will produce dominant build orders by accident.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Explicit building and unit unlock graph.</li>
+<li>Upgrade costs and timings by phase.</li>
+<li>Branch exclusivity or opportunity cost rules.</li>
+<li>Recovery paths after failed tech investments.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>Which tier transitions are intended to be power spikes versus utility unlocks?</li>
+<li>What are acceptable earliest timestamps for key techs in balanced play?</li>
+<li>Where are deliberate forks that prevent all-in-one &quot;best tree&quot; behavior?</li>
+<li>How much economic delay should a failed tech rush impose?</li>
+<li>What anti-snowball tech options exist for a trailing player?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>Publishable tech graph with costs, prerequisites, expected timing windows, and counterplay notes.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Tech progression uses one shared baseline graph with faction overlays; full faction-specific graphs are deferred until later faction design.</li>
+<li>Tier model is locked to three tiers: Establishing, Expanding, Thriving.</li>
+<li>Tier transitions are hybrid by intent: power unlock plus economic/logistics scaling.</li>
+<li>Branch policy in v0 is no hard exclusivity; all branches are reachable and differentiated by opportunity cost.</li>
+<li>Upgrade scaling policy is mixed by default (cheap entry, steeper specialization), with convex scaling allowed for repeatable infinite-tier stat lines.</li>
+<li>Normal build spend target by minute 10 is 15% to 20% into tech/upgrades.</li>
+<li>High-impact disruptive unit mechanics (flyers, burrowers, ranged AoE, behemoth-class swing units) must use stronger composite gating.</li>
+<li>Failed tech-rush vulnerability target is locked to 40 to 80 seconds.</li>
+<li>Failed rush is defined as no meaningful damage to enemy logistics or resource-site flow.</li>
+<li>Salvage/refund recovery for canceled or destroyed in-progress tech is allowed.</li>
+<li>Soft rubber-band via shorter defender corpse-return distance is intentional.</li>
+<li>Counterplay requirements for major spike tech include scoutable prereq buildings, build-time vulnerability, and counter-tech response paths.</li>
+<li>Information visibility baseline is structure scouting; preferred extension is active-structure VFX and upgrade-driven unit visual readability.</li>
+<li>AI v1 should execute curated archetypes for one faction first, with at least economic, aggressive, balanced, and raiding-focused profiles.</li>
+<li>Multiplayer v1 uses shared timing models across 1v1 and team modes, with fun-forward balance priority over strict competitive split tables.</li>
+<li>Publishable artifact requirement is accepted as template-first, with placeholder nodes/values to be filled when faction design is finalized.</li>
+</ul>
+<p>Deferred to next pass:</p>
+<ul>
+<li>Exact earliest tech timestamps.</li>
+<li>Exact tier gate thresholds for biomass-per-minute and related economy conditions.</li>
+<li>Concrete branch-by-branch opportunity-cost delay targets.</li>
+<li>Final expansion semantics and explicit relation to bank structures in risk/recovery language.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="6-ai-design-for-playtesting-and-productization-high">
+<h2 id="6-ai-design-for-playtesting-and-productization-high">6) AI Design For Playtesting And Productization (High) <a class="anchor" href="#6-ai-design-for-playtesting-and-productization-high" aria-label="Link to this section">#</a></h2>
+<p>Why this matters:</p>
+<ul>
+<li>AI is a critical path for practical iteration and remains necessary even with multiplayer goals.</li>
+<li>Behavior goals exist, but measurable skill-tier targets are still needed.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Difficulty tier definitions (reaction time, macro quality, raid frequency, reclaim priority).</li>
+<li>Strategic profiles (aggressive, economic, opportunistic, adaptive).</li>
+<li>Recovery behavior from deficits and anti-throw safeguards.</li>
+<li>Instrumentation and benchmark pass/fail criteria.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What does &quot;Beginner/Standard/Hard&quot; mean quantitatively, not just behaviorally?</li>
+<li>How often should AI perform route raids at each difficulty?</li>
+<li>How should AI reprioritize under upkeep stress?</li>
+<li>What comeback capability should AI demonstrate from 20% army value deficit?</li>
+<li>What exploit patterns must AI detect and counter by release?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>AI specification with measurable KPIs and regression test scenarios per tier.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="7-technical-readability-and-performance-budgets-high">
+<h2 id="7-technical-readability-and-performance-budgets-high">7) Technical Readability And Performance Budgets (High) <a class="anchor" href="#7-technical-readability-and-performance-budgets-high" aria-label="Link to this section">#</a></h2>
+<p>Why this matters:</p>
+<ul>
+<li>Technical constraints are documented, but publish-ready GDD requires measurable budgets.</li>
+<li>Multiplayer plus high-unit skirmish needs deterministic, testable performance targets.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>FPS and frametime targets at population caps.</li>
+<li>Pathfinding budget and unit-order responsiveness thresholds.</li>
+<li>3D rendering and asset budgets at population caps.</li>
+<li>Rendering readability thresholds (unit/building silhouette and material contrast, selection clarity, and effect visibility from the fixed isometric camera).</li>
+<li>Determinism requirements for multiplayer simulation outcomes.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What are min/target FPS thresholds at 200 soft cap and 260 hard cap per player?</li>
+<li>What is the max acceptable command-to-action latency under heavy load?</li>
+<li>What objective readability tests define &quot;legible swarm combat&quot;?</li>
+<li>What geometry, lighting, shadow, and effect budgets preserve unit, building, and pathing readability from the fixed isometric camera?</li>
+<li>Which systems must be deterministic for lockstep or replay integrity?</li>
+<li>What is the fallback quality strategy if budget is exceeded?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A technical budget table with validation methods and acceptance criteria.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="8-map-generation-and-fairness-constraints-medium">
+<h2 id="8-map-generation-and-fairness-constraints-medium">8) Map Generation And Fairness Constraints (Medium) <a class="anchor" href="#8-map-generation-and-fairness-constraints-medium" aria-label="Link to this section">#</a></h2>
+<p>Why this matters:</p>
+<ul>
+<li>Water/chokepoint philosophy is good, but map fairness requires explicit generation constraints.</li>
+<li>Multiplayer integrity depends on spawn parity and route symmetry/asymmetry intent.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Spawn fairness metrics and safe-harvest opening windows.</li>
+<li>Route-count minimums between starting regions.</li>
+<li>Shoreline event spawn rules (frequency, value, telegraphing).</li>
+<li>Biome variance bounds and map pool validation checks.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What makes a generated map tournament-legal versus casual-only?</li>
+<li>How many viable early expansion routes must each spawn have?</li>
+<li>How much resource asymmetry is acceptable before map veto?</li>
+<li>How often can shoreline high-yield events appear without deciding matches by RNG?</li>
+<li>What static and runtime checks validate map fairness before release?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A map specification with fairness metrics, event rules, and validation pipeline.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="9-new-required-document-combat-specification-high">
+<h2 id="9-new-required-document-combat-specification-high">9) New Required Document: Combat Specification (High) <a class="anchor" href="#9-new-required-document-combat-specification-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 combat baseline. See <a href="combat-spec.html"><a href="combat-spec.html">combat-spec.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>No combat spec exists yet, creating a major gap between economy/tech intent and actual gameplay feel.</li>
+<li>Combat details are required for balance, AI behavior, and multiplayer determinism.</li>
+</ul>
+<p>What to include in combat spec:</p>
+<ul>
+<li>Damage model (types, resistances, armor interactions, hit resolution).</li>
+<li>Engagement verbs and counter-verbs (including anti-air interactions).</li>
+<li>Unit role taxonomy and target priorities.</li>
+<li>Morale/status effects, regeneration, and retreat mechanics (if any).</li>
+<li>Time-to-kill targets by phase and role matchup.</li>
+<li>Micro ceiling rules and readability constraints.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What is the intended TTK envelope for worker, skirmisher, tank, and specialist roles?</li>
+<li>Which interactions are hard counters versus soft counters?</li>
+<li>How much micro should flip expected outcomes in equal-cost fights?</li>
+<li>Which combat effects are disallowed due to readability or determinism risk?</li>
+<li>What combat telemetry is required to balance patches safely?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A dedicated combat spec document with role matrix, formulas, TTK targets, and test scenarios.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Baseline equal-cost TTK envelopes are locked to: early 2.0 to 3.0 seconds, mid 1.5 to 2.5 seconds, late 0.5 to 1.0 seconds.</li>
+<li>Every faction must provide capability coverage for worker, warrior, air, anti-air, and behemoth roles.</li>
+<li>Multi-role unit composition is explicitly allowed and is a primary faction-identity lever.</li>
+<li>Counter model in v1 is soft-first, with optional evolution toward mixed counter anchors in later passes.</li>
+<li>Damage channel set in v1 is locked to physical and siege, with DoT and AoE mechanics supported.</li>
+<li>Armor interaction in v1 is flat reduction with minimum 1 damage floor per hit.</li>
+<li>Hit resolution uses guaranteed hit with deterministic timing.</li>
+<li>Friendly fire is disabled in v1.</li>
+<li>AoE is a core anti-blob pillar and must be strongly telegraphed.</li>
+<li>Allowed v1 status set is slow, armor break, DoT, and stun.</li>
+<li>Medium proc usage is allowed with strong telegraphing and deterministic simulation parity.</li>
+<li>Aura stacking policy is additive.</li>
+<li>Regeneration exists; no automatic retreat mechanic in v1.</li>
+<li>A-move may use role-priority targeting, but direct attack-unit commands must remain responsive override inputs.</li>
+<li>Supply-line disruption verbs are first-class combat objectives: site raids, bank destruction/denial pressure, logistics-trail raids, and biomass-drop pressure.</li>
+<li>Defensive structures in v1 should bias utility-control defense (for example snare/slow) rather than turret-centric lethality.</li>
+<li>Behemoths are high-upkeep fight-swing anchors that must remain scoutable and punishable.</li>
+<li>Desired micro ceiling in equal-cost fights is 15% to 25%, with concaves and flanks as highest-signal skills.</li>
+<li>Readability bans are locked: no invisible projectiles and no identical VFX language for different actions/effects.</li>
+<li>Determinism non-negotiables are locked for damage outcomes, status duration/expiration, and aura application order.</li>
+<li>Publishable combat artifact requirements are locked: role matrix, formulas, TTK target table, per-role counterplay notes, test scenarios with telemetry hooks, and visual telegraph requirements by effect severity.</li>
+</ul>
+<p>Deferred to next pass:</p>
+<ul>
+<li>Exact per-unit stat and cost tables by faction roster.</li>
+<li>Additional damage channels beyond physical/siege.</li>
+<li>Final numeric readability limits for simultaneous overlapping AoE effects.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="10-building-and-unit-production-operations-high">
+<h2 id="10-building-and-unit-production-operations-high">10) Building And Unit Production Operations (High) <a class="anchor" href="#10-building-and-unit-production-operations-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v0 production baseline. See <a href="production-operations-spec.html"><a href="production-operations-spec.html">production-operations-spec.html</a></a>.</p>
+<p>Why this matters:</p>
+<ul>
+<li>Production rules are a core RTS identity system and currently under-specified.</li>
+<li>Build-flow ambiguity (who builds, where, how resources commit) can break pacing, readability, and balance.</li>
+<li>AI behavior and multiplayer determinism depend on explicit production state rules.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Building construction model: no-worker placement, one-worker channel, or multi-worker scaling.</li>
+<li>Construction placement constraints and pathing/footprint validation.</li>
+<li>Cost commitment timing and refund policy (on start, over time, or on completion).</li>
+<li>Build interruption, destruction, and salvage behavior.</li>
+<li>Logistics coupling policy: remote instant spend vs delivered construction biomass.</li>
+<li>Unit production topology: local building queues, central hive production, or hybrid.</li>
+<li>Queue/rally behavior and spawn-blocking resolution rules.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>How are buildings produced in v1: instant placement, one worker channel, or multiple workers accelerating build time?</li>
+<li>If workers build, can multiple workers stack efficiency, and what is the scaling rule?</li>
+<li>Do building costs spend instantly, in ticks over construction time, or only on completion?</li>
+<li>Is there partial refund on cancel or destruction while under construction?</li>
+<li>Must biomass be delivered to construction sites via logistics, or can players spend from global stockpile at placement time?</li>
+<li>Are combat units produced at their respective structures, only from the hive, or via a hybrid model?</li>
+<li>What are queue rules per production source (single queue, parallel slots, shared global cap)?</li>
+<li>How should rally points and spawn collision failures resolve deterministically?</li>
+<li>What anti-cheese constraints exist for forward proxy construction?</li>
+<li>Which production and construction events are mandatory in replay/telemetry for debugging disputes?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A dedicated production operations specification with deterministic state machines for construction and training, plus cost/refund tables, queue rules, and counterplay notes.</li>
+</ul>
+<p>Resolution locked:</p>
+<ul>
+<li>Construction model is multi-worker acceleration with continuous diminishing returns per added worker.</li>
+<li>Worker 1 has baseline speed contribution and no surcharge.</li>
+<li>Workers 2+ apply escalating ticking surcharge with baseline formula <code>k * (n - 1)^2</code>.</li>
+<li>Builder hard cap is one global mid-tens value in v0 baseline (default 24), with faction exceptions allowed.</li>
+<li>Base construction cost commits over progress ticks; cancel refunds only unspent base progress share.</li>
+<li>Paid ticking surcharge is sunk and never refunded.</li>
+<li>Under-construction destruction grants no refund in v0.</li>
+<li>On surcharge insolvency, site auto-throttles to highest affordable active builder count and continues construction.</li>
+<li>Construction progress persists indefinitely when unstaffed; no passive decay in v0.</li>
+<li>Placement uses adjacency projection from owned buildings; no enemy exclusion zone in v0.</li>
+<li>Connectivity requirement applies to most factions; disconnected structures are non-functional unless faction exceptions apply.</li>
+<li>Unit production topology is hybrid: most combat units from hive, structure-local queues mainly for upgrades/special exceptions.</li>
+<li>Queue model is single queue per production source.</li>
+<li>Rally supports point rally and rally-to-unit follow target.</li>
+<li>Spawn policy is always-spawn with deterministic collision-push resolution under congestion.</li>
+<li>No additional global anti-proxy constraints in v0 beyond adjacency and economics.</li>
+<li>Replay/telemetry requirements include full audit-grade production and construction event traces.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="11-multiplayer-skirmish-requirements-to-add-to-gdd-high">
+<h2 id="11-multiplayer-skirmish-requirements-to-add-to-gdd-high">11) Multiplayer Skirmish Requirements To Add To GDD (High) <a class="anchor" href="#11-multiplayer-skirmish-requirements-to-add-to-gdd-high" aria-label="Link to this section">#</a></h2>
+<p>Why this matters:</p>
+<ul>
+<li>Multiplayer is now explicitly in scope and needs first-class requirements in the GDD.</li>
+<li>Networking decisions affect combat, pathing, timing, and replay architecture.</li>
+</ul>
+<p>What to flesh out:</p>
+<ul>
+<li>Supported match sizes and team modes.</li>
+<li>Simulation model assumptions (deterministic lockstep or alternative).</li>
+<li>Reconnect, pause, and desync handling policy.</li>
+<li>Matchmaking/lobby requirements (if applicable for release scope).</li>
+<li>Anti-cheat and authoritative validation boundaries.</li>
+</ul>
+<p>Grill questions:</p>
+<ul>
+<li>What is the first shippable multiplayer mode (1v1, 2v2, custom lobbies)?</li>
+<li>What networking model best matches deterministic RTS needs and team size goals?</li>
+<li>What are desync detection and recovery workflows?</li>
+<li>What offline/AI parity is required for training before queue play?</li>
+<li>Which multiplayer features are required for v1 versus post-launch?</li>
+</ul>
+<p>Definition of done:</p>
+<ul>
+<li>A multiplayer requirements section in the GDD with explicit out-of-scope list for v1.</li>
+</ul>
+<hr />
+</section>
+<section aria-labelledby="suggested-grill-order">
+<h2 id="suggested-grill-order">Suggested Grill Order <a class="anchor" href="#suggested-grill-order" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Match termination and victory rules.</li>
+<li>Economy constants lock table.</li>
+<li>Resource ownership and theft edge cases.</li>
+<li>Building and unit production operations.</li>
+<li>Combat specification creation.</li>
+<li>Faction asymmetry contracts.</li>
+<li>Tech tree operational spec.</li>
+<li>AI measurable tier design.</li>
+<li>Technical performance/readability budgets.</li>
+<li>Map generation and fairness constraints.</li>
+<li>Multiplayer skirmish requirements and v1 scope gates.</li>
+</ol>
+<p>Rationale:</p>
+<ul>
+<li>This order resolves deterministic rules first, then economy and production foundations, then combat/asymmetry, then implementation constraints, and finally release-scope packaging.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

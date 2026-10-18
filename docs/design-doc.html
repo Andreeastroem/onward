@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Design Document - Onward</title>
+<meta name="description" content="Project vision, gameplay loop, factions, modes, and victory condition.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Design Document",
+  "description": "Project vision, gameplay loop, factions, modes, and victory condition.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "combat-spec.html",
+    "economy-design.html",
+    "match-termination-spec.html",
+    "production-operations-spec.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "design-doc",
+  "title": "Ant RTS Design Document",
+  "group": "Design",
+  "status": {
+    "key": "documented",
+    "label": "Documented"
+  },
+  "references": [
+    "combat-spec",
+    "economy-design",
+    "match-termination-spec",
+    "production-operations-spec",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [
+    "combat-spec",
+    "index",
+    "potential-factions",
+    "production-operations-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "constants": {
+    "economy_constants_version": "1"
+  },
+  "sections": [
+    {
+      "id": "high-concept",
+      "title": "High Concept",
+      "level": 2
+    },
+    {
+      "id": "design-pillars",
+      "title": "Design Pillars",
+      "level": 2
+    },
+    {
+      "id": "project-frame",
+      "title": "Project Frame",
+      "level": 2
+    },
+    {
+      "id": "technical-requirements",
+      "title": "Technical Requirements",
+      "level": 2
+    },
+    {
+      "id": "terrain-and-chokepoints",
+      "title": "Terrain And Chokepoints",
+      "level": 2
+    },
+    {
+      "id": "faction-model",
+      "title": "Faction Model",
+      "level": 2
+    },
+    {
+      "id": "core-gameplay-loop",
+      "title": "Core Gameplay Loop",
+      "level": 2
+    },
+    {
+      "id": "tech-tree",
+      "title": "Tech Tree",
+      "level": 2
+    },
+    {
+      "id": "production-operations",
+      "title": "Production Operations",
+      "level": 2
+    },
+    {
+      "id": "combat",
+      "title": "Combat",
+      "level": 2
+    },
+    {
+      "id": "economy",
+      "title": "Economy",
+      "level": 2
+    },
+    {
+      "id": "resource-split-decision",
+      "title": "Resource Split Decision",
+      "level": 2
+    },
+    {
+      "id": "supply-lines-and-tension",
+      "title": "Supply Lines And Tension",
+      "level": 2
+    },
+    {
+      "id": "upkeep-and-snowball-control",
+      "title": "Upkeep And Snowball Control",
+      "level": 2
+    },
+    {
+      "id": "unit-layers",
+      "title": "Unit Layers",
+      "level": 2
+    },
+    {
+      "id": "faction-asymmetry",
+      "title": "Faction Asymmetry",
+      "level": 2
+    },
+    {
+      "id": "game-modes",
+      "title": "Game Modes",
+      "level": 2
+    },
+    {
+      "id": "victory-condition",
+      "title": "Victory Condition",
+      "level": 2
+    },
+    {
+      "id": "match-length-and-pacing",
+      "title": "Match Length And Pacing",
+      "level": 2
+    },
+    {
+      "id": "emergent-storytelling-goals",
+      "title": "Emergent Storytelling Goals",
+      "level": 2
+    },
+    {
+      "id": "open-questions",
+      "title": "Open Questions",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html" aria-current="page">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#high-concept">High Concept</a>
+</li>
+<li><a href="#design-pillars">Design Pillars</a>
+</li>
+<li><a href="#project-frame">Project Frame</a>
+</li>
+<li><a href="#technical-requirements">Technical Requirements</a>
+</li>
+<li><a href="#terrain-and-chokepoints">Terrain And Chokepoints</a>
+</li>
+<li><a href="#faction-model">Faction Model</a>
+</li>
+<li><a href="#core-gameplay-loop">Core Gameplay Loop</a>
+</li>
+<li><a href="#tech-tree">Tech Tree</a>
+</li>
+<li><a href="#production-operations">Production Operations</a>
+</li>
+<li><a href="#combat">Combat</a>
+</li>
+<li><a href="#economy">Economy</a>
+<ul>
+<li><a href="#primary-resource">Primary Resource</a></li>
+<li><a href="#harvesting-model">Harvesting Model</a></li>
+<li><a href="#regenerative-hotspots">Regenerative Hotspots</a></li>
+</ul></li>
+<li><a href="#resource-split-decision">Resource Split Decision</a>
+</li>
+<li><a href="#supply-lines-and-tension">Supply Lines And Tension</a>
+</li>
+<li><a href="#upkeep-and-snowball-control">Upkeep And Snowball Control</a>
+</li>
+<li><a href="#unit-layers">Unit Layers</a>
+</li>
+<li><a href="#faction-asymmetry">Faction Asymmetry</a>
+<ul>
+<li><a href="#faction-exception-templates-production-and-connectivity">Faction Exception Templates (Production And Connectivity)</a></li>
+</ul></li>
+<li><a href="#game-modes">Game Modes</a>
+<ul>
+<li><a href="#initial-focus">Initial Focus</a></li>
+<li><a href="#not-in-scope-yet">Not In Scope Yet</a></li>
+<li><a href="#future-possibility">Future Possibility</a></li>
+</ul></li>
+<li><a href="#victory-condition">Victory Condition</a>
+</li>
+<li><a href="#match-length-and-pacing">Match Length And Pacing</a>
+</li>
+<li><a href="#emergent-storytelling-goals">Emergent Storytelling Goals</a>
+</li>
+<li><a href="#open-questions">Open Questions</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-design-document">Ant RTS Design Document</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="documented">Documented</span></dd><dt>Area</dt><dd>Design</dd></dl></div>
+<section aria-labelledby="high-concept">
+<h2 id="high-concept">High Concept <a class="anchor" href="#high-concept" aria-label="Link to this section">#</a></h2>
+<p>An RTS about ant colonies fighting for survival in a living ecosystem. The game should feel like a classic RTS: build economy, scout the map, expand tech, field armies, and win through macro and micro decisions rather than through a campaign structure.</p>
+<p>The intended tone is emergent and self-directed. Players should be able to invent their own narrative through skirmishes, regional conquest, and ecosystem conflict.</p>
+</section>
+<section aria-labelledby="design-pillars">
+<h2 id="design-pillars">Design Pillars <a class="anchor" href="#design-pillars" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Classic RTS pacing and readability.</li>
+<li>Logistics-driven economy with dangerous supply lines.</li>
+<li>Organic battlefield contact points created by dead ants, neutral creatures, and resource hauling.</li>
+<li>Distinct faction identity built around ant species with room for movement and logistics specialization.</li>
+<li>Strong skirmish play first; campaign later if ever.</li>
+</ul>
+</section>
+<section aria-labelledby="project-frame">
+<h2 id="project-frame">Project Frame <a class="anchor" href="#project-frame" aria-label="Link to this section">#</a></h2>
+<p>This document records the long-form vision of the project, not a versioned release plan. Implementation slices will be created later from the locked vision, mechanics, and technical constraints in these design documents.</p>
+</section>
+<section aria-labelledby="technical-requirements">
+<h2 id="technical-requirements">Technical Requirements <a class="anchor" href="#technical-requirements" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>See <a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a> for locked presentation and scale decisions.</li>
+<li>The current baseline is full 3D with a fixed isometric camera.</li>
+<li>The game uses individual-unit control rather than squad-based control.</li>
+<li>The current per-player unit scale target is 200 soft cap and 260 hard cap.</li>
+</ul>
+</section>
+<section aria-labelledby="terrain-and-chokepoints">
+<h2 id="terrain-and-chokepoints">Terrain And Chokepoints <a class="anchor" href="#terrain-and-chokepoints" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Water is impassable in the baseline map rules.</li>
+<li>Impassable water should create the first obvious chokepoints and route constraints on a map.</li>
+<li>Water-adjacent biomass events can act as narrative background and high-value supply drops, such as small fish carcasses or similar shoreline gains.</li>
+</ul>
+</section>
+<section aria-labelledby="faction-model">
+<h2 id="faction-model">Faction Model <a class="anchor" href="#faction-model" aria-label="Link to this section">#</a></h2>
+<p>The current direction is ant-species-led faction identity, with biomes shaping map pressure and strategic options.</p>
+<p>Recommended structure:</p>
+<ul>
+<li>Factions are read primarily as ant species.</li>
+<li>Biomes define map identity and unit access pressure, not the whole faction identity.</li>
+<li>Each faction can have a small amount of macro asymmetry in addition to different unit rosters.</li>
+<li>Launch examples include black ants, fire ants, and weaver ants.</li>
+</ul>
+<p>This preserves clarity for players while still letting geography matter. Pure geography is still useful for movement and terrain distinctions, but works best as strategic context rather than primary faction identity.</p>
+</section>
+<section aria-labelledby="core-gameplay-loop">
+<h2 id="core-gameplay-loop">Core Gameplay Loop <a class="anchor" href="#core-gameplay-loop" aria-label="Link to this section">#</a></h2>
+<ol>
+<li>Start with a small base, a queen or equivalent colony core, and a limited number of workers.</li>
+<li>Scout the map to identify corpses, neutral creatures, chokepoints, and resource routes.</li>
+<li>Build economy structures and unlock higher-tier production buildings.</li>
+<li>Expand production and logistics so more biomass can be hauled home.</li>
+<li>Field military units, protect supply lines, and raid enemy harvesters.</li>
+<li>Win by destroying the enemy colony core.</li>
+</ol>
+<p>This keeps the game anchored in a classic RTS loop: economy, scouting, tech, military, micro, and macro.</p>
+</section>
+<section aria-labelledby="tech-tree">
+<h2 id="tech-tree">Tech Tree <a class="anchor" href="#tech-tree" aria-label="Link to this section">#</a></h2>
+<p>The recommended tech structure is a classic building-gated tree.</p>
+<p>The operational baseline contract is defined in <a href="tech-tree-operational-spec.html"><a href="tech-tree-operational-spec.html">tech-tree-operational-spec.html</a></a>.</p>
+<p>Reasoning:</p>
+<ul>
+<li>It is easier to read than a more abstract age-up system.</li>
+<li>It creates clear strategic checkpoints.</li>
+<li>It fits the colony-building fantasy well.</li>
+<li>It allows faction-specific branches without forcing a hard global reset.</li>
+</ul>
+<p>Possible pattern:</p>
+<ul>
+<li>Basic hatchery / nest unlocks early worker and combat basics.</li>
+<li>Advanced brood / chamber / nest structures unlock specialized roles.</li>
+<li>Higher-tier structures unlock aerial, ground, and water-adapted lines, plus stronger logistics or combat options.</li>
+</ul>
+<p>Current v0 progression structure is intentionally placeholder-driven:</p>
+<ul>
+<li>Shared baseline graph with faction overlays.</li>
+<li>Three progression tiers: Establishing, Expanding, Thriving.</li>
+<li>No hard branch exclusivity by default; opportunity cost drives branch differentiation.</li>
+<li>Exact timing windows and per-node values are deferred until faction/combat/map integration pass.</li>
+</ul>
+</section>
+<section aria-labelledby="production-operations">
+<h2 id="production-operations">Production Operations <a class="anchor" href="#production-operations" aria-label="Link to this section">#</a></h2>
+<p>The operational production baseline contract is defined in <a href="production-operations-spec.html"><a href="production-operations-spec.html">production-operations-spec.html</a></a>.</p>
+<p>Current v0 production direction:</p>
+<ul>
+<li>Multi-worker construction acceleration with diminishing returns and escalating surcharge starting at worker 2.</li>
+<li>Adjacency-projected placement expansion (creep-style) without a global enemy exclusion zone.</li>
+<li>Hybrid production topology where hive production is primary for combat units while structures primarily handle upgrades and exceptions.</li>
+<li>Single-queue deterministic production sources with always-spawn behavior under deterministic collision-push resolution.</li>
+<li>Connectivity-sensitive structure functionality for most factions, with explicit faction exception hooks.</li>
+</ul>
+</section>
+<section aria-labelledby="combat">
+<h2 id="combat">Combat <a class="anchor" href="#combat" aria-label="Link to this section">#</a></h2>
+<p>The operational combat baseline contract is defined in <a href="combat-spec.html"><a href="combat-spec.html">combat-spec.html</a></a>.</p>
+<p>Current v0 combat direction:</p>
+<ul>
+<li>Fast, readable combat pacing with explicit TTK target envelopes by phase.</li>
+<li>Soft-counter first philosophy with room to evolve to mixed counter anchors later.</li>
+<li>Deterministic guaranteed-hit timing, flat armor reduction, and additive aura stacking.</li>
+<li>Heavy emphasis on supply-line disruption as a combat objective, not only a macro objective.</li>
+</ul>
+</section>
+<section aria-labelledby="economy">
+<h2 id="economy">Economy <a class="anchor" href="#economy" aria-label="Link to this section">#</a></h2>
+<p>Detailed economy mechanics are specified in <a href="economy-design.html">economy-design.html</a>.
+Resource ownership, theft, and logistics edge-case resolution is specified in <a href="resource-ownership-spec.html">resource-ownership-spec.html</a>.</p>
+<p>v0 economy constants are now locked in the same document under the baseline formulas section (<code data-constant="economy_constants_version" data-value="1">economy_constants_version = 1</code>).</p>
+<h3 id="primary-resource">Primary Resource <a class="anchor" href="#primary-resource" aria-label="Link to this section">#</a></h3>
+<p>Use one main resource: biomass.</p>
+<p>Biomass comes from dead ants and other ecosystem creatures, including:</p>
+<ul>
+<li>Enemy ant units.</li>
+<li>Neutral bugs.</li>
+<li>The player’s own dead harvesters, if they can be reclaimed.</li>
+</ul>
+<p>The larger the corpse, the more biomass it contains, but the more carrying capacity it requires.</p>
+<h3 id="harvesting-model">Harvesting Model <a class="anchor" href="#harvesting-model" aria-label="Link to this section">#</a></h3>
+<p>The best current version is corpse hauling with risk.</p>
+<p>Recommended behavior:</p>
+<ul>
+<li>Corpses are visible resource objects on the map.</li>
+<li>Workers or specialized collectors must physically carry biomass back to the base.</li>
+<li>If the carrier dies, the resource is lost or dropped.</li>
+<li>Some corpses require multiple gatherers to move, creating logistics pressure around bigger kills.</li>
+<li>Dead harvesters are harvestable, so economic raiding matters.</li>
+</ul>
+<p>This creates the tug-of-war effect you want because killing near enemy lines matters even before the fight is fully resolved.</p>
+<h3 id="regenerative-hotspots">Regenerative Hotspots <a class="anchor" href="#regenerative-hotspots" aria-label="Link to this section">#</a></h3>
+<p>The economy can also support map-based regenerative hotspots, but these should be rare, not common, and they should never become a second full economy.</p>
+<p>Good candidates:</p>
+<ul>
+<li>Aphid farms.</li>
+<li>Neutral creature nests.</li>
+<li>Favorable breeding grounds.</li>
+<li>Region-specific biomass nodes.</li>
+</ul>
+<p>These work best as strategic anomalies that stabilize income rather than as a separate parallel system.</p>
+</section>
+<section aria-labelledby="resource-split-decision">
+<h2 id="resource-split-decision">Resource Split Decision <a class="anchor" href="#resource-split-decision" aria-label="Link to this section">#</a></h2>
+<p>The current recommendation is not to split the main economy into vegetation and meat as equally important resources.</p>
+<p>Instead:</p>
+<ul>
+<li>Keep one main resource: biomass.</li>
+<li>Allow some biomass to come from plant-adjacent sources if needed for thematic variety.</li>
+<li>Use neutral creatures or regenerative hotspots to create strategic map control.</li>
+</ul>
+<p>This avoids bookkeeping while still supporting interesting economy hotspots.</p>
+</section>
+<section aria-labelledby="supply-lines-and-tension">
+<h2 id="supply-lines-and-tension">Supply Lines And Tension <a class="anchor" href="#supply-lines-and-tension" aria-label="Link to this section">#</a></h2>
+<p>The hauling model is the main source of battlefield tension.</p>
+<p>The ideal friction points are:</p>
+<ul>
+<li>Corpses must be physically moved.</li>
+<li>All unit types can gather, but with different hauling strength and opportunity cost.</li>
+<li>Carriers can be intercepted on the way back.</li>
+<li>Raiding the enemy economy is as meaningful as fighting their army.</li>
+</ul>
+<p>This creates a natural RTS tug-of-war where territory is valuable because it protects logistics.</p>
+</section>
+<section aria-labelledby="upkeep-and-snowball-control">
+<h2 id="upkeep-and-snowball-control">Upkeep And Snowball Control <a class="anchor" href="#upkeep-and-snowball-control" aria-label="Link to this section">#</a></h2>
+<p>The economy is intended to grow quickly at first, but not without limits.</p>
+<p>Recommended brake:</p>
+<ul>
+<li>Hard food upkeep on every unit produced.</li>
+</ul>
+<p>Purpose:</p>
+<ul>
+<li>Prevent runaway exponential snowballing.</li>
+<li>Keep army size tied to economic health.</li>
+<li>Make overproduction a real strategic risk.</li>
+</ul>
+<p>If needed, upkeep can be softened later with colony upgrades or faction traits, but the baseline should be strict enough to keep macro interesting.</p>
+</section>
+<section aria-labelledby="unit-layers">
+<h2 id="unit-layers">Unit Layers <a class="anchor" href="#unit-layers" aria-label="Link to this section">#</a></h2>
+<p>The map and faction system should support classic RTS unit strata:</p>
+<ul>
+<li>Ground units for standard combat and harvesting support.</li>
+<li>Mobile specialists for scouting, harassment, and mobility.</li>
+<li>Water-adapted specialists for water-heavy maps and shoreline control.</li>
+</ul>
+<p>Geography should mainly influence which of these layers are strong or available.</p>
+</section>
+<section aria-labelledby="faction-asymmetry">
+<h2 id="faction-asymmetry">Faction Asymmetry <a class="anchor" href="#faction-asymmetry" aria-label="Link to this section">#</a></h2>
+<p>Factions should differ in both roster and a small macro hook.</p>
+<p>Examples:</p>
+<ul>
+<li>Weaver ants may excel at mobility and map traversal but be weaker in direct sieges.</li>
+<li>Fire ants may control aggressive frontline pressure and floodplain logistics better.</li>
+<li>Black ants may be stronger in territorial defense and corpse hauling.</li>
+</ul>
+<p>The asymmetry should remain readable and not turn into a full ruleset per faction.</p>
+<h3 id="faction-exception-templates-production-and-connectivity">Faction Exception Templates (Production And Connectivity) <a class="anchor" href="#faction-exception-templates-production-and-connectivity" aria-label="Link to this section">#</a></h3>
+<p>Use these templates when defining faction-specific rule exceptions from the shared production baseline in <a href="production-operations-spec.html"><a href="production-operations-spec.html">production-operations-spec.html</a></a>.</p>
+<p>Template A: Construction And Placement Exception</p>
+<ul>
+<li>Faction:</li>
+<li>Exception id:</li>
+<li>Baseline rule overridden:</li>
+<li>New rule text:</li>
+<li>Scope:
+<ul>
+<li>All structures or listed structure classes</li>
+<li>Early-only, mid-only, late-only, or full match</li>
+</ul>
+</li>
+<li>Counterplay expectation:</li>
+<li>Readability requirement:</li>
+<li>Determinism notes:</li>
+</ul>
+<p>Template B: Connectivity Exception</p>
+<ul>
+<li>Faction:</li>
+<li>Exception id:</li>
+<li>Default connectivity behavior:</li>
+<li>Exception behavior while disconnected:
+<ul>
+<li>Non-functional</li>
+<li>Partial functional</li>
+<li>Fully functional</li>
+</ul>
+</li>
+<li>Affected structure classes:</li>
+<li>Reconnect transition behavior:</li>
+<li>Counterplay expectation:</li>
+<li>Telemetry flags required:</li>
+</ul>
+<p>Template C: Production Topology Exception</p>
+<ul>
+<li>Faction:</li>
+<li>Exception id:</li>
+<li>Baseline topology overridden:</li>
+<li>Additional local production lanes (if any):</li>
+<li>Hive-only unit classes (if any):</li>
+<li>Queue behavior override (if any):</li>
+<li>Spawn/rally behavior override (if any):</li>
+<li>Counterplay expectation:</li>
+<li>Determinism notes:</li>
+</ul>
+<p>Template D: Builder Cap And Surcharge Exception</p>
+<ul>
+<li>Faction:</li>
+<li>Exception id:</li>
+<li>Baseline overridden:
+<ul>
+<li><code>max_builders_per_site</code></li>
+<li><code>k</code> class constants</li>
+<li>both</li>
+</ul>
+</li>
+<li>New values:</li>
+<li>Intended gameplay identity impact:</li>
+<li>Known exploit risk:</li>
+<li>Mitigation:</li>
+<li>Telemetry watch metrics:
+<ul>
+<li>Average builders per site</li>
+<li>Time spent above 8/12/16 builders</li>
+<li>Surcharge insolvency frequency</li>
+</ul>
+</li>
+</ul>
+</section>
+<section aria-labelledby="game-modes">
+<h2 id="game-modes">Game Modes <a class="anchor" href="#game-modes" aria-label="Link to this section">#</a></h2>
+<h3 id="initial-focus">Initial Focus <a class="anchor" href="#initial-focus" aria-label="Link to this section">#</a></h3>
+<p>Skirmish versus basic AI is the first priority.</p>
+<h3 id="not-in-scope-yet">Not In Scope Yet <a class="anchor" href="#not-in-scope-yet" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Campaign.</li>
+<li>Narrative progression.</li>
+</ul>
+<h3 id="future-possibility">Future Possibility <a class="anchor" href="#future-possibility" aria-label="Link to this section">#</a></h3>
+<p>Region-control or world-domination mode remains a later expansion direction rather than an immediate implementation target. Playtesting may reveal that it becomes a faster or clearer game mode, in which case it can be prioritized earlier.</p>
+<p>That mode would turn skirmish wins into a broader layer of territorial or ecological conquest.</p>
+</section>
+<section aria-labelledby="victory-condition">
+<h2 id="victory-condition">Victory Condition <a class="anchor" href="#victory-condition" aria-label="Link to this section">#</a></h2>
+<p>Recommended default victory condition:</p>
+<ul>
+<li>Destroy the enemy colony core or queen equivalent.</li>
+</ul>
+<p>This is clearer than total annihilation and works better with a future domination mode.</p>
+<p>Match termination edge cases are locked in <a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a>.</p>
+<p>v0 termination summary:</p>
+<ul>
+<li>Same-tick dual core destruction resolves to draw.</li>
+<li>Timer expiry resolves to draw with no tie-breakers.</li>
+<li>Surrender uses a 3-second countdown before loss is committed.</li>
+<li>Disconnect enters paused reconnect flow (90+ second grace), then forfeit on timeout.</li>
+</ul>
+</section>
+<section aria-labelledby="match-length-and-pacing">
+<h2 id="match-length-and-pacing">Match Length And Pacing <a class="anchor" href="#match-length-and-pacing" aria-label="Link to this section">#</a></h2>
+<p>Target pacing:</p>
+<ul>
+<li>Short skirmishes: 15 to 20 minutes.</li>
+<li>Standard matches: 30 to 45 minutes.</li>
+<li>Larger matches: 60 minutes or more.</li>
+</ul>
+<p>The economy should support both early pressure and late expansion without flattening into a single dominant strategy.</p>
+</section>
+<section aria-labelledby="emergent-storytelling-goals">
+<h2 id="emergent-storytelling-goals">Emergent Storytelling Goals <a class="anchor" href="#emergent-storytelling-goals" aria-label="Link to this section">#</a></h2>
+<p>The game should produce story through play, not through scripted narrative.</p>
+<p>Examples:</p>
+<ul>
+<li>A desperate defense of a corpse field.</li>
+<li>A failed supply line raid that turns the map.</li>
+<li>A sudden aerial strike that steals a resource windfall.</li>
+<li>A local ecosystem war over a region-rich food source.</li>
+</ul>
+</section>
+<section aria-labelledby="open-questions">
+<h2 id="open-questions">Open Questions <a class="anchor" href="#open-questions" aria-label="Link to this section">#</a></h2>
+<p>These are intentionally left open for future iteration:</p>
+<ul>
+<li>Exact ant species lineup and how many factions ship first.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

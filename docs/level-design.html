@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTS Level Design - Onward</title>
+<meta name="description" content="Map-design principles and individual map concepts.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "RTS Level Design",
+  "description": "Map-design principles and individual map concepts.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": []
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "level-design",
+  "title": "RTS Level Design",
+  "group": "Design",
+  "status": {
+    "key": "draft",
+    "label": "Exploration draft"
+  },
+  "references": [],
+  "referencedBy": [],
+  "constants": {},
+  "sections": [
+    {
+      "id": "purpose-and-status",
+      "title": "Purpose And Status",
+      "level": 2
+    },
+    {
+      "id": "locked-constraints",
+      "title": "Locked Constraints",
+      "level": 2
+    },
+    {
+      "id": "map-design-principles",
+      "title": "Map Design Principles",
+      "level": 2
+    },
+    {
+      "id": "concept-001-watercut-crossing",
+      "title": "Concept 001: Watercut Crossing",
+      "level": 2
+    },
+    {
+      "id": "validation-checklist-for-a-playable-blockout",
+      "title": "Validation Checklist For A Playable Blockout",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html" aria-current="page">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose-and-status">Purpose And Status</a>
+</li>
+<li><a href="#locked-constraints">Locked Constraints</a>
+</li>
+<li><a href="#map-design-principles">Map Design Principles</a>
+<ul>
+<li><a href="#route-choice-over-single-lane-fighting">Route Choice Over Single-Lane Fighting</a></li>
+<li><a href="#logistics-creates-the-frontline">Logistics Creates The Frontline</a></li>
+<li><a href="#symmetry-of-opportunity">Symmetry Of Opportunity</a></li>
+<li><a href="#terrain-interaction-model-proposed">Terrain Interaction Model (Proposed)</a></li>
+<li><a href="#terrain-rules-to-preserve-map-integrity">Terrain Rules To Preserve Map Integrity</a></li>
+</ul></li>
+<li><a href="#concept-001-watercut-crossing">Concept 001: Watercut Crossing</a>
+<ul>
+<li><a href="#source">Source</a></li>
+<li><a href="#working-thesis">Working Thesis</a></li>
+<li><a href="#sketch-observations">Sketch Observations</a></li>
+<li><a href="#intended-play-flow">Intended Play Flow</a></li>
+<li><a href="#preliminary-zone-roles">Preliminary Zone Roles</a></li>
+<li><a href="#design-risks-to-test">Design Risks To Test</a></li>
+<li><a href="#open-questions-for-the-sketch">Open Questions For The Sketch</a></li>
+</ul></li>
+<li><a href="#validation-checklist-for-a-playable-blockout">Validation Checklist For A Playable Blockout</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="rts-level-design">RTS Level Design</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="draft">Exploration draft</span></dd><dt>Area</dt><dd>Design</dd></dl></div>
+<section aria-labelledby="purpose-and-status">
+<h2 id="purpose-and-status">Purpose And Status <a class="anchor" href="#purpose-and-status" aria-label="Link to this section">#</a></h2>
+<p>This document defines map-design principles and records individual map concepts for Ant RTS. It extends the existing combat, economy, logistics, and technical contracts; it does not replace them.</p>
+<p>Status: exploration draft. The first concept below is based on the supplied hand-drawn minimap. Its legend is recorded; terrain-interaction rules remain a proposed contract pending faction design and playtests.</p>
+</section>
+<section aria-labelledby="locked-constraints">
+<h2 id="locked-constraints">Locked Constraints <a class="anchor" href="#locked-constraints" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Maps use a fixed isometric camera and must remain readable at the 200 soft-cap / 260 hard-cap scale per player.</li>
+<li>Water is impassable and is the primary terrain tool for forming early routes and chokepoints.</li>
+<li>Biomass is valuable only after delivery to a colony core. Long collection routes are intentionally raidable.</li>
+<li>Corpses, neutral creatures, and regenerative sites create contestable map objectives.</li>
+<li>Players win by destroying the opposing colony core. Maps must permit base pressure without making the first attack decisive by default.</li>
+<li>Placement expands through adjacency projection. Starting areas need readable room for early construction and later connected growth.</li>
+</ul>
+</section>
+<section aria-labelledby="map-design-principles">
+<h2 id="map-design-principles">Map Design Principles <a class="anchor" href="#map-design-principles" aria-label="Link to this section">#</a></h2>
+<h3 id="route-choice-over-single-lane-fighting">Route Choice Over Single-Lane Fighting <a class="anchor" href="#route-choice-over-single-lane-fighting" aria-label="Link to this section">#</a></h3>
+<p>Every primary objective should have at least two meaningful approaches by the time the game reaches midgame. A chokepoint may make one approach dangerous, but it must not turn the entire match into permanent frontal combat.</p>
+<h3 id="logistics-creates-the-frontline">Logistics Creates The Frontline <a class="anchor" href="#logistics-creates-the-frontline" aria-label="Link to this section">#</a></h3>
+<p>Resource locations should create haul routes that can be scouted, protected, intercepted, or bypassed. A safe nearby site establishes the opening economy; increasingly valuable sites should require progressively more exposure.</p>
+<h3 id="symmetry-of-opportunity">Symmetry Of Opportunity <a class="anchor" href="#symmetry-of-opportunity" aria-label="Link to this section">#</a></h3>
+<p>For a competitive 1v1 map, starting positions, travel times, initial biomass, expansion space, and access to high-value objectives must be equivalent under map symmetry. Geometry need not be visually mirrored if the measurable advantages are matched.</p>
+<h3 id="terrain-interaction-model-proposed">Terrain Interaction Model (Proposed) <a class="anchor" href="#terrain-interaction-model-proposed" aria-label="Link to this section">#</a></h3>
+<p>Terrain must create stable early-game route pressure while allowing deliberate, visible midgame route changes. Terrain interactions are faction overlays, not universal default movement rules.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Terrain</th>
+<th>Baseline ground movement</th>
+<th>Baseline vision</th>
+<th>Proposed faction overlay</th>
+<th>Design guardrail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Water</td>
+<td>Blocked</td>
+<td>Does not block vision</td>
+<td>Weaver-style ant bridges create a ground crossing</td>
+<td>Crossing must require a visible, destructible commitment and cannot appear directly at an enemy core</td>
+</tr>
+<tr>
+<td>Rock</td>
+<td>Blocked</td>
+<td>Blocks ground-unit vision</td>
+<td>Flying units see over it</td>
+<td>Rock edges must not conceal an entire high-value objective from all ground approaches</td>
+</tr>
+<tr>
+<td>Vegetation</td>
+<td>Blocked</td>
+<td>Blocks vision, including from flying units</td>
+<td>Leafcutter-style clearing permanently opens a corridor</td>
+<td>Clearing must be telegraphed, slow enough to contest, and leave an unambiguous traversable result</td>
+</tr>
+<tr>
+<td>Open ground</td>
+<td>Traversable</td>
+<td>Open</td>
+<td>None</td>
+<td>Preserves maneuver space for swarms, flanks, and corpse recovery</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="terrain-rules-to-preserve-map-integrity">Terrain Rules To Preserve Map Integrity <a class="anchor" href="#terrain-rules-to-preserve-map-integrity" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Water stays impassable for every default ground unit; bridges are explicit faction abilities or structures, not ordinary pathing.</li>
+<li>A bridge creates a new approach, not a hidden teleport. It must have a visible endpoint, a clear footprint, counterplay through destruction or denial, and deterministic pathing behavior.</li>
+<li>Water vision creates scouting information but not traversal. Shoreline objectives may therefore be visible before they are safely collectible.</li>
+<li>Rock creates ground sightline breaks while allowing air scouting; vegetation creates stronger information denial because it blocks vision even from above.</li>
+<li>Vegetation clearing changes the map permanently for both players. Its owner gains the timing advantage, but neither player gains exclusive use of the resulting corridor.</li>
+<li>No player may clear vegetation or establish a bridge in a way that leaves the opposing colony with only one viable ground exit.</li>
+</ul>
+</section>
+<section aria-labelledby="concept-001-watercut-crossing">
+<h2 id="concept-001-watercut-crossing">Concept 001: Watercut Crossing <a class="anchor" href="#concept-001-watercut-crossing" aria-label="Link to this section">#</a></h2>
+<h3 id="source">Source <a class="anchor" href="#source" aria-label="Link to this section">#</a></h3>
+<p>Reference sketch: <a href="assets/img/example_level_layout.jpg">irl-documents/example_level_layout.jpg</a>.</p>
+<figure>
+<img src="assets/img/example_level_layout.jpg" alt="Hand-drawn minimap sketch of the example level layout" width="1000" loading="lazy">
+<figcaption>Hand-drawn minimap sketch the first map concept is based on.</figcaption>
+</figure>
+<h3 id="working-thesis">Working Thesis <a class="anchor" href="#working-thesis" aria-label="Link to this section">#</a></h3>
+<p>Two colonies develop from protected outer territories toward a broken central land corridor. Water and dense terrain divide the corridor into several crossings, turning biomass transport into a visible strategic commitment. The first player to take an exposed central objective gains throughput but exposes more than one route to raids.</p>
+<h3 id="sketch-observations">Sketch Observations <a class="anchor" href="#sketch-observations" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>The drawing is labelled as a <code>1 vs 1</code> example layout.</li>
+<li><code>H</code> marks a starting hive.</li>
+<li><code>S</code>, <code>M</code>, and <code>L</code> mark small, medium, and large biomass resource nodes respectively.</li>
+<li><code>B</code> marks a fortified bank.</li>
+<li>Blue areas mark water, green areas mark vegetation, and gray areas mark rock or elevation.</li>
+<li>The primary land shape contains several constrictions near water and terrain clusters instead of one uninterrupted central field.</li>
+</ul>
+<h3 id="intended-play-flow">Intended Play Flow <a class="anchor" href="#intended-play-flow" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Each player establishes a colony in a buildable, defensible outer zone with enough nearby biomass for the opening economy.</li>
+<li>Scouts identify two or more routes toward the center and locate the first exposed biomass opportunities.</li>
+<li>Players decide whether to protect a short, lower-value route or commit carriers and an escort to a longer contested route.</li>
+<li>Midgame forces fight for crossings, corpses, banks, and regenerative objectives while raiders threaten the alternate logistics path.</li>
+<li>Terrain-specialist factions can commit to opening a vegetation corridor or building a bridge, creating a legible new attack avenue that opponents can scout and contest.</li>
+<li>Late-game pressure uses the map's open flank spaces and multiple approaches to threaten the colony core rather than relying on a single choke break.</li>
+</ol>
+<h3 id="preliminary-zone-roles">Preliminary Zone Roles <a class="anchor" href="#preliminary-zone-roles" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Role</th>
+<th>Required properties</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home basin</td>
+<td>Starting colony and first construction area</td>
+<td>Symmetric buildable area, protected first biomass, at least two exits by midgame</td>
+</tr>
+<tr>
+<td>Near field</td>
+<td>Early contested harvesting</td>
+<td>Short enough to contest before a full army, exposed enough to enable worker raids</td>
+</tr>
+<tr>
+<td>Crossing network</td>
+<td>Central conflict and route control</td>
+<td>Multiple crossings with different widths or travel lengths; no single permanent lockout</td>
+</tr>
+<tr>
+<td>Side route</td>
+<td>Flanking and logistics disruption</td>
+<td>Longer or narrower than the central route, but viable for small raiding forces</td>
+</tr>
+<tr>
+<td>Major objective</td>
+<td>High-value biomass or regenerative income</td>
+<td>Contested from more than one direction and never safely banked without route exposure</td>
+</tr>
+<tr>
+<td>Bridge site</td>
+<td>Potential water crossing</td>
+<td>Clearly visible shore-to-shore span, with landing space on both banks and no direct core access</td>
+</tr>
+<tr>
+<td>Vegetation gate</td>
+<td>Potential cleared route</td>
+<td>Blocks movement and vision initially; opens a permanent, mutually usable corridor when cleared</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="design-risks-to-test">Design Risks To Test <a class="anchor" href="#design-risks-to-test" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>A water crossing may be narrow enough for AoE or behemoths to create an unbreakable late-game blockade.</li>
+<li>Nearby safe biomass may be too rich, delaying meaningful map interaction.</li>
+<li>Central resources may be too exposed for carriers to use, converting the middle into combat-only space.</li>
+<li>Uneven obstacle placement can create unequal travel distance or building room despite an apparently symmetric minimap.</li>
+<li>A bridge or cleared vegetation gate may make the defending route irrelevant, especially if it bypasses all existing bank and interception space.</li>
+<li>Flying vision over rock may expose resource routes too early, while vegetation that blocks air vision may create overly safe ambushes.</li>
+<li>Different movement overlays may bypass the intended logistics pressure; each must be measured against the base map's route and vision budget.</li>
+</ul>
+<h3 id="open-questions-for-the-sketch">Open Questions For The Sketch <a class="anchor" href="#open-questions-for-the-sketch" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Are the black ant marks unit routes, spawn markers, or examples of active battles and harvesting groups?</li>
+<li>Is gray terrain impassable rock, traversable elevation, or a different terrain category?</li>
+<li>Which locations are intended as the two colony starts, and which resource nodes are intended to be the first shared objective?</li>
+<li>Which water edges are deliberate bridge candidates, and should every bridge candidate have a corresponding counter-route?</li>
+<li>Which vegetation clusters are intended to be permanent blockers versus clearable route gates?</li>
+<li>Is the layout meant to be rotationally symmetric, mirrored, or deliberately asymmetric with equivalent opportunity?</li>
+</ol>
+</section>
+<section aria-labelledby="validation-checklist-for-a-playable-blockout">
+<h2 id="validation-checklist-for-a-playable-blockout">Validation Checklist For A Playable Blockout <a class="anchor" href="#validation-checklist-for-a-playable-blockout" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>[ ] Equalize colony-core-to-first-biomass travel time for both players.</li>
+<li>[ ] Measure travel time from each start to every shared objective by each viable route.</li>
+<li>[ ] Confirm every major objective has at least two approaches for ground units.</li>
+<li>[ ] Confirm a player cannot fully deny all opponent routes with one defensive position.</li>
+<li>[ ] Verify adjacency-projected construction has comparable expansion room at both starts.</li>
+<li>[ ] Test carrier interception and recovery along each route using early, mid, and late army sizes.</li>
+<li>[ ] Test fixed-isometric readability for crossings, water edges, resource objects, and unit silhouettes.</li>
+<li>[ ] Test bridge construction timing, destruction, visibility, and route-value change against the existing crossings.</li>
+<li>[ ] Test vegetation-clearing time, warning, permanence, and the value of the opened corridor to both players.</li>
+<li>[ ] Test ground and air vision at every rock edge, water edge, vegetation gate, and major objective.</li>
+<li>[ ] Test special movement overlays after faction movement rules are finalized.</li>
+</ul>
+</section>
+
+
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

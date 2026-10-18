@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Tech Tree Operational Spec - Onward</title>
+<meta name="description" content="Tech tiers, prerequisite structure, gating, and recovery policy.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Tech Tree Operational Spec",
+  "description": "Tech tiers, prerequisite structure, gating, and recovery policy.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "design-doc.html",
+    "economy-design.html",
+    "resource-ownership-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "tech-tree-operational-spec",
+  "title": "Ant RTS Tech Tree Operational Spec",
+  "group": "Systems",
+  "status": {
+    "key": "placeholder",
+    "label": "Placeholder-based v0 baseline"
+  },
+  "references": [
+    "design-doc",
+    "economy-design",
+    "resource-ownership-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [
+    "combat-spec",
+    "design-doc",
+    "design-review",
+    "index",
+    "potential-factions",
+    "technical-requirements"
+  ],
+  "constants": {},
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "scope-and-status",
+      "title": "Scope And Status",
+      "level": 2
+    },
+    {
+      "id": "baseline-principles",
+      "title": "Baseline Principles",
+      "level": 2
+    },
+    {
+      "id": "tier-model-v0",
+      "title": "Tier Model (v0)",
+      "level": 2
+    },
+    {
+      "id": "unlock-graph-contract-placeholder",
+      "title": "Unlock Graph Contract (Placeholder)",
+      "level": 2
+    },
+    {
+      "id": "branching-and-exclusivity-policy",
+      "title": "Branching And Exclusivity Policy",
+      "level": 2
+    },
+    {
+      "id": "upgrade-economy-policy",
+      "title": "Upgrade Economy Policy",
+      "level": 2
+    },
+    {
+      "id": "timing-windows",
+      "title": "Timing Windows",
+      "level": 2
+    },
+    {
+      "id": "failed-rush-recovery-and-risk-budget",
+      "title": "Failed Rush Recovery And Risk Budget",
+      "level": 2
+    },
+    {
+      "id": "counterplay-and-telegraphing-contract",
+      "title": "Counterplay And Telegraphing Contract",
+      "level": 2
+    },
+    {
+      "id": "gating-policy-for-high-impact-unit-types",
+      "title": "Gating Policy For High-Impact Unit Types",
+      "level": 2
+    },
+    {
+      "id": "ai-build-archetype-compatibility-v1",
+      "title": "AI Build Archetype Compatibility (v1)",
+      "level": 2
+    },
+    {
+      "id": "multiplayer-balance-policy",
+      "title": "Multiplayer Balance Policy",
+      "level": 2
+    },
+    {
+      "id": "determinism-and-readability-guardrails",
+      "title": "Determinism And Readability Guardrails",
+      "level": 2
+    },
+    {
+      "id": "publishable-artifact-checklist-v0",
+      "title": "Publishable Artifact Checklist (v0)",
+      "level": 2
+    },
+    {
+      "id": "open-items-to-resolve-in-next-pass",
+      "title": "Open Items To Resolve In Next Pass",
+      "level": 2
+    },
+    {
+      "id": "related-documents",
+      "title": "Related Documents",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html" aria-current="page">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#scope-and-status">Scope And Status</a>
+</li>
+<li><a href="#baseline-principles">Baseline Principles</a>
+</li>
+<li><a href="#tier-model-v0">Tier Model (v0)</a>
+</li>
+<li><a href="#unlock-graph-contract-placeholder">Unlock Graph Contract (Placeholder)</a>
+<ul>
+<li><a href="#building-nodes">Building Nodes</a></li>
+<li><a href="#upgrade-nodes">Upgrade Nodes</a></li>
+<li><a href="#unit-class-unlock-nodes">Unit Class Unlock Nodes</a></li>
+<li><a href="#directed-dependencies-v0-placeholder">Directed Dependencies (v0 Placeholder)</a></li>
+</ul></li>
+<li><a href="#branching-and-exclusivity-policy">Branching And Exclusivity Policy</a>
+</li>
+<li><a href="#upgrade-economy-policy">Upgrade Economy Policy</a>
+</li>
+<li><a href="#timing-windows">Timing Windows</a>
+</li>
+<li><a href="#failed-rush-recovery-and-risk-budget">Failed Rush Recovery And Risk Budget</a>
+<ul>
+<li><a href="#failure-definition-v0">Failure Definition (v0)</a></li>
+<li><a href="#intended-penalty-window-v0">Intended Penalty Window (v0)</a></li>
+<li><a href="#recovery-rules-v0">Recovery Rules (v0)</a></li>
+</ul></li>
+<li><a href="#counterplay-and-telegraphing-contract">Counterplay And Telegraphing Contract</a>
+</li>
+<li><a href="#gating-policy-for-high-impact-unit-types">Gating Policy For High-Impact Unit Types</a>
+</li>
+<li><a href="#ai-build-archetype-compatibility-v1">AI Build Archetype Compatibility (v1)</a>
+</li>
+<li><a href="#multiplayer-balance-policy">Multiplayer Balance Policy</a>
+</li>
+<li><a href="#determinism-and-readability-guardrails">Determinism And Readability Guardrails</a>
+</li>
+<li><a href="#publishable-artifact-checklist-v0">Publishable Artifact Checklist (v0)</a>
+</li>
+<li><a href="#open-items-to-resolve-in-next-pass">Open Items To Resolve In Next Pass</a>
+</li>
+<li><a href="#related-documents">Related Documents</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-tech-tree-operational-spec">Ant RTS Tech Tree Operational Spec</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="placeholder">Placeholder-based v0 baseline</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define a publishable, implementation-ready baseline for tech progression using placeholder nodes and timing windows that can later be mapped to faction-specific names, units, and exact values.</p>
+<p>This document intentionally locks structure before final faction design.</p>
+</section>
+<section aria-labelledby="scope-and-status">
+<h2 id="scope-and-status">Scope And Status <a class="anchor" href="#scope-and-status" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Status: v0 structural baseline.</li>
+<li>This is a shared baseline graph with faction overlays, not faction-final content.</li>
+<li>Launch design intent is to complete non-faction systems first, then apply faction identity as deviations from this baseline.</li>
+</ul>
+</section>
+<section aria-labelledby="baseline-principles">
+<h2 id="baseline-principles">Baseline Principles <a class="anchor" href="#baseline-principles" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>One shared tech skeleton across factions preserves readability and onboarding.</li>
+<li>Factions should deviate through selective node substitutions, branch emphasis, and modifier overlays.</li>
+<li>Tech should create both pressure opportunities and logistics scaling opportunities.</li>
+<li>Any unlock that strongly disrupts supply lines must be telegraphed and gated.</li>
+</ul>
+</section>
+<section aria-labelledby="tier-model-v0">
+<h2 id="tier-model-v0">Tier Model (v0) <a class="anchor" href="#tier-model-v0" aria-label="Link to this section">#</a></h2>
+<p>There are three baseline progression tiers:</p>
+<ol>
+<li>Establishing</li>
+<li>Expanding</li>
+<li>Thriving</li>
+</ol>
+<p>Tier transitions are hybrid transitions (power plus economy):</p>
+<ul>
+<li>They unlock stronger combat pressure options.</li>
+<li>They also unlock units/upgrades that can process larger biomass logistics loads.</li>
+</ul>
+</section>
+<section aria-labelledby="unlock-graph-contract-placeholder">
+<h2 id="unlock-graph-contract-placeholder">Unlock Graph Contract (Placeholder) <a class="anchor" href="#unlock-graph-contract-placeholder" aria-label="Link to this section">#</a></h2>
+<p>Node names are placeholders and should be replaced by faction-specific names later.</p>
+<h3 id="building-nodes">Building Nodes <a class="anchor" href="#building-nodes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>B0: Colony Core (start).</li>
+<li>B1: Basic Infantry Production.</li>
+<li>B2: Logistics/Expansion Hub (placeholder for bank-route and throughput support).</li>
+<li>B3: Specialist Structure (faction overlay slot).</li>
+</ul>
+<h3 id="upgrade-nodes">Upgrade Nodes <a class="anchor" href="#upgrade-nodes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>U1: Tier 2 Access Gate.</li>
+<li>U2: Logistics Throughput Upgrade.</li>
+<li>U3: Specialist Mobility/Disruption Package.</li>
+<li>U4: Tier 3 Access Gate.</li>
+</ul>
+<h3 id="unit-class-unlock-nodes">Unit Class Unlock Nodes <a class="anchor" href="#unit-class-unlock-nodes" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>C1: Baseline frontline units.</li>
+<li>C2: Mid-tier pressure units.</li>
+<li>C3: Special-movement disruption units (ranged AoE, flyers, burrowers).</li>
+<li>C4: Behemoth-class swing units.</li>
+</ul>
+<h3 id="directed-dependencies-v0-placeholder">Directed Dependencies (v0 Placeholder) <a class="anchor" href="#directed-dependencies-v0-placeholder" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>B0 -&gt; B1 -&gt; U1 -&gt; C2.</li>
+<li>B1 + economy threshold gate -&gt; B2 -&gt; U2.</li>
+<li>B1 + U1 + economy threshold gate -&gt; B3 -&gt; U3 -&gt; C3.</li>
+<li>B3 + U4 + economy threshold gate -&gt; C4.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Economy threshold gate is currently modeled as a biomass-per-minute condition.</li>
+<li>Exact threshold values are deferred until factions, map examples, and loop timings are more mature.</li>
+</ul>
+</section>
+<section aria-labelledby="branching-and-exclusivity-policy">
+<h2 id="branching-and-exclusivity-policy">Branching And Exclusivity Policy <a class="anchor" href="#branching-and-exclusivity-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>No hard branch exclusivity in v0.</li>
+<li>All major branches are reachable in a match.</li>
+<li>Opportunity cost, not lockout, is the main balancing lever.</li>
+</ul>
+<p>Fork design rule:</p>
+<ul>
+<li>Choosing a branch must delay at least one alternate branch enough to create counterplay scouting windows.</li>
+<li>Delay is currently a placeholder band and will be set after timing calibration.</li>
+</ul>
+</section>
+<section aria-labelledby="upgrade-economy-policy">
+<h2 id="upgrade-economy-policy">Upgrade Economy Policy <a class="anchor" href="#upgrade-economy-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Preferred model: mixed scaling (cheap entry, steeper specialization).</li>
+<li>Allowed fallback: convex scaling for repeatable infinite-tier stat upgrades.</li>
+<li>Expected normal-build spend by minute 10:
+<ul>
+<li>Tech/upgrades: 15% to 20% of total biomass spend.</li>
+<li>Remaining spend is intentionally left available for workers, army mass, and map pressure decisions.</li>
+</ul>
+</li>
+</ul>
+</section>
+<section aria-labelledby="timing-windows">
+<h2 id="timing-windows">Timing Windows <a class="anchor" href="#timing-windows" aria-label="Link to this section">#</a></h2>
+<p>Exact earliest timestamps are intentionally deferred.</p>
+<p>Deferred timing set:</p>
+<ul>
+<li>First meaningful combat upgrade.</li>
+<li>First mobility/vision utility unlock.</li>
+<li>First siege or base-break option.</li>
+<li>First anti-air answer.</li>
+<li>First endgame-cap swing unit/effect.</li>
+</ul>
+<p>Reason for deferment:</p>
+<ul>
+<li>Current project phase lacks finalized faction roster, complete combat spec, and map fairness examples needed to set durable timing targets.</li>
+</ul>
+</section>
+<section aria-labelledby="failed-rush-recovery-and-risk-budget">
+<h2 id="failed-rush-recovery-and-risk-budget">Failed Rush Recovery And Risk Budget <a class="anchor" href="#failed-rush-recovery-and-risk-budget" aria-label="Link to this section">#</a></h2>
+<h3 id="failure-definition-v0">Failure Definition (v0) <a class="anchor" href="#failure-definition-v0" aria-label="Link to this section">#</a></h3>
+<p>A tech rush is considered failed when it produces no meaningful damage to enemy logistics (supply chain/resource-site flow), including no durable disruption to contested economy lanes.</p>
+<h3 id="intended-penalty-window-v0">Intended Penalty Window (v0) <a class="anchor" href="#intended-penalty-window-v0" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Failed rush vulnerability target: 40 to 80 seconds.</li>
+</ul>
+<h3 id="recovery-rules-v0">Recovery Rules (v0) <a class="anchor" href="#recovery-rules-v0" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Salvage/refund on canceled or destroyed in-progress tech is allowed.</li>
+<li>Defender-side shorter corpse-return distance is an intended soft rubber-band effect.</li>
+<li>Expansion semantics (including how banks are treated in this context) remain open and will be finalized with faction and map integration.</li>
+</ul>
+</section>
+<section aria-labelledby="counterplay-and-telegraphing-contract">
+<h2 id="counterplay-and-telegraphing-contract">Counterplay And Telegraphing Contract <a class="anchor" href="#counterplay-and-telegraphing-contract" aria-label="Link to this section">#</a></h2>
+<p>Each major spike/disruption tech must expose scoutable and punishable windows.</p>
+<p>Required counterplay channels:</p>
+<ul>
+<li>Visible prerequisite building scouting.</li>
+<li>Build-time vulnerability window.</li>
+<li>Counter-tech response path.</li>
+</ul>
+<p>Optional channel:</p>
+<ul>
+<li>Resource-starvation denial pressure, but this should not dominate because static site income is intentionally secondary.</li>
+</ul>
+<p>Information visibility policy:</p>
+<ul>
+<li>Baseline: scouting reveals building presence.</li>
+<li>Preferred extension: active/working structures show readable VFX state.</li>
+<li>Upgrade-driven model/visual changes on units are encouraged for readability.</li>
+</ul>
+</section>
+<section aria-labelledby="gating-policy-for-high-impact-unit-types">
+<h2 id="gating-policy-for-high-impact-unit-types">Gating Policy For High-Impact Unit Types <a class="anchor" href="#gating-policy-for-high-impact-unit-types" aria-label="Link to this section">#</a></h2>
+<p>Units with high supply-line disruption or extreme positional leverage must use stronger composite gating (building + upgrade + economy gate):</p>
+<ul>
+<li>Flyers.</li>
+<li>Burrowers.</li>
+<li>Ranged AoE specialists.</li>
+<li>Behemoth-class units.</li>
+</ul>
+<p>Rationale:</p>
+<ul>
+<li>These mechanics can bypass or invalidate normal frontline/supply-line interaction if unlocked too early or with weak telegraphing.</li>
+</ul>
+</section>
+<section aria-labelledby="ai-build-archetype-compatibility-v1">
+<h2 id="ai-build-archetype-compatibility-v1">AI Build Archetype Compatibility (v1) <a class="anchor" href="#ai-build-archetype-compatibility-v1" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>AI v1 targets one faction first.</li>
+<li>AI uses curated archetypes, not full dynamic branch search.</li>
+<li>Minimum archetype set for variety:
+<ul>
+<li>Economic.</li>
+<li>Aggressive.</li>
+<li>Balanced.</li>
+<li>Raiding-focused.</li>
+</ul>
+</li>
+</ul>
+</section>
+<section aria-labelledby="multiplayer-balance-policy">
+<h2 id="multiplayer-balance-policy">Multiplayer Balance Policy <a class="anchor" href="#multiplayer-balance-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>v1 uses one shared tech timing model across 1v1 and team modes.</li>
+<li>Strict competitive split-balance is not a v1 priority; fun-forward consistency is preferred.</li>
+</ul>
+</section>
+<section aria-labelledby="determinism-and-readability-guardrails">
+<h2 id="determinism-and-readability-guardrails">Determinism And Readability Guardrails <a class="anchor" href="#determinism-and-readability-guardrails" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Probabilistic combat procs are allowed in principle.</li>
+<li>Aura stacking is allowed in principle.</li>
+<li>Any probabilistic or stacking system added through tech must still satisfy replay determinism and combat readability constraints in the combat and technical specs.</li>
+<li>Hidden or ambiguous stacking math should be avoided unless clearly surfaced in UI.</li>
+</ul>
+</section>
+<section aria-labelledby="publishable-artifact-checklist-v0">
+<h2 id="publishable-artifact-checklist-v0">Publishable Artifact Checklist (v0) <a class="anchor" href="#publishable-artifact-checklist-v0" aria-label="Link to this section">#</a></h2>
+<p>The following are mandatory now as template artifacts:</p>
+<ul>
+<li>Tech graph diagram (placeholder node names allowed).</li>
+<li>Per-node contract table: cost field, time field, prerequisites, unlocks, counterplay notes.</li>
+<li>Timing-window template chart with deferred-value markers.</li>
+<li>Recovery and failed-rush policy notes.</li>
+<li>Tuning-band placeholders for future patch safety.</li>
+</ul>
+</section>
+<section aria-labelledby="open-items-to-resolve-in-next-pass">
+<h2 id="open-items-to-resolve-in-next-pass">Open Items To Resolve In Next Pass <a class="anchor" href="#open-items-to-resolve-in-next-pass" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Final expansion semantics for risk/recovery language (including bank linkage).</li>
+<li>Exact earliest unlock timing windows.</li>
+<li>Exact economy threshold values used by tier gates.</li>
+<li>Concrete fork-by-fork opportunity-cost targets.</li>
+<li>Mapping placeholder nodes to faction-specific names and units.</li>
+</ul>
+</section>
+<section aria-labelledby="related-documents">
+<h2 id="related-documents">Related Documents <a class="anchor" href="#related-documents" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><a href="design-doc.html"><a href="design-doc.html">design-doc.html</a></a></li>
+<li><a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a></li>
+<li><a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a></li>
+<li><a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a></li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

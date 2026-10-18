@@ -1,0 +1,101 @@
+<!doctype html>
+<!-- Template for a new docs page. Copy to docs/<slug>.html, replace every PLACEHOLDER,
+     and follow .github/skills/html-docs/SKILL.md (register the page in every nav, index.html,
+     and the doc-links blocks of related pages). Delete this comment in the copy. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLACEHOLDER TITLE - Onward</title>
+<meta name="description" content="PLACEHOLDER one-sentence description.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "PLACEHOLDER TITLE",
+  "description": "PLACEHOLDER one-sentence description.",
+  "isPartOf": { "@type": "CreativeWork", "name": "Onward design documentation", "url": "index.html" },
+  "citation": ["other-page.html"]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "PLACEHOLDER-slug",
+  "title": "PLACEHOLDER TITLE",
+  "group": "Design | Systems | Technical | Process | Art",
+  "status": { "key": "draft", "label": "Exploration draft" },
+  "references": ["other-page"],
+  "referencedBy": [],
+  "constants": { "example_constant": "1" },
+  "sections": [{ "id": "purpose", "title": "Purpose", "level": 2 }]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a></li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1>PLACEHOLDER TITLE</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="draft">Exploration draft</span></dd><dt>Area</dt><dd>Design</dd></dl></div>
+
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>What this document defines. Link related rules: <a href="other-page.html#section-id">Other page</a>.</p>
+<p>A locked value: <code data-constant="example_constant" data-value="1">example_constant = 1</code>.</p>
+</section>
+
+<!-- Table example
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Item</th><th scope="col">Value</th></tr></thead>
+<tbody><tr><td>A</td><td>1</td></tr></tbody>
+</table></div>
+-->
+
+<!-- Figure example
+<figure>
+<img src="assets/img/NAME.png" alt="What the image shows and why it matters" width="1000" loading="lazy">
+<figcaption>Caption.</figcaption>
+</figure>
+-->
+
+<!-- Diagram example
+<svg class="diagram" viewBox="0 0 320 80" role="img" aria-labelledby="d1-t d1-d">
+<title id="d1-t">Supply line</title><desc id="d1-d">Gatherer delivers biomass to the core.</desc>
+<rect x="10" y="20" width="110" height="40" rx="6" style="fill:var(--surface);stroke:var(--accent)"/>
+<text x="65" y="45" text-anchor="middle" style="fill:var(--fg)" font-size="14">Gatherer</text>
+<path d="M120 40 H200" style="stroke:var(--muted)" fill="none"/>
+<rect x="200" y="20" width="110" height="40" rx="6" style="fill:var(--surface);stroke:var(--ok)"/>
+<text x="255" y="45" text-anchor="middle" style="fill:var(--fg)" font-size="14">Core</text>
+</svg>
+-->
+
+<aside class="doc-links" aria-label="Related documents">
+<div><h2>This document references</h2><ul><li><a href="other-page.html">Other page</a></li></ul></div>
+<div><h2>Referenced by</h2><ul><li><a href="another-page.html">Another page</a></li></ul></div>
+</aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

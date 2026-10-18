@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Match Termination Specification (v0) - Onward</title>
+<meta name="description" content="Match outcomes, surrender, disconnects, resume flow, and replay metadata.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Match Termination Specification (v0)",
+  "description": "Match outcomes, surrender, disconnects, resume flow, and replay metadata.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": []
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "match-termination-spec",
+  "title": "Ant RTS Match Termination Specification (v0)",
+  "group": "Systems",
+  "status": {
+    "key": "locked",
+    "label": "Locked for v0"
+  },
+  "references": [],
+  "referencedBy": [
+    "design-doc",
+    "design-review",
+    "index",
+    "potential-factions",
+    "technical-requirements"
+  ],
+  "constants": {
+    "match_termination_spec_version": "1"
+  },
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "scope",
+      "title": "Scope",
+      "level": 2
+    },
+    {
+      "id": "core-outcomes",
+      "title": "Core Outcomes",
+      "level": 2
+    },
+    {
+      "id": "locked-outcome-rules",
+      "title": "Locked Outcome Rules",
+      "level": 2
+    },
+    {
+      "id": "same-tick-priority-order",
+      "title": "Same-Tick Priority Order",
+      "level": 2
+    },
+    {
+      "id": "match-termination-state-machine",
+      "title": "Match Termination State Machine",
+      "level": 2
+    },
+    {
+      "id": "replay-and-end-state-metadata-audit-grade",
+      "title": "Replay And End-State Metadata (Audit Grade)",
+      "level": 2
+    },
+    {
+      "id": "versioning",
+      "title": "Versioning",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html" aria-current="page">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#scope">Scope</a>
+</li>
+<li><a href="#core-outcomes">Core Outcomes</a>
+</li>
+<li><a href="#locked-outcome-rules">Locked Outcome Rules</a>
+<ul>
+<li><a href="#core-destruction">Core Destruction</a></li>
+<li><a href="#timer-expiry">Timer Expiry</a></li>
+<li><a href="#voluntary-surrender">Voluntary Surrender</a></li>
+<li><a href="#disconnect">Disconnect</a></li>
+<li><a href="#resume-authority">Resume Authority</a></li>
+<li><a href="#stalemate">Stalemate</a></li>
+</ul></li>
+<li><a href="#same-tick-priority-order">Same-Tick Priority Order</a>
+</li>
+<li><a href="#match-termination-state-machine">Match Termination State Machine</a>
+</li>
+<li><a href="#replay-and-end-state-metadata-audit-grade">Replay And End-State Metadata (Audit Grade)</a>
+</li>
+<li><a href="#versioning">Versioning</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-match-termination-specification-v0">Ant RTS Match Termination Specification (v0)</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="locked">Locked for v0</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define deterministic end-of-match behavior for skirmish with explicit priority, tie handling, disconnect flow, and replay verification metadata.</p>
+</section>
+<section aria-labelledby="scope">
+<h2 id="scope">Scope <a class="anchor" href="#scope" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Applies to AI skirmish and multiplayer skirmish.</li>
+<li>Applies to match outcome resolution only, not matchmaking, ranking, or anti-cheat policy.</li>
+</ul>
+</section>
+<section aria-labelledby="core-outcomes">
+<h2 id="core-outcomes">Core Outcomes <a class="anchor" href="#core-outcomes" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Win</li>
+<li>Loss</li>
+<li>Draw</li>
+</ul>
+</section>
+<section aria-labelledby="locked-outcome-rules">
+<h2 id="locked-outcome-rules">Locked Outcome Rules <a class="anchor" href="#locked-outcome-rules" aria-label="Link to this section">#</a></h2>
+<h3 id="core-destruction">Core Destruction <a class="anchor" href="#core-destruction" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>A player wins when the opposing colony core is destroyed.</li>
+<li>If both colony cores are destroyed in the same simulation tick, the match result is <code>Draw</code>.</li>
+</ul>
+<h3 id="timer-expiry">Timer Expiry <a class="anchor" href="#timer-expiry" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>If the match timer expires before a decisive core kill, the result is <code>Draw</code>.</li>
+<li>No tie-breaker hierarchy is applied in v0.</li>
+</ul>
+<h3 id="voluntary-surrender">Voluntary Surrender <a class="anchor" href="#voluntary-surrender" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Surrender uses a 3-second confirmation countdown.</li>
+<li>If countdown completes, surrender resolves immediately and the surrendering player loses.</li>
+</ul>
+<h3 id="disconnect">Disconnect <a class="anchor" href="#disconnect" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>On disconnect, the match enters a paused reconnect state.</li>
+<li>Reconnect window is 90 seconds minimum.</li>
+<li>If reconnect succeeds before timeout, match resumes.</li>
+<li>If reconnect fails by timeout, disconnected player forfeits.</li>
+<li>On disconnect entry, the game writes a deterministic resume snapshot.</li>
+</ul>
+<h3 id="resume-authority">Resume Authority <a class="anchor" href="#resume-authority" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Dual-mode policy:
+<ul>
+<li>Friend/custom contexts may resume from the disconnect snapshot as an authoritative continuation.</li>
+<li>Competitive contexts (if introduced later) can disable authoritative resume.</li>
+</ul>
+</li>
+</ul>
+<h3 id="stalemate">Stalemate <a class="anchor" href="#stalemate" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>No separate stalemate detector in v0.</li>
+<li>Only core destruction, surrender, disconnect forfeit, or timer expiry can terminate a match.</li>
+</ul>
+</section>
+<section aria-labelledby="same-tick-priority-order">
+<h2 id="same-tick-priority-order">Same-Tick Priority Order <a class="anchor" href="#same-tick-priority-order" aria-label="Link to this section">#</a></h2>
+<p>If multiple termination triggers resolve on the same simulation tick, apply this strict priority:</p>
+<ol>
+<li>Core destruction</li>
+<li>Surrender completion</li>
+<li>Disconnect forfeit (grace timeout reached)</li>
+<li>Timer expiry</li>
+</ol>
+<p>This priority is deterministic and replay-auditable.</p>
+</section>
+<section aria-labelledby="match-termination-state-machine">
+<h2 id="match-termination-state-machine">Match Termination State Machine <a class="anchor" href="#match-termination-state-machine" aria-label="Link to this section">#</a></h2>
+<p>States:</p>
+<ul>
+<li>Running</li>
+<li>PausedReconnect</li>
+<li>Ended</li>
+</ul>
+<p>Transitions:</p>
+<ol>
+<li>
+<p><code>Running -&gt; Ended</code></p>
+<ul>
+<li>Trigger: core destruction event</li>
+<li>Result: win/loss, or draw for same-tick dual core death</li>
+</ul>
+</li>
+<li>
+<p><code>Running -&gt; Ended</code></p>
+<ul>
+<li>Trigger: surrender countdown complete</li>
+<li>Result: surrendering player loses</li>
+</ul>
+</li>
+<li>
+<p><code>Running -&gt; PausedReconnect</code></p>
+<ul>
+<li>Trigger: player disconnect</li>
+<li>Side effect: deterministic resume snapshot saved</li>
+</ul>
+</li>
+<li>
+<p><code>PausedReconnect -&gt; Running</code></p>
+<ul>
+<li>Trigger: disconnected player reconnects within grace window</li>
+</ul>
+</li>
+<li>
+<p><code>PausedReconnect -&gt; Ended</code></p>
+<ul>
+<li>Trigger: grace window timeout reached</li>
+<li>Result: disconnected player forfeits</li>
+</ul>
+</li>
+<li>
+<p><code>Running -&gt; Ended</code></p>
+<ul>
+<li>Trigger: timer expiry</li>
+<li>Result: draw</li>
+</ul>
+</li>
+</ol>
+</section>
+<section aria-labelledby="replay-and-end-state-metadata-audit-grade">
+<h2 id="replay-and-end-state-metadata-audit-grade">Replay And End-State Metadata (Audit Grade) <a class="anchor" href="#replay-and-end-state-metadata-audit-grade" aria-label="Link to this section">#</a></h2>
+<p>Each finished match record must include:</p>
+<ul>
+<li>Match id</li>
+<li>Final simulation tick</li>
+<li>Final outcome (<code>Win</code>, <code>Loss</code>, <code>Draw</code>)</li>
+<li>Winner player id (nullable for draw)</li>
+<li>Termination cause (<code>CoreKill</code>, <code>DualCoreKill</code>, <code>Surrender</code>, <code>DisconnectForfeit</code>, <code>TimerDraw</code>)</li>
+<li>Trigger event id(s)</li>
+<li>Same-tick priority trace (all candidate termination triggers and final selected trigger)</li>
+<li>Per-player terminal state summary (connected/disconnected, surrendered flag, core alive/dead)</li>
+<li>Disconnect timeline (disconnect tick, reconnect tick if any, grace expiry tick)</li>
+<li>Surrender timeline (request tick, countdown end tick)</li>
+<li>Resume snapshot id and content hash when created</li>
+<li>Ruleset version (<code>match_termination_spec_version</code>)</li>
+</ul>
+</section>
+<section aria-labelledby="versioning">
+<h2 id="versioning">Versioning <a class="anchor" href="#versioning" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Initial release: <code data-constant="match_termination_spec_version" data-value="1">match_termination_spec_version = 1</code>.</li>
+<li>Any future change to priority, timers, or tie behavior increments this version.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

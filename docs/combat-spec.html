@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ant RTS Combat Specification - Onward</title>
+<meta name="description" content="Combat roles, damage model, counterplay, TTK targets, and determinism.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Ant RTS Combat Specification",
+  "description": "Combat roles, damage model, counterplay, TTK targets, and determinism.",
+  "isPartOf": {
+    "@type": "CreativeWork",
+    "name": "Onward design documentation",
+    "url": "index.html"
+  },
+  "citation": [
+    "design-doc.html",
+    "economy-design.html",
+    "resource-ownership-spec.html",
+    "tech-tree-operational-spec.html",
+    "technical-requirements.html"
+  ]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "combat-spec",
+  "title": "Ant RTS Combat Specification",
+  "group": "Systems",
+  "status": {
+    "key": "baseline",
+    "label": "v0 baseline"
+  },
+  "references": [
+    "design-doc",
+    "economy-design",
+    "resource-ownership-spec",
+    "tech-tree-operational-spec",
+    "technical-requirements"
+  ],
+  "referencedBy": [
+    "design-doc",
+    "design-review",
+    "index",
+    "potential-factions",
+    "technical-requirements"
+  ],
+  "constants": {},
+  "sections": [
+    {
+      "id": "purpose",
+      "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "scope-and-status",
+      "title": "Scope And Status",
+      "level": 2
+    },
+    {
+      "id": "core-combat-philosophy",
+      "title": "Core Combat Philosophy",
+      "level": 2
+    },
+    {
+      "id": "time-to-kill-ttk-targets",
+      "title": "Time-To-Kill (TTK) Targets",
+      "level": 2
+    },
+    {
+      "id": "role-taxonomy-contract",
+      "title": "Role Taxonomy Contract",
+      "level": 2
+    },
+    {
+      "id": "counter-system-policy",
+      "title": "Counter System Policy",
+      "level": 2
+    },
+    {
+      "id": "damage-model-and-formulas",
+      "title": "Damage Model And Formulas",
+      "level": 2
+    },
+    {
+      "id": "hit-resolution-and-friendly-fire",
+      "title": "Hit Resolution And Friendly Fire",
+      "level": 2
+    },
+    {
+      "id": "aoe-policy",
+      "title": "AoE Policy",
+      "level": 2
+    },
+    {
+      "id": "status-effects",
+      "title": "Status Effects",
+      "level": 2
+    },
+    {
+      "id": "proc-randomness-policy",
+      "title": "Proc Randomness Policy",
+      "level": 2
+    },
+    {
+      "id": "aura-stacking-policy",
+      "title": "Aura Stacking Policy",
+      "level": 2
+    },
+    {
+      "id": "regeneration-and-retreat",
+      "title": "Regeneration And Retreat",
+      "level": 2
+    },
+    {
+      "id": "targeting-and-command-responsiveness",
+      "title": "Targeting And Command Responsiveness",
+      "level": 2
+    },
+    {
+      "id": "supply-line-disruption-verbs-combat-linked",
+      "title": "Supply-Line Disruption Verbs (Combat Linked)",
+      "level": 2
+    },
+    {
+      "id": "structure-combat-policy",
+      "title": "Structure Combat Policy",
+      "level": 2
+    },
+    {
+      "id": "behemoth-contract",
+      "title": "Behemoth Contract",
+      "level": 2
+    },
+    {
+      "id": "micro-ceiling-target",
+      "title": "Micro Ceiling Target",
+      "level": 2
+    },
+    {
+      "id": "readability-and-telegraphing-requirements",
+      "title": "Readability And Telegraphing Requirements",
+      "level": 2
+    },
+    {
+      "id": "determinism-non-negotiables",
+      "title": "Determinism Non-Negotiables",
+      "level": 2
+    },
+    {
+      "id": "test-scenarios-and-telemetry-hooks-required",
+      "title": "Test Scenarios And Telemetry Hooks (Required)",
+      "level": 2
+    },
+    {
+      "id": "deferred-to-next-pass",
+      "title": "Deferred To Next Pass",
+      "level": 2
+    },
+    {
+      "id": "related-documents",
+      "title": "Related Documents",
+      "level": 2
+    }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html" aria-current="page">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a>
+</li>
+<li><a href="#scope-and-status">Scope And Status</a>
+</li>
+<li><a href="#core-combat-philosophy">Core Combat Philosophy</a>
+</li>
+<li><a href="#time-to-kill-ttk-targets">Time-To-Kill (TTK) Targets</a>
+</li>
+<li><a href="#role-taxonomy-contract">Role Taxonomy Contract</a>
+<ul>
+<li><a href="#mandatory-v1-capability-coverage-per-faction">Mandatory v1 capability coverage per faction</a></li>
+<li><a href="#role-composition-policy">Role composition policy</a></li>
+<li><a href="#baseline-role-matrix-template">Baseline role matrix template</a></li>
+</ul></li>
+<li><a href="#counter-system-policy">Counter System Policy</a>
+</li>
+<li><a href="#damage-model-and-formulas">Damage Model And Formulas</a>
+<ul>
+<li><a href="#damage-channels-v1">Damage channels (v1)</a></li>
+<li><a href="#armor-model-v1">Armor model (v1)</a></li>
+<li><a href="#additional-effect-channels">Additional effect channels</a></li>
+</ul></li>
+<li><a href="#hit-resolution-and-friendly-fire">Hit Resolution And Friendly Fire</a>
+</li>
+<li><a href="#aoe-policy">AoE Policy</a>
+</li>
+<li><a href="#status-effects">Status Effects</a>
+</li>
+<li><a href="#proc-randomness-policy">Proc Randomness Policy</a>
+</li>
+<li><a href="#aura-stacking-policy">Aura Stacking Policy</a>
+</li>
+<li><a href="#regeneration-and-retreat">Regeneration And Retreat</a>
+</li>
+<li><a href="#targeting-and-command-responsiveness">Targeting And Command Responsiveness</a>
+</li>
+<li><a href="#supply-line-disruption-verbs-combat-linked">Supply-Line Disruption Verbs (Combat Linked)</a>
+</li>
+<li><a href="#structure-combat-policy">Structure Combat Policy</a>
+</li>
+<li><a href="#behemoth-contract">Behemoth Contract</a>
+</li>
+<li><a href="#micro-ceiling-target">Micro Ceiling Target</a>
+</li>
+<li><a href="#readability-and-telegraphing-requirements">Readability And Telegraphing Requirements</a>
+</li>
+<li><a href="#determinism-non-negotiables">Determinism Non-Negotiables</a>
+</li>
+<li><a href="#test-scenarios-and-telemetry-hooks-required">Test Scenarios And Telemetry Hooks (Required)</a>
+<ul>
+<li><a href="#scenario-categories">Scenario categories</a></li>
+<li><a href="#minimum-telemetry-outputs">Minimum telemetry outputs</a></li>
+</ul></li>
+<li><a href="#deferred-to-next-pass">Deferred To Next Pass</a>
+</li>
+<li><a href="#related-documents">Related Documents</a>
+</li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1 id="ant-rts-combat-specification">Ant RTS Combat Specification</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="baseline">v0 baseline</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Define the v0 combat contract needed to align economy, tech progression, AI behavior, readability, and multiplayer determinism.</p>
+<p>This document is intentionally faction-agnostic at the base layer. Faction identity should be expressed through role combinations and kit design on top of this contract.</p>
+</section>
+<section aria-labelledby="scope-and-status">
+<h2 id="scope-and-status">Scope And Status <a class="anchor" href="#scope-and-status" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Status: v0 baseline locked.</li>
+<li>Faction-final unit rosters are deferred.</li>
+<li>Combat values here are target envelopes and system rules, not final per-unit tuning.</li>
+</ul>
+</section>
+<section aria-labelledby="core-combat-philosophy">
+<h2 id="core-combat-philosophy">Core Combat Philosophy <a class="anchor" href="#core-combat-philosophy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Combat should be fast, decisive, and readable under high unit density.</li>
+<li>Supply-line pressure is a first-class combat objective, not a side system.</li>
+<li>Counterplay should be mostly soft in v1, with room to introduce mixed hard anchors later.</li>
+</ul>
+</section>
+<section aria-labelledby="time-to-kill-ttk-targets">
+<h2 id="time-to-kill-ttk-targets">Time-To-Kill (TTK) Targets <a class="anchor" href="#time-to-kill-ttk-targets" aria-label="Link to this section">#</a></h2>
+<p>Equal-cost engagement target envelopes by phase:</p>
+<ul>
+<li>Early game: 2.0 to 3.0 seconds.</li>
+<li>Mid game: 1.5 to 2.5 seconds.</li>
+<li>Late game: 0.5 to 1.0 seconds.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>These are baseline encounter targets and will be validated against readability tests.</li>
+<li>If late-game readability collapses, pacing reduction takes priority over strict adherence to the lowest bound.</li>
+</ul>
+</section>
+<section aria-labelledby="role-taxonomy-contract">
+<h2 id="role-taxonomy-contract">Role Taxonomy Contract <a class="anchor" href="#role-taxonomy-contract" aria-label="Link to this section">#</a></h2>
+<h3 id="mandatory-v1-capability-coverage-per-faction">Mandatory v1 capability coverage per faction <a class="anchor" href="#mandatory-v1-capability-coverage-per-faction" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Worker.</li>
+<li>Warrior.</li>
+<li>Air.</li>
+<li>Anti-air.</li>
+<li>Behemoth.</li>
+</ul>
+<h3 id="role-composition-policy">Role composition policy <a class="anchor" href="#role-composition-policy" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Units may carry multiple tactical roles.</li>
+<li>Multi-role mapping (for example, flying raider, flying artillery, flying support) is a primary faction-identity lever.</li>
+</ul>
+<h3 id="baseline-role-matrix-template">Baseline role matrix template <a class="anchor" href="#baseline-role-matrix-template" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role family</th>
+<th>Primary function</th>
+<th>Typical vulnerabilities</th>
+<th>Counterplay expectation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Worker</td>
+<td>Gather, transfer, sustain routes</td>
+<td>Low durability, poor direct combat</td>
+<td>Raid, intercept, route denial</td>
+</tr>
+<tr>
+<td>Warrior</td>
+<td>Frontline pressure and trades</td>
+<td>Can be outpositioned and AoE punished</td>
+<td>Flank, concave, anti-blob responses</td>
+</tr>
+<tr>
+<td>Air</td>
+<td>Mobility, bypass, disruption</td>
+<td>Vulnerable to dedicated anti-air</td>
+<td>Scout and react with anti-air</td>
+</tr>
+<tr>
+<td>Anti-air</td>
+<td>Deny air control and protect logistics</td>
+<td>Lower generalist value vs ground</td>
+<td>Force ground pressure or split map</td>
+</tr>
+<tr>
+<td>Behemoth</td>
+<td>Fight-swing anchor with high upkeep</td>
+<td>Slow, expensive, scoutable commitment</td>
+<td>Focused counter-tech and positional traps</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section aria-labelledby="counter-system-policy">
+<h2 id="counter-system-policy">Counter System Policy <a class="anchor" href="#counter-system-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>v1 baseline is soft countering.</li>
+<li>Mixed countering (some hard anchors) is an allowed future direction if faction design pressure requires it.</li>
+</ul>
+</section>
+<section aria-labelledby="damage-model-and-formulas">
+<h2 id="damage-model-and-formulas">Damage Model And Formulas <a class="anchor" href="#damage-model-and-formulas" aria-label="Link to this section">#</a></h2>
+<h3 id="damage-channels-v1">Damage channels (v1) <a class="anchor" href="#damage-channels-v1" aria-label="Link to this section">#</a></h3>
+<ul>
+<li><code>physical</code></li>
+<li><code>siege</code></li>
+</ul>
+<p>Intent:</p>
+<ul>
+<li>Keep the model easy to reason about while still separating structure-break tools from anti-unit tools.</li>
+</ul>
+<h3 id="armor-model-v1">Armor model (v1) <a class="anchor" href="#armor-model-v1" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Flat reduction.</li>
+<li>Minimum post-mitigation hit damage floor: <code>1</code>.</li>
+</ul>
+<p>Formula:</p>
+<p class="formula" data-formula="final_hit_damage"><var>final_hit_damage</var> = max(1, <var>raw_hit_damage</var> &minus; <var>flat_armor</var><sub>vs damage type</sub>)</p>
+<h3 id="additional-effect-channels">Additional effect channels <a class="anchor" href="#additional-effect-channels" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>DoT and AoE are supported as mechanics.</li>
+<li>Additional damage types are deferred to later passes.</li>
+</ul>
+</section>
+<section aria-labelledby="hit-resolution-and-friendly-fire">
+<h2 id="hit-resolution-and-friendly-fire">Hit Resolution And Friendly Fire <a class="anchor" href="#hit-resolution-and-friendly-fire" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Hit model: guaranteed hit with deterministic timing.</li>
+<li>Friendly fire: disabled in v1.</li>
+</ul>
+</section>
+<section aria-labelledby="aoe-policy">
+<h2 id="aoe-policy">AoE Policy <a class="anchor" href="#aoe-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>AoE is a core anti-blob pillar in v1.</li>
+<li>AoE must have strong visual telegraphing and distinct effect identity.</li>
+<li>Simultaneous overlapping AoE readability limits are to be validated in test scenarios.</li>
+</ul>
+</section>
+<section aria-labelledby="status-effects">
+<h2 id="status-effects">Status Effects <a class="anchor" href="#status-effects" aria-label="Link to this section">#</a></h2>
+<p>Allowed v1 status set:</p>
+<ul>
+<li>Slow.</li>
+<li>Armor break.</li>
+<li>Damage over time.</li>
+<li>Stun.</li>
+</ul>
+<p>Status design rule:</p>
+<ul>
+<li>Every status source must provide clear source and duration telegraphing.</li>
+</ul>
+</section>
+<section aria-labelledby="proc-randomness-policy">
+<h2 id="proc-randomness-policy">Proc Randomness Policy <a class="anchor" href="#proc-randomness-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Medium proc usage is allowed if telegraphing is strong.</li>
+<li>Proc outcomes must be deterministic at simulation level for replay/network parity.</li>
+</ul>
+<p>Deterministic proc rule:</p>
+<ul>
+<li>Any proc roll must be derived from deterministic simulation inputs (tick index, event sequence id, stable entity ids), never client-local RNG state.</li>
+</ul>
+</section>
+<section aria-labelledby="aura-stacking-policy">
+<h2 id="aura-stacking-policy">Aura Stacking Policy <a class="anchor" href="#aura-stacking-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Aura stacking is additive by default.</li>
+<li>Aura source and stack contribution must be inspectable in debug/telemetry overlays.</li>
+</ul>
+</section>
+<section aria-labelledby="regeneration-and-retreat">
+<h2 id="regeneration-and-retreat">Regeneration And Retreat <a class="anchor" href="#regeneration-and-retreat" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Regeneration exists.</li>
+<li>No automatic retreat mechanic in v1.</li>
+<li>Retreat remains a manual control and positioning skill expression.</li>
+</ul>
+</section>
+<section aria-labelledby="targeting-and-command-responsiveness">
+<h2 id="targeting-and-command-responsiveness">Targeting And Command Responsiveness <a class="anchor" href="#targeting-and-command-responsiveness" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>A-move behavior can use role-specific default priorities.</li>
+<li>Direct attack-unit commands must remain highly responsive and override A-move heuristics promptly.</li>
+</ul>
+<p>Default priority examples:</p>
+<ul>
+<li>Anti-air units prioritize airborne threats during A-move.</li>
+<li>Raider profiles prefer workers/carriers and exposed logistics targets during A-move.</li>
+</ul>
+</section>
+<section aria-labelledby="supply-line-disruption-verbs-combat-linked">
+<h2 id="supply-line-disruption-verbs-combat-linked">Supply-Line Disruption Verbs (Combat Linked) <a class="anchor" href="#supply-line-disruption-verbs-combat-linked" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Resource-site raid.</li>
+<li>Bank destruction or denial pressure.</li>
+<li>Logistic-trail raid/intercept.</li>
+<li>Biomass drop-on-engage pressure.</li>
+</ul>
+<p>These interactions are combat-valid objectives, not merely macro side effects.</p>
+</section>
+<section aria-labelledby="structure-combat-policy">
+<h2 id="structure-combat-policy">Structure Combat Policy <a class="anchor" href="#structure-combat-policy" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>v1 defensive structures should bias toward utility-control defense rather than high-damage turrets.</li>
+<li>Preferred baseline includes thematic defensive control effects (for example, snare/slow).</li>
+</ul>
+</section>
+<section aria-labelledby="behemoth-contract">
+<h2 id="behemoth-contract">Behemoth Contract <a class="anchor" href="#behemoth-contract" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Behemoths are upkeep-heavy fight-swing units.</li>
+<li>They should be able to swing a main engagement when correctly supported.</li>
+<li>Their commitment must be scoutable and punishable through counter-tech or positional play.</li>
+</ul>
+</section>
+<section aria-labelledby="micro-ceiling-target">
+<h2 id="micro-ceiling-target">Micro Ceiling Target <a class="anchor" href="#micro-ceiling-target" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>In equal-cost mirror fights, high-skill micro should swing outcomes by roughly 15% to 25%.</li>
+<li>Highest-signal micro skills for v1:
+<ul>
+<li>Concave setup.</li>
+<li>Flanking timing.</li>
+</ul>
+</li>
+</ul>
+<p>Macro pressure note:</p>
+<ul>
+<li>Players should be forced to balance local micro execution against simultaneous raid/defense demands elsewhere.</li>
+</ul>
+</section>
+<section aria-labelledby="readability-and-telegraphing-requirements">
+<h2 id="readability-and-telegraphing-requirements">Readability And Telegraphing Requirements <a class="anchor" href="#readability-and-telegraphing-requirements" aria-label="Link to this section">#</a></h2>
+<p>Hard bans:</p>
+<ul>
+<li>Invisible projectiles.</li>
+<li>Identical VFX language for distinct actions/effects.</li>
+</ul>
+<p>Telegraph clarity tiers:</p>
+<ul>
+<li>Tier 1 (basic attacks): readable projectile or contact feedback and clear source.</li>
+<li>Tier 2 (status and AoE abilities): obvious area/targeting indicator and effect identity.</li>
+<li>Tier 3 (fight-swing abilities and behemoth actions): high-contrast pre-impact telegraph plus unmistakable impact signature.</li>
+</ul>
+</section>
+<section aria-labelledby="determinism-non-negotiables">
+<h2 id="determinism-non-negotiables">Determinism Non-Negotiables <a class="anchor" href="#determinism-non-negotiables" aria-label="Link to this section">#</a></h2>
+<p>The following systems must be deterministic across replay and multiplayer simulation:</p>
+<ul>
+<li>Damage roll outcomes.</li>
+<li>Status duration and expiration.</li>
+<li>Aura application and stacking order.</li>
+</ul>
+<p>Implementation guidance:</p>
+<ul>
+<li>Never use wall-clock, frame-time jitter, or client-local RNG as outcome inputs.</li>
+</ul>
+</section>
+<section aria-labelledby="test-scenarios-and-telemetry-hooks-required">
+<h2 id="test-scenarios-and-telemetry-hooks-required">Test Scenarios And Telemetry Hooks (Required) <a class="anchor" href="#test-scenarios-and-telemetry-hooks-required" aria-label="Link to this section">#</a></h2>
+<h3 id="scenario-categories">Scenario categories <a class="anchor" href="#scenario-categories" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Equal-cost mirror phase fights (early, mid, late) to validate TTK envelopes.</li>
+<li>Air vs anti-air response windows.</li>
+<li>AoE anti-blob stress tests at high population.</li>
+<li>Behemoth swing and punish-window tests.</li>
+<li>Multi-front stress tests combining frontline micro with logistics raids.</li>
+</ul>
+<h3 id="minimum-telemetry-outputs">Minimum telemetry outputs <a class="anchor" href="#minimum-telemetry-outputs" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Effective DPS by role family and damage channel.</li>
+<li>Realized TTK distributions by phase and matchup archetype.</li>
+<li>Status uptime and stack counts by source.</li>
+<li>Aura stack totals and ordering traces.</li>
+<li>Proc trigger counts and deterministic seed/event audit traces.</li>
+<li>Logistics disruption outcomes (resource denied, bank loss, carrier loss during fights).</li>
+</ul>
+</section>
+<section aria-labelledby="deferred-to-next-pass">
+<h2 id="deferred-to-next-pass">Deferred To Next Pass <a class="anchor" href="#deferred-to-next-pass" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Exact per-unit stat sheets and costs.</li>
+<li>Full role-matchup matrix by named faction units.</li>
+<li>Any additional damage types beyond <code>physical</code> and <code>siege</code>.</li>
+<li>Final AoE overlap readability caps with hard numeric thresholds.</li>
+</ul>
+</section>
+<section aria-labelledby="related-documents">
+<h2 id="related-documents">Related Documents <a class="anchor" href="#related-documents" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><a href="design-doc.html"><a href="design-doc.html">design-doc.html</a></a></li>
+<li><a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a></li>
+<li><a href="economy-design.html"><a href="economy-design.html">economy-design.html</a></a></li>
+<li><a href="tech-tree-operational-spec.html"><a href="tech-tree-operational-spec.html">tech-tree-operational-spec.html</a></a></li>
+<li><a href="resource-ownership-spec.html"><a href="resource-ownership-spec.html">resource-ownership-spec.html</a></a></li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>
