@@ -102,7 +102,7 @@
   function initTables() {
     document.querySelectorAll(".doc table").forEach(function (table) {
       var tbody = table.tBodies[0];
-      if (!tbody) return;
+      if (!tbody || table.hasAttribute("data-no-sort")) return;
       table.classList.add("sortable");
 
       table.querySelectorAll("thead th").forEach(function (th, index) {

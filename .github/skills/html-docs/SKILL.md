@@ -64,6 +64,18 @@ Keep them in sync with the page when you change it. Additionally:
 - **Identity**: use the shared classes (`badge`, `card`, `doc-meta`, `formula`, `placeholder-box`). Add new shared styles to `site.css` using the existing variables. The art-direction page (`art-direction.html`) is the authority on visual identity once written.
 - **Dynamic content**: use JS only to enhance (calculators, graph explorers, filters). The static HTML must still convey the facts when JS is off; label widgets with their inputs and the document that defines the rules they mirror.
 
+## Interactive widgets
+
+Widgets are progressive enhancement over content that already exists on the page. Current examples: `assets/js/economy-calculators.js` (economy-design), `tech-graph.js` (tech-tree-operational-spec), `faction-compare.js` (potential-factions).
+
+- One script per page widget in `assets/js/<widget>.js`, loaded with `defer` after `site.js`. Plain JS, no libraries, no `fetch()`.
+- **A widget adds no rules.** It evaluates or presents what the document already defines, and says which section it mirrors. If a rule is ambiguous, ask the owner and label the chosen reading on the page as a "calculator interpretation (not a spec change)"; do not silently invent it.
+- **Single source of data.** Prefer reading the page's own DOM (mark sections with `data-*` attributes, as `data-faction`, `data-matchup`, `data-exception-for` do) or the page's SVG (`data-node`, `data-from`/`data-to`). When a calculator needs constants, put them in one `<script type="application/json" id="...">` block next to the prose that defines them and update both together.
+- **No-JS fallback.** Interactive controls start `hidden` and the script unhides them; the page must also contain reference tables, text, or the diagram itself so facts are readable raw. Headings stay outside hidden blocks.
+- Build controls with the shared classes in `site.css`: `.widget`, `.widget-controls`, `.widget-output`, `.btn`. Colour only through CSS variables. Build any chart as inline SVG from JS with `<title>`, text labels, and `var(--...)` colours.
+- Tables created by a widget that must not be sortable carry `data-no-sort`.
+- Test the widget in a browser: no console errors, values match hand calculations (or the reference table), both themes.
+
 ## Accessibility and quality bar
 
 - `lang="en"`, viewport meta, skip link, keyboard-operable controls, sufficient contrast in light and dark.

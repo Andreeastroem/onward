@@ -190,3 +190,47 @@ a:hover { text-decoration-thickness: 2px; }
 
 .doc .formula { padding: 0.6rem 1rem; background: var(--surface); border-left: 3px solid var(--accent); font-family: var(--font-mono); overflow-x: auto; }
 .doc .formula var { font-style: normal; }
+
+/* Interactive widgets */
+.widget { margin: 1rem 0; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.widget[hidden] { display: none; }
+.widget-controls { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; margin-bottom: 0.8rem; }
+.widget-controls label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: var(--muted); }
+.widget input[type="number"], .widget select { font: inherit; font-size: 0.95rem; padding: 0.3rem 0.5rem; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; min-width: 8rem; }
+.widget input[type="range"] { min-width: 14rem; }
+.widget-output { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 1.2rem; margin: 0.8rem 0; }
+.widget-output dt { color: var(--muted); }
+.widget-output dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.widget-bar { margin: 0.5rem 0; }
+.btn { font: inherit; font-size: 0.85rem; padding: 0.3rem 0.7rem; cursor: pointer; background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 6px; }
+.btn:hover { background: var(--surface-2); }
+.muted { color: var(--muted); }
+.compare-matchup { margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+.compare-matchup h3 { margin-top: 0.5rem; }
+.widget table.matrix { width: auto; }
+.widget table.matrix td { text-align: center; padding: 0.25rem; }
+.widget table.matrix button { font: inherit; font-size: 0.78rem; padding: 0.15rem 0.5rem; cursor: pointer; background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 5px; }
+.widget table.matrix button:hover { border-color: var(--accent); }
+.widget table.matrix button.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+/* Tech graph */
+.tech-graph { width: 100%; height: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.tech-graph text { font: 12px var(--font-body); fill: var(--fg); pointer-events: none; }
+.tech-graph text.node-id { font-weight: 700; fill: var(--muted); }
+.tech-graph .edges path { stroke: var(--muted); stroke-width: 1.6; transition: opacity 0.15s; }
+.tech-graph .edges path.dim { opacity: 0.15; }
+.tech-node rect { fill: var(--bg); stroke-width: 2; transition: opacity 0.15s; }
+.tech-node { cursor: pointer; transition: opacity 0.15s; }
+.tech-node[data-kind="building"] rect { stroke: var(--accent); }
+.tech-node[data-kind="upgrade"] rect { stroke: var(--warn); }
+.tech-node[data-kind="unit"] rect { stroke: var(--ok); }
+.tech-node[data-kind="gate"] rect { stroke: var(--draft); stroke-dasharray: 6 4; }
+.tech-node.unspecified rect { stroke-dasharray: 3 3; }
+.tech-node.dim { opacity: 0.25; }
+.tech-node.selected rect { fill: var(--surface-2); stroke-width: 4; }
+.tech-node.up rect, .tech-node.down rect { fill: var(--surface-2); }
+.tech-node:focus-visible rect { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tech-detail h3 { margin: 0 0 0.3rem; }
+.tech-detail p { margin: 0.3rem 0; }
+.tech-detail .tech-detail-title { font-weight: 600; margin-bottom: 0; }
+.tech-detail .tech-note { color: var(--muted); font-size: 0.9rem; }

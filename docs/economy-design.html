@@ -129,6 +129,11 @@
       "level": 2
     },
     {
+      "id": "interactive-calculators",
+      "title": "Interactive Calculators",
+      "level": 2
+    },
+    {
       "id": "open-questions-additional-locked-decisions-grill-session",
       "title": "Open Questions: Additional Locked Decisions (Grill Session)",
       "level": 2
@@ -137,6 +142,7 @@
 }
 </script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/economy-calculators.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -223,6 +229,11 @@
 </li>
 <li><a href="#economy-constants-locked-for-faction-design">Economy Constants Locked For Faction Design</a>
 </li>
+<li><a href="#interactive-calculators">Interactive Calculators</a>
+<ul>
+<li><a href="#calc-corpse-value-and-decay">Corpse value and decay</a></li>
+<li><a href="#calc-upkeep">Upkeep</a></li>
+</ul></li>
 <li><a href="#open-questions-additional-locked-decisions-grill-session">Open Questions: Additional Locked Decisions (Grill Session)</a>
 <ul>
 <li><a href="#1-worker-upkeep-model">1) Worker upkeep model</a></li>
@@ -605,6 +616,116 @@
 <li>Patch tuning bands and versioning discipline.</li>
 </ol>
 <p>These constants define the strategic foundation that faction bonuses should modify, not replace.</p>
+</section>
+<section aria-labelledby="interactive-calculators">
+<h2 id="interactive-calculators">Interactive Calculators <a class="anchor" href="#interactive-calculators" aria-label="Link to this section">#</a></h2>
+<p>The calculators below evaluate the locked v0 formulas in <a href="#suggested-baseline-formulas">Suggested Baseline Formulas</a> using <code data-constant="economy_constants_version" data-value="1">economy_constants_version = 1</code>. They add no rules; the reference tables show the same values without JavaScript. Their constants are mirrored in the <code>economy-constants</code> JSON block on this page and must be updated together with the formulas whenever the constants version changes.</p>
+<script type="application/json" id="economy-constants">
+{
+  "economy_constants_version": 1,
+  "reclaim_ratio": {
+    "Worker": 0.4,
+    "Warrior": 0.65
+  },
+  "corpse_decay": {
+    "grace_period_seconds": 12,
+    "half_life_seconds": 40
+  },
+  "worker_upkeep": {
+    "free_workers": 10,
+    "brackets": [
+      {
+        "from": 11,
+        "to": 16,
+        "step": 0.02
+      },
+      {
+        "from": 17,
+        "to": 22,
+        "step": 0.03
+      },
+      {
+        "from": 23,
+        "to": null,
+        "step": 0.05
+      }
+    ]
+  },
+  "military_upkeep": {
+    "base_factor": 0.9,
+    "tiers": [
+      {
+        "at_supply": 120,
+        "increment": 0.2
+      },
+      {
+        "at_supply": 180,
+        "increment": 0.25
+      },
+      {
+        "at_supply": 230,
+        "increment": 0.3
+      }
+    ]
+  }
+}
+</script>
+<h3 id="calc-corpse-value-and-decay">Corpse value and decay <a class="anchor" href="#calc-corpse-value-and-decay" aria-label="Link to this section">#</a></h3>
+<div class="widget" id="decay-widget" hidden>
+<div class="widget-controls">
+<label>Unit cost (biomass) <input id="decay-cost" type="number" min="0" step="1" value="10"></label>
+<label>Economy class <select id="decay-class"><option value="Worker">Worker</option><option value="Warrior">Warrior</option></select></label>
+<label>Time since death <input id="decay-time" type="range" min="0" max="200" step="1" value="40"> <output id="decay-time-out" for="decay-time">40 s</output></label>
+</div>
+<dl id="decay-output" class="widget-output"></dl>
+<svg id="decay-chart" class="diagram" viewBox="0 0 520 220" role="img" aria-labelledby="decay-chart-title"></svg>
+</div>
+<p>Reference values for a corpse worth 100 biomass (12 s grace, 40 s half-life):</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Seconds since death</th><th scope="col">Remaining biomass value</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>100.0</td></tr>
+<tr><td>12</td><td>100.0</td></tr>
+<tr><td>32</td><td>70.7</td></tr>
+<tr><td>52</td><td>50.0</td></tr>
+<tr><td>92</td><td>25.0</td></tr>
+<tr><td>132</td><td>12.5</td></tr>
+<tr><td>172</td><td>6.25</td></tr>
+</tbody>
+</table></div>
+<h3 id="calc-upkeep">Upkeep <a class="anchor" href="#calc-upkeep" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> each worker above the 10 free workers adds its bracket's step to the worker upkeep multiplier total, and the total is expressed as a multiple of a base worker upkeep that this document does not define. The military upkeep factor is the 0.90 base plus the increment of the highest supply breakpoint reached (increments replace each other, they do not stack), applied to total military supply weight.</p>
+<div class="widget" id="upkeep-widget" hidden>
+<div class="widget-controls">
+<label>Workers <input id="upkeep-workers" type="number" min="0" max="500" step="1" value="30"></label>
+<label>Total military supply <input id="upkeep-supply" type="number" min="0" max="1000" step="1" value="150"></label>
+<label>Base worker upkeep (biomass/s, not defined in spec) <input id="upkeep-base" type="number" min="0" step="0.01" value="1"></label>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Worker bracket</th><th scope="col">Step per worker</th><th scope="col">Workers in bracket</th><th scope="col">Subtotal</th></tr></thead>
+<tbody id="upkeep-worker-rows"></tbody>
+</table></div>
+<dl id="upkeep-output" class="widget-output"></dl>
+</div>
+<p>Reference values (30 workers):</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Worker bracket</th><th scope="col">Step per worker</th><th scope="col">Workers in bracket</th><th scope="col">Subtotal</th></tr></thead>
+<tbody>
+<tr><td>11 to 16</td><td>+0.02</td><td>6</td><td>0.12</td></tr>
+<tr><td>17 to 22</td><td>+0.03</td><td>6</td><td>0.18</td></tr>
+<tr><td>23 and above</td><td>+0.05</td><td>8</td><td>0.40</td></tr>
+<tr><th scope="row">Total</th><td></td><td>20 paying</td><td>0.70</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Total military supply</th><th scope="col">Military upkeep factor</th></tr></thead>
+<tbody>
+<tr><td>Below 120</td><td>0.90</td></tr>
+<tr><td>120 to 179</td><td>1.10</td></tr>
+<tr><td>180 to 229</td><td>1.15</td></tr>
+<tr><td>230 and above</td><td>1.20</td></tr>
+</tbody>
+</table></div>
 </section>
 <section aria-labelledby="open-questions-additional-locked-decisions-grill-session">
 <h2 id="open-questions-additional-locked-decisions-grill-session">Open Questions: Additional Locked Decisions (Grill Session) <a class="anchor" href="#open-questions-additional-locked-decisions-grill-session" aria-label="Link to this section">#</a></h2>

@@ -70,6 +70,11 @@
       "level": 2
     },
     {
+      "id": "compare-factions",
+      "title": "Compare Factions",
+      "level": 2
+    },
+    {
       "id": "faction-contracts",
       "title": "Faction Contracts",
       "level": 2
@@ -248,6 +253,7 @@
 }
 </script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/faction-compare.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -280,6 +286,7 @@
 <li><a href="#shared-non-negotiables">Shared non-negotiables</a></li>
 <li><a href="#asymmetry-budget">Asymmetry budget</a></li>
 </ul></li>
+<li><a href="#compare-factions">Compare Factions</a></li>
 <li><a href="#faction-contracts">Faction Contracts</a>
 </li>
 <li><a href="#1-black-ants">1) Black Ants</a>
@@ -479,10 +486,25 @@
 <p>Avoid full-ruleset divergence. Keep faction readability high and onboarding clear.</p>
 <hr />
 </section>
+<section aria-labelledby="compare-factions">
+<h2 id="compare-factions">Compare Factions <a class="anchor" href="#compare-factions" aria-label="Link to this section">#</a></h2>
+<p id="faction-compare-static">Interactive comparison requires JavaScript. The same content is in the faction contracts, interaction matrix, and exception candidate sections below.</p>
+<div id="faction-compare" class="widget" hidden>
+<p>Pick two factions to see their contracts side by side, with their matchup and exception candidates. All content is read from the sections of this document.</p>
+<div class="widget-controls">
+<label>Faction A <select data-pick="a"></select></label>
+<label>Faction B <select data-pick="b"></select></label>
+</div>
+<h3>Matchup matrix</h3>
+<div data-matchup-grid class="table-wrap"></div>
+<div class="table-wrap"><table data-compare-table data-no-sort></table></div>
+<div data-compare-matchup class="compare-matchup"></div>
+</div>
+</section>
 <section aria-labelledby="faction-contracts">
 <h2 id="faction-contracts">Faction Contracts <a class="anchor" href="#faction-contracts" aria-label="Link to this section">#</a></h2>
 </section>
-<section aria-labelledby="1-black-ants">
+<section aria-labelledby="1-black-ants" data-faction="black" data-faction-name="Black Ants">
 <h2 id="1-black-ants">1) Black Ants <a class="anchor" href="#1-black-ants" aria-label="Link to this section">#</a></h2>
 <h3 id="identity">Identity <a class="anchor" href="#identity" aria-label="Link to this section">#</a></h3>
 <p>Reliable territorial logistics faction. Converts defended fights into stable economy gains.</p>
@@ -533,7 +555,7 @@
 <p>This keeps the faction snappy in combat while making the economy and convoy game feel more efficient only when the player has built and defended the right network.</p>
 <hr />
 </section>
-<section aria-labelledby="2-fire-ants">
+<section aria-labelledby="2-fire-ants" data-faction="fire" data-faction-name="Fire Ants">
 <h2 id="2-fire-ants">2) Fire Ants <a class="anchor" href="#2-fire-ants" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-2">Identity <a class="anchor" href="#identity-2" aria-label="Link to this section">#</a></h3>
 <p>High-tempo pressure faction that thrives on frequent skirmish conversion and front-loaded momentum.</p>
@@ -567,7 +589,7 @@
 <p>Open with map pressure and rapid skirmish cadence, delay enemy banking infrastructure, and keep all lanes tactically hot.</p>
 <hr />
 </section>
-<section aria-labelledby="3-weaver-ants">
+<section aria-labelledby="3-weaver-ants" data-faction="weaver" data-faction-name="Weaver Ants">
 <h2 id="3-weaver-ants">3) Weaver Ants <a class="anchor" href="#3-weaver-ants" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-3">Identity <a class="anchor" href="#identity-3" aria-label="Link to this section">#</a></h3>
 <p>Map-geometry manipulation faction that wins by route-shape advantage rather than frontal force.</p>
@@ -601,7 +623,7 @@
 <p>Secure traversal options early, contest route edges, and convert mobility advantage into repeated bank-line disruptions.</p>
 <hr />
 </section>
-<section aria-labelledby="4-army-ants">
+<section aria-labelledby="4-army-ants" data-faction="army" data-faction-name="Army Ants">
 <h2 id="4-army-ants">4) Army Ants <a class="anchor" href="#4-army-ants" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-4">Identity <a class="anchor" href="#identity-4" aria-label="Link to this section">#</a></h3>
 <p>Forward-pressure destabilization faction. Trades stability for persistent offensive presence.</p>
@@ -635,7 +657,7 @@
 <p>Deny enemy setup time, contest expansions before completion, and maintain multi-lane threat so no lane fully stabilizes.</p>
 <hr />
 </section>
-<section aria-labelledby="5-leafcutter-ants">
+<section aria-labelledby="5-leafcutter-ants" data-faction="leafcutter" data-faction-name="Leafcutter Ants">
 <h2 id="5-leafcutter-ants">5) Leafcutter Ants <a class="anchor" href="#5-leafcutter-ants" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-5">Identity <a class="anchor" href="#identity-5" aria-label="Link to this section">#</a></h3>
 <p>Industrial throughput faction focused on heavy conversion and protected macro scaling.</p>
@@ -669,7 +691,7 @@
 <p>Stabilize safely, secure one reliable large-corpse conversion lane, and avoid early spiral losses from repeated route interruption.</p>
 <hr />
 </section>
-<section aria-labelledby="6-trap-jaw-ants-primary-sixth">
+<section aria-labelledby="6-trap-jaw-ants-primary-sixth" data-faction="trap-jaw" data-faction-name="Trap-jaw Ants">
 <h2 id="6-trap-jaw-ants-primary-sixth">6) Trap-jaw Ants (Primary Sixth) <a class="anchor" href="#6-trap-jaw-ants-primary-sixth" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-6">Identity <a class="anchor" href="#identity-6" aria-label="Link to this section">#</a></h3>
 <p>Precision interception faction that weaponizes narrow punish windows.</p>
@@ -703,7 +725,7 @@
 <p>Scout transfer timings, establish ambush control on key lane intersections, and repeatedly tax enemy transport flow.</p>
 <hr />
 </section>
-<section aria-labelledby="6b-honeypot-ants-alternate-sixth">
+<section aria-labelledby="6b-honeypot-ants-alternate-sixth" data-faction="honeypot" data-faction-name="Honeypot Ants">
 <h2 id="6b-honeypot-ants-alternate-sixth">6B) Honeypot Ants (Alternate Sixth) <a class="anchor" href="#6b-honeypot-ants-alternate-sixth" aria-label="Link to this section">#</a></h2>
 <h3 id="identity-7">Identity <a class="anchor" href="#identity-7" aria-label="Link to this section">#</a></h3>
 <p>Defensive resilience faction focused on storage stability and raid tolerance.</p>
@@ -741,7 +763,7 @@
 <h2 id="interaction-matrix-behavioral-asymmetry">Interaction Matrix (Behavioral Asymmetry) <a class="anchor" href="#interaction-matrix-behavioral-asymmetry" aria-label="Link to this section">#</a></h2>
 <p>These matchup notes describe strategic behavior differences, not balance outcomes.</p>
 </section>
-<section aria-labelledby="black-vs-fire">
+<section aria-labelledby="black-vs-fire" data-matchup="black fire">
 <h2 id="black-vs-fire">Black vs Fire <a class="anchor" href="#black-vs-fire" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Fire seeks early tempo, route disruption, and frequent contact.</li>
@@ -750,7 +772,7 @@
 <li>Fire is advantaged if map stability is prevented.</li>
 </ul>
 </section>
-<section aria-labelledby="black-vs-weaver">
+<section aria-labelledby="black-vs-weaver" data-matchup="black weaver">
 <h2 id="black-vs-weaver">Black vs Weaver <a class="anchor" href="#black-vs-weaver" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Weaver attacks route shape and reinforcement geometry.</li>
@@ -759,7 +781,7 @@
 <li>Weaver wins by forcing constant reorientation.</li>
 </ul>
 </section>
-<section aria-labelledby="black-vs-army">
+<section aria-labelledby="black-vs-army" data-matchup="black army">
 <h2 id="black-vs-army">Black vs Army <a class="anchor" href="#black-vs-army" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Army pressures setup windows and route completion.</li>
@@ -768,7 +790,7 @@
 <li>Army wins if it keeps the map in persistent disorder.</li>
 </ul>
 </section>
-<section aria-labelledby="black-vs-leafcutter">
+<section aria-labelledby="black-vs-leafcutter" data-matchup="black leafcutter">
 <h2 id="black-vs-leafcutter">Black vs Leafcutter <a class="anchor" href="#black-vs-leafcutter" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Black prefers repeated efficient skirmish reclaim.</li>
@@ -777,7 +799,7 @@
 <li>Leafcutter wins by securing objective-scale transfers.</li>
 </ul>
 </section>
-<section aria-labelledby="black-vs-trap-jaw">
+<section aria-labelledby="black-vs-trap-jaw" data-matchup="black trap-jaw">
 <h2 id="black-vs-trap-jaw">Black vs Trap-jaw <a class="anchor" href="#black-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Trap-jaw seeks picks and transfer interruptions.</li>
@@ -786,7 +808,7 @@
 <li>Trap-jaw wins by repeatedly taxing flow efficiency.</li>
 </ul>
 </section>
-<section aria-labelledby="fire-vs-weaver">
+<section aria-labelledby="fire-vs-weaver" data-matchup="fire weaver">
 <h2 id="fire-vs-weaver">Fire vs Weaver <a class="anchor" href="#fire-vs-weaver" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Fire wants broad direct contact and tempo snowball.</li>
@@ -795,7 +817,7 @@
 <li>Weaver wins if it dictates where fights can occur.</li>
 </ul>
 </section>
-<section aria-labelledby="fire-vs-army">
+<section aria-labelledby="fire-vs-army" data-matchup="fire army">
 <h2 id="fire-vs-army">Fire vs Army <a class="anchor" href="#fire-vs-army" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Both favor tempo, but through different vectors.</li>
@@ -804,7 +826,7 @@
 <li>Winner is typically whoever better converts pressure into lasting logistics damage.</li>
 </ul>
 </section>
-<section aria-labelledby="fire-vs-leafcutter">
+<section aria-labelledby="fire-vs-leafcutter" data-matchup="fire leafcutter">
 <h2 id="fire-vs-leafcutter">Fire vs Leafcutter <a class="anchor" href="#fire-vs-leafcutter" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Fire aims to deny setup and processing safety.</li>
@@ -813,7 +835,7 @@
 <li>Leafcutter wins after defended heavy-conversion windows.</li>
 </ul>
 </section>
-<section aria-labelledby="fire-vs-trap-jaw">
+<section aria-labelledby="fire-vs-trap-jaw" data-matchup="fire trap-jaw">
 <h2 id="fire-vs-trap-jaw">Fire vs Trap-jaw <a class="anchor" href="#fire-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Trap-jaw punishes overcommit and exposed route tails.</li>
@@ -822,7 +844,7 @@
 <li>Trap-jaw wins when fights fragment into pick scenarios.</li>
 </ul>
 </section>
-<section aria-labelledby="weaver-vs-army">
+<section aria-labelledby="weaver-vs-army" data-matchup="weaver army">
 <h2 id="weaver-vs-army">Weaver vs Army <a class="anchor" href="#weaver-vs-army" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Weaver pressures geometry and timing windows.</li>
@@ -831,7 +853,7 @@
 <li>Army wins by overwhelming with simultaneous threat density.</li>
 </ul>
 </section>
-<section aria-labelledby="weaver-vs-leafcutter">
+<section aria-labelledby="weaver-vs-leafcutter" data-matchup="weaver leafcutter">
 <h2 id="weaver-vs-leafcutter">Weaver vs Leafcutter <a class="anchor" href="#weaver-vs-leafcutter" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Weaver attacks long processing and transfer chains.</li>
@@ -840,7 +862,7 @@
 <li>Leafcutter wins by anchoring objective zones and forcing value fights.</li>
 </ul>
 </section>
-<section aria-labelledby="weaver-vs-trap-jaw">
+<section aria-labelledby="weaver-vs-trap-jaw" data-matchup="weaver trap-jaw">
 <h2 id="weaver-vs-trap-jaw">Weaver vs Trap-jaw <a class="anchor" href="#weaver-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Trap-jaw controls narrow punish zones.</li>
@@ -849,7 +871,7 @@
 <li>Weaver wins if route optionality remains high.</li>
 </ul>
 </section>
-<section aria-labelledby="army-vs-leafcutter">
+<section aria-labelledby="army-vs-leafcutter" data-matchup="army leafcutter">
 <h2 id="army-vs-leafcutter">Army vs Leafcutter <a class="anchor" href="#army-vs-leafcutter" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Army wants permanent instability and no setup windows.</li>
@@ -858,7 +880,7 @@
 <li>Leafcutter wins if midgame route structure is secured.</li>
 </ul>
 </section>
-<section aria-labelledby="army-vs-trap-jaw">
+<section aria-labelledby="army-vs-trap-jaw" data-matchup="army trap-jaw">
 <h2 id="army-vs-trap-jaw">Army vs Trap-jaw <a class="anchor" href="#army-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Army applies simultaneous pressure in many locations.</li>
@@ -867,7 +889,7 @@
 <li>Trap-jaw wins via precision attrition on pressure logistics.</li>
 </ul>
 </section>
-<section aria-labelledby="leafcutter-vs-trap-jaw">
+<section aria-labelledby="leafcutter-vs-trap-jaw" data-matchup="leafcutter trap-jaw">
 <h2 id="leafcutter-vs-trap-jaw">Leafcutter vs Trap-jaw <a class="anchor" href="#leafcutter-vs-trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Leafcutter field value is concentrated in larger escorted transfers.</li>
@@ -881,49 +903,49 @@
 <h2 id="productionconnectivity-exception-candidates">Production/Connectivity Exception Candidates <a class="anchor" href="#productionconnectivity-exception-candidates" aria-label="Link to this section">#</a></h2>
 <p>Use these as initial faction-exception directions against the shared baseline.</p>
 </section>
-<section aria-labelledby="black">
+<section aria-labelledby="black" data-exception-for="black">
 <h2 id="black">Black <a class="anchor" href="#black" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Connectivity: strict baseline (disconnect significantly degrades function).</li>
 <li>Production: no major queue rule changes; reliability-focused defaults.</li>
 </ul>
 </section>
-<section aria-labelledby="fire">
+<section aria-labelledby="fire" data-exception-for="fire">
 <h2 id="fire">Fire <a class="anchor" href="#fire" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Construction: stronger early pressure-friendly build cadence on select military structures, balanced by escalating surcharge sensitivity.</li>
 <li>Connectivity: mostly baseline.</li>
 </ul>
 </section>
-<section aria-labelledby="weaver">
+<section aria-labelledby="weaver" data-exception-for="weaver">
 <h2 id="weaver">Weaver <a class="anchor" href="#weaver" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Placement: expanded projection behavior tied to traversal-network structures.</li>
 <li>Connectivity: partial function on select peripheral structures if network condition is met.</li>
 </ul>
 </section>
-<section aria-labelledby="army">
+<section aria-labelledby="army" data-exception-for="army">
 <h2 id="army">Army <a class="anchor" href="#army" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Connectivity: targeted partial functionality while disconnected for specific forward classes.</li>
 <li>Production topology: more operational flexibility in forward pressure lanes.</li>
 </ul>
 </section>
-<section aria-labelledby="leafcutter">
+<section aria-labelledby="leafcutter" data-exception-for="leafcutter">
 <h2 id="leafcutter">Leafcutter <a class="anchor" href="#leafcutter" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Construction: throughput-oriented economy/processing build incentives; vulnerable if interrupted mid-ramp.</li>
 <li>Connectivity: baseline or stricter on industrial chain integrity.</li>
 </ul>
 </section>
-<section aria-labelledby="trap-jaw">
+<section aria-labelledby="trap-jaw" data-exception-for="trap-jaw">
 <h2 id="trap-jaw">Trap-jaw <a class="anchor" href="#trap-jaw" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Production: limited exception enabling faster deployment of interception specialists, with tradeoffs in broad-line throughput.</li>
 <li>Connectivity: baseline.</li>
 </ul>
 </section>
-<section aria-labelledby="honeypot-alternate">
+<section aria-labelledby="honeypot-alternate" data-exception-for="honeypot">
 <h2 id="honeypot-alternate">Honeypot (alternate) <a class="anchor" href="#honeypot-alternate" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Bank/storage behavior: resilience-oriented raid interaction profile.</li>

@@ -76,6 +76,11 @@
       "level": 2
     },
     {
+      "id": "interactive-unlock-graph",
+      "title": "Unlock Graph Diagram And Node Contract Table",
+      "level": 2
+    },
+    {
       "id": "branching-and-exclusivity-policy",
       "title": "Branching And Exclusivity Policy",
       "level": 2
@@ -139,6 +144,7 @@
 }
 </script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/tech-graph.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -173,6 +179,10 @@
 <li><a href="#upgrade-nodes">Upgrade Nodes</a></li>
 <li><a href="#unit-class-unlock-nodes">Unit Class Unlock Nodes</a></li>
 <li><a href="#directed-dependencies-v0-placeholder">Directed Dependencies (v0 Placeholder)</a></li>
+</ul></li>
+<li><a href="#interactive-unlock-graph">Unlock Graph Diagram And Node Contract Table</a>
+<ul>
+<li><a href="#per-node-contract-table">Per-node contract table</a></li>
 </ul></li>
 <li><a href="#branching-and-exclusivity-policy">Branching And Exclusivity Policy</a>
 </li>
@@ -279,6 +289,135 @@
 <li>Economy threshold gate is currently modeled as a biomass-per-minute condition.</li>
 <li>Exact threshold values are deferred until factions, map examples, and loop timings are more mature.</li>
 </ul>
+</section>
+<section aria-labelledby="interactive-unlock-graph">
+<h2 id="interactive-unlock-graph">Unlock Graph Diagram And Node Contract Table <a class="anchor" href="#interactive-unlock-graph" aria-label="Link to this section">#</a></h2>
+<p>This diagram and table render the placeholder dependencies from <a href="#unlock-graph-contract-placeholder">Unlock Graph Contract (Placeholder)</a> and fill the "tech graph diagram" and "per-node contract table" items of the <a href="#publishable-artifact-checklist-v0">Publishable Artifact Checklist (v0)</a>. They add no rules. Select a node (click or press Enter) to highlight everything it requires and everything it unlocks.</p>
+<figure>
+<svg id="tech-graph" class="diagram tech-graph" viewBox="0 0 950 540" role="group" aria-labelledby="tech-graph-title tech-graph-desc">
+<title id="tech-graph-title">Baseline tech unlock graph (v0 placeholder nodes)</title>
+<desc id="tech-graph-desc">Directed dependencies: B0 to B1 to U1 to C2. B1 plus the economy threshold gate to B2 to U2. B1 plus U1 plus the economy threshold gate to B3 to U3 to C3. B3 plus U4 plus the economy threshold gate to C4. C1 and U4 have no prerequisite listed.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>
+<g class="edges">
+<path data-from="B0" data-to="B1" d="M170,69 L210,69" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B1" data-to="U1" d="M360,69 L400,69" fill="none" marker-end="url(#arrow)"/>
+<path data-from="U1" data-to="C2" d="M550,69 L590,69" fill="none" marker-end="url(#arrow)"/>
+<path data-from="U1" data-to="B3" d="M475,98 L475,170" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B3" data-to="U3" d="M550,199 L590,199" fill="none" marker-end="url(#arrow)"/>
+<path data-from="U3" data-to="C3" d="M740,199 L780,199" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B2" data-to="U2" d="M550,329 L590,329" fill="none" marker-end="url(#arrow)"/>
+<path data-from="U4" data-to="C4" d="M740,459 L780,459" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B1" data-to="B3" d="M260,98 V187 H400" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B1" data-to="B2" d="M310,98 V341 H400" fill="none" marker-end="url(#arrow)"/>
+<path data-from="GATE" data-to="B3" d="M170,256 H190 V211 H400" fill="none" marker-end="url(#arrow)"/>
+<path data-from="GATE" data-to="B2" d="M170,284 H190 V317 H400" fill="none" marker-end="url(#arrow)"/>
+<path data-from="B3" data-to="C4" d="M550,213 H570 V395 H855 V430" fill="none" marker-end="url(#arrow)"/>
+<path data-from="GATE" data-to="C4" d="M95,299 V515 H855 V488" fill="none" marker-end="url(#arrow)"/>
+</g>
+<g class="nodes">
+<g class="tech-node" data-node="B0" data-kind="building" data-label="Colony Core (start)">
+<rect x="20" y="40" width="150" height="58" rx="8"/>
+<text class="node-id" x="95" y="56" text-anchor="middle">B0</text>
+<text x="95" y="72" text-anchor="middle">Colony Core</text>
+<text x="95" y="86" text-anchor="middle">(start)</text>
+</g>
+<g class="tech-node" data-node="B1" data-kind="building" data-label="Basic Infantry Production">
+<rect x="210" y="40" width="150" height="58" rx="8"/>
+<text class="node-id" x="285" y="56" text-anchor="middle">B1</text>
+<text x="285" y="72" text-anchor="middle">Basic Infantry</text>
+<text x="285" y="86" text-anchor="middle">Production</text>
+</g>
+<g class="tech-node" data-node="U1" data-kind="upgrade" data-label="Tier 2 Access Gate">
+<rect x="400" y="40" width="150" height="58" rx="8"/>
+<text class="node-id" x="475" y="56" text-anchor="middle">U1</text>
+<text x="475" y="72" text-anchor="middle">Tier 2 Access</text>
+<text x="475" y="86" text-anchor="middle">Gate</text>
+</g>
+<g class="tech-node" data-node="C2" data-kind="unit" data-label="Mid-tier pressure units">
+<rect x="590" y="40" width="150" height="58" rx="8"/>
+<text class="node-id" x="665" y="56" text-anchor="middle">C2</text>
+<text x="665" y="72" text-anchor="middle">Mid-tier</text>
+<text x="665" y="86" text-anchor="middle">pressure units</text>
+</g>
+<g class="tech-node unspecified" data-node="C1" data-kind="unit" data-label="Baseline frontline units" data-note="The spec lists this unit class without a prerequisite in the directed dependencies.">
+<rect x="780" y="40" width="150" height="58" rx="8"/>
+<text class="node-id" x="855" y="56" text-anchor="middle">C1</text>
+<text x="855" y="72" text-anchor="middle">Baseline</text>
+<text x="855" y="86" text-anchor="middle">frontline units</text>
+</g>
+<g class="tech-node" data-node="B3" data-kind="building" data-label="Specialist Structure" data-note="Faction overlay slot.">
+<rect x="400" y="170" width="150" height="58" rx="8"/>
+<text class="node-id" x="475" y="186" text-anchor="middle">B3</text>
+<text x="475" y="202" text-anchor="middle">Specialist Structure</text>
+<text x="475" y="216" text-anchor="middle">(faction overlay slot)</text>
+</g>
+<g class="tech-node" data-node="U3" data-kind="upgrade" data-label="Specialist Mobility/Disruption Package">
+<rect x="590" y="170" width="150" height="58" rx="8"/>
+<text class="node-id" x="665" y="186" text-anchor="middle">U3</text>
+<text x="665" y="202" text-anchor="middle">Specialist Mobility/</text>
+<text x="665" y="216" text-anchor="middle">Disruption Package</text>
+</g>
+<g class="tech-node" data-node="C3" data-kind="unit" data-label="Special-movement disruption units" data-note="Ranged AoE, flyers, burrowers. High-impact: composite gating applies.">
+<rect x="780" y="170" width="150" height="58" rx="8"/>
+<text class="node-id" x="855" y="186" text-anchor="middle">C3</text>
+<text x="855" y="202" text-anchor="middle">Special-movement</text>
+<text x="855" y="216" text-anchor="middle">disruption units</text>
+</g>
+<g class="tech-node" data-node="B2" data-kind="building" data-label="Logistics/Expansion Hub" data-note="Placeholder for bank-route and throughput support.">
+<rect x="400" y="300" width="150" height="58" rx="8"/>
+<text class="node-id" x="475" y="316" text-anchor="middle">B2</text>
+<text x="475" y="332" text-anchor="middle">Logistics/Expansion</text>
+<text x="475" y="346" text-anchor="middle">Hub</text>
+</g>
+<g class="tech-node" data-node="U2" data-kind="upgrade" data-label="Logistics Throughput Upgrade">
+<rect x="590" y="300" width="150" height="58" rx="8"/>
+<text class="node-id" x="665" y="316" text-anchor="middle">U2</text>
+<text x="665" y="332" text-anchor="middle">Logistics Throughput</text>
+<text x="665" y="346" text-anchor="middle">Upgrade</text>
+</g>
+<g class="tech-node unspecified" data-node="U4" data-kind="upgrade" data-label="Tier 3 Access Gate" data-note="The spec lists this upgrade without a prerequisite in the directed dependencies.">
+<rect x="590" y="430" width="150" height="58" rx="8"/>
+<text class="node-id" x="665" y="446" text-anchor="middle">U4</text>
+<text x="665" y="462" text-anchor="middle">Tier 3 Access</text>
+<text x="665" y="476" text-anchor="middle">Gate</text>
+</g>
+<g class="tech-node" data-node="C4" data-kind="unit" data-label="Behemoth-class swing units" data-note="High-impact: composite gating applies.">
+<rect x="780" y="430" width="150" height="58" rx="8"/>
+<text class="node-id" x="855" y="446" text-anchor="middle">C4</text>
+<text x="855" y="462" text-anchor="middle">Behemoth-class</text>
+<text x="855" y="476" text-anchor="middle">swing units</text>
+</g>
+<g class="tech-node" data-node="GATE" data-kind="gate" data-label="Economy threshold gate" data-note="Modeled as a biomass-per-minute condition; exact values are deferred.">
+<rect x="20" y="241" width="150" height="58" rx="8"/>
+<text class="node-id" x="95" y="257" text-anchor="middle">Gate</text>
+<text x="95" y="273" text-anchor="middle">Economy threshold</text>
+<text x="95" y="287" text-anchor="middle">gate</text>
+</g>
+</g>
+</svg>
+<figcaption>Solid boxes are nodes from the contract; the dashed box is the economy threshold gate condition. Dashed outlines (C1, U4) mark nodes the spec lists without any prerequisite. An arrow means "required by"; a node with several incoming arrows requires all of them.</figcaption>
+</figure>
+<p class="widget-bar"><button type="button" id="tech-reset" class="btn">Clear selection</button></p>
+<div id="tech-detail" class="widget tech-detail" aria-live="polite">Select a node to see what it requires and what it unlocks.</div>
+<h3 id="per-node-contract-table">Per-node contract table <a class="anchor" href="#per-node-contract-table" aria-label="Link to this section">#</a></h3>
+<p>Cost, build time, and counterplay notes are deferred by this spec (see <a href="#open-items-to-resolve-in-next-pass">Open Items To Resolve In Next Pass</a>); they are marked "Deferred" until set.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Node</th><th scope="col">Name (placeholder)</th><th scope="col">Type</th><th scope="col">Requires (all of)</th><th scope="col">Directly unlocks</th><th scope="col">Cost</th><th scope="col">Build time</th><th scope="col">Counterplay notes</th></tr></thead>
+<tbody>
+<tr><th scope="row">B0</th><td>Colony Core (start)</td><td>Building</td><td>None listed</td><td>B1</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">B1</th><td>Basic Infantry Production</td><td>Building</td><td>B0</td><td>U1, B3, B2</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">B2</th><td>Logistics/Expansion Hub</td><td>Building</td><td>B1, Economy threshold gate</td><td>U2</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">B3</th><td>Specialist Structure</td><td>Building</td><td>U1, B1, Economy threshold gate</td><td>U3, C4</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">U1</th><td>Tier 2 Access Gate</td><td>Upgrade</td><td>B1</td><td>C2, B3</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">U2</th><td>Logistics Throughput Upgrade</td><td>Upgrade</td><td>B2</td><td>None listed</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">U3</th><td>Specialist Mobility/Disruption Package</td><td>Upgrade</td><td>B3</td><td>C3</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">U4</th><td>Tier 3 Access Gate</td><td>Upgrade</td><td>None listed</td><td>C4</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">C1</th><td>Baseline frontline units</td><td>Unit class unlock</td><td>None listed</td><td>None listed</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">C2</th><td>Mid-tier pressure units</td><td>Unit class unlock</td><td>U1</td><td>None listed</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">C3</th><td>Special-movement disruption units</td><td>Unit class unlock</td><td>U3</td><td>None listed</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+<tr><th scope="row">C4</th><td>Behemoth-class swing units</td><td>Unit class unlock</td><td>U4, B3, Economy threshold gate</td><td>None listed</td><td>Deferred</td><td>Deferred</td><td>Deferred</td></tr>
+</tbody>
+</table></div>
 </section>
 <section aria-labelledby="branching-and-exclusivity-policy">
 <h2 id="branching-and-exclusivity-policy">Branching And Exclusivity Policy <a class="anchor" href="#branching-and-exclusivity-policy" aria-label="Link to this section">#</a></h2>
