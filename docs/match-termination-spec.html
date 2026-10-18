@@ -72,6 +72,11 @@
       "level": 2
     },
     {
+      "id": "interactive-state-machine",
+      "title": "Interactive State Machine",
+      "level": 2
+    },
+    {
       "id": "replay-and-end-state-metadata-audit-grade",
       "title": "Replay And End-State Metadata (Audit Grade)",
       "level": 2
@@ -85,6 +90,8 @@
 }
 </script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/widget-utils.js" defer></script>
+<script src="assets/js/match-state-machine.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -124,6 +131,14 @@
 </li>
 <li><a href="#match-termination-state-machine">Match Termination State Machine</a>
 </li>
+<li><a href="#interactive-state-machine">Interactive State Machine</a>
+<ul>
+<li><a href="#sm-state-diagram">State diagram</a></li>
+<li><a href="#sm-transition-table">Transition table</a></li>
+<li><a href="#sm-cause-table">Termination cause table</a></li>
+<li><a href="#sm-simulator">State machine simulator</a></li>
+<li><a href="#sm-priority-resolver">Same-tick priority resolver</a></li>
+</ul></li>
 <li><a href="#replay-and-end-state-metadata-audit-grade">Replay And End-State Metadata (Audit Grade)</a>
 </li>
 <li><a href="#versioning">Versioning</a>
@@ -196,10 +211,10 @@
 <h2 id="same-tick-priority-order">Same-Tick Priority Order <a class="anchor" href="#same-tick-priority-order" aria-label="Link to this section">#</a></h2>
 <p>If multiple termination triggers resolve on the same simulation tick, apply this strict priority:</p>
 <ol>
-<li>Core destruction</li>
-<li>Surrender completion</li>
-<li>Disconnect forfeit (grace timeout reached)</li>
-<li>Timer expiry</li>
+<li data-trigger="core">Core destruction</li>
+<li data-trigger="surrender">Surrender completion</li>
+<li data-trigger="disconnect">Disconnect forfeit (grace timeout reached)</li>
+<li data-trigger="timer">Timer expiry</li>
 </ol>
 <p>This priority is deterministic and replay-auditable.</p>
 </section>
@@ -255,6 +270,79 @@
 </ul>
 </li>
 </ol>
+</section>
+<section aria-labelledby="interactive-state-machine">
+<h2 id="interactive-state-machine">Interactive State Machine <a class="anchor" href="#interactive-state-machine" aria-label="Link to this section">#</a></h2>
+<p>The diagram, tables and simulators below present the transitions in <a href="#match-termination-state-machine">Match Termination State Machine</a>, the outcomes in <a href="#locked-outcome-rules">Locked Outcome Rules</a>, and the order in <a href="#same-tick-priority-order">Same-Tick Priority Order</a>. They add no rules. The simulators read the tables on this page, so editing a row changes their behavior.</p>
+<h3 id="sm-state-diagram">State diagram <a class="anchor" href="#sm-state-diagram" aria-label="Link to this section">#</a></h3>
+<figure>
+<svg id="sm-diagram" class="diagram sm-diagram" viewBox="0 0 760 270" role="group" aria-labelledby="sm-title sm-desc">
+<title id="sm-title">Match termination state machine</title>
+<desc id="sm-desc">Three states: Running, PausedReconnect and Ended. Running goes to Ended on core destruction, surrender countdown complete, or timer expiry. Running goes to PausedReconnect on player disconnect, saving a resume snapshot. PausedReconnect goes back to Running on reconnect within the grace window, or to Ended when the grace window times out.</desc>
+<defs><marker id="sm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>
+<circle cx="18" cy="170" r="6" style="fill:var(--muted)"/>
+<path d="M24,170 L40,170" fill="none" style="stroke:var(--muted);stroke-width:1.8" marker-end="url(#sm-arrow)"/>
+<g class="sm-edge" data-transition="T1" data-from="Running" data-to="Ended" aria-label="T1 Running to Ended: core destruction"><path d="M210,145 L550,145" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M210,145 L550,145"/><text class="sm-edge-label" x="380" y="149" text-anchor="middle">T1 core destruction</text></g>
+<g class="sm-edge" data-transition="T2" data-from="Running" data-to="Ended" aria-label="T2 Running to Ended: surrender countdown complete"><path d="M210,170 L550,170" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M210,170 L550,170"/><text class="sm-edge-label" x="380" y="174" text-anchor="middle">T2 surrender complete</text></g>
+<g class="sm-edge" data-transition="T6" data-from="Running" data-to="Ended" aria-label="T6 Running to Ended: timer expiry"><path d="M210,195 L550,195" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M210,195 L550,195"/><text class="sm-edge-label" x="380" y="199" text-anchor="middle">T6 timer expiry</text></g>
+<g class="sm-edge" data-transition="T3" data-from="Running" data-to="PausedReconnect" aria-label="T3 Running to PausedReconnect: player disconnect"><path d="M90,130 V40 H295" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M90,130 V40 H295"/><text class="sm-edge-label" x="195" y="44" text-anchor="middle">T3 disconnect</text><text class="sm-sub" x="195" y="58" text-anchor="middle">saves resume snapshot</text></g>
+<g class="sm-edge" data-transition="T4" data-from="PausedReconnect" data-to="Running" aria-label="T4 PausedReconnect to Running: reconnect within grace window"><path d="M295,75 H160 V130" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M295,75 H160 V130"/><text class="sm-edge-label" x="228" y="79" text-anchor="middle">T4 reconnect</text></g>
+<g class="sm-edge" data-transition="T5" data-from="PausedReconnect" data-to="Ended" aria-label="T5 PausedReconnect to Ended: grace window timeout"><path d="M465,58 H635 V130" marker-end="url(#sm-arrow)"/><path class="sm-hit" d="M465,58 H635 V130"/><text class="sm-edge-label" x="550" y="62" text-anchor="middle">T5 grace timeout</text></g>
+<g class="sm-state" data-state="Running"><rect x="40" y="130" width="170" height="80" rx="10"/><text x="125" y="165" text-anchor="middle" style="font-weight:700">Running</text><text class="sm-sub" x="125" y="185" text-anchor="middle">simulation ticking</text></g>
+<g class="sm-state" data-state="PausedReconnect"><rect x="295" y="20" width="170" height="80" rx="10"/><text x="380" y="55" text-anchor="middle" style="font-weight:700">PausedReconnect</text><text class="sm-sub" x="380" y="75" text-anchor="middle">90 s minimum window</text></g>
+<g class="sm-state" data-state="Ended"><rect x="550" y="130" width="170" height="80" rx="10"/><text x="635" y="165" text-anchor="middle" style="font-weight:700">Ended</text><text class="sm-sub" x="635" y="185" text-anchor="middle">Win, Loss or Draw</text></g>
+</svg>
+<figcaption>Select a state or a transition (click, or Enter on keyboard) to see its details. Without JavaScript, the table below lists the same transitions.</figcaption>
+</figure>
+<div id="sm-detail" class="widget" aria-live="polite" hidden>Select a state or transition to see its trigger, result and side effects.</div>
+<h3 id="sm-transition-table">Transition table <a class="anchor" href="#sm-transition-table" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table data-no-sort>
+<thead><tr><th scope="col">Id</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Trigger</th><th scope="col">Result</th><th scope="col">Side effect</th></tr></thead>
+<tbody>
+<tr data-transition="T1" data-from="Running" data-to="Ended" data-causes="CoreKill DualCoreKill"><td>T1</td><td><code>Running</code></td><td><code>Ended</code></td><td>Core destruction event</td><td>Win/loss, or draw for same-tick dual core death</td><td>None</td></tr>
+<tr data-transition="T2" data-from="Running" data-to="Ended" data-causes="Surrender"><td>T2</td><td><code>Running</code></td><td><code>Ended</code></td><td>Surrender countdown complete</td><td>Surrendering player loses</td><td>None</td></tr>
+<tr data-transition="T3" data-from="Running" data-to="PausedReconnect"><td>T3</td><td><code>Running</code></td><td><code>PausedReconnect</code></td><td>Player disconnect</td><td>None</td><td>Deterministic resume snapshot saved</td></tr>
+<tr data-transition="T4" data-from="PausedReconnect" data-to="Running"><td>T4</td><td><code>PausedReconnect</code></td><td><code>Running</code></td><td>Disconnected player reconnects within grace window</td><td>Match resumes</td><td>None</td></tr>
+<tr data-transition="T5" data-from="PausedReconnect" data-to="Ended" data-causes="DisconnectForfeit"><td>T5</td><td><code>PausedReconnect</code></td><td><code>Ended</code></td><td>Grace window timeout reached</td><td>Disconnected player forfeits</td><td>None</td></tr>
+<tr data-transition="T6" data-from="Running" data-to="Ended" data-causes="TimerDraw"><td>T6</td><td><code>Running</code></td><td><code>Ended</code></td><td>Timer expiry</td><td>Draw</td><td>None</td></tr>
+</tbody>
+</table></div>
+<h3 id="sm-cause-table">Termination cause table <a class="anchor" href="#sm-cause-table" aria-label="Link to this section">#</a></h3>
+<p>Each <code>Termination cause</code> from the <a href="#replay-and-end-state-metadata-audit-grade">end-state metadata</a> with the outcome it produces. This table consolidates rules stated above.</p>
+<div class="table-wrap"><table data-no-sort>
+<thead><tr><th scope="col">Termination cause</th><th scope="col">Trigger</th><th scope="col">Outcome</th><th scope="col">Meaning</th></tr></thead>
+<tbody>
+<tr data-cause="CoreKill" data-trigger="core" data-loser="actor"><td><code>CoreKill</code></td><td>Core destruction, priority 1</td><td>Win/Loss</td><td>The player whose opponent's core was destroyed wins.</td></tr>
+<tr data-cause="DualCoreKill" data-trigger="core" data-loser="none"><td><code>DualCoreKill</code></td><td>Core destruction, priority 1</td><td>Draw</td><td>Both colony cores destroyed in the same simulation tick. No winner.</td></tr>
+<tr data-cause="Surrender" data-trigger="surrender" data-loser="actor"><td><code>Surrender</code></td><td>Surrender completion, priority 2</td><td>Win/Loss</td><td>The surrendering player loses after the 3-second countdown.</td></tr>
+<tr data-cause="DisconnectForfeit" data-trigger="disconnect" data-loser="actor"><td><code>DisconnectForfeit</code></td><td>Disconnect forfeit, priority 3</td><td>Win/Loss</td><td>The disconnected player forfeits when the grace window times out.</td></tr>
+<tr data-cause="TimerDraw" data-trigger="timer" data-loser="none"><td><code>TimerDraw</code></td><td>Timer expiry, priority 4</td><td>Draw</td><td>The match timer expired before a decisive core kill. No winner.</td></tr>
+</tbody>
+</table></div>
+<h3 id="sm-simulator">State machine simulator <a class="anchor" href="#sm-simulator" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> the simulator fires one trigger at a time from the current state. It does not model time, so the 3-second surrender countdown, the grace window and the match timer are treated as already elapsed when you fire their trigger. Forfeit is treated as a loss for the disconnected player.</p>
+<div class="widget" id="sm-sim" hidden>
+<div class="widget-controls">
+<label>Player the trigger applies to <select id="sm-actor"><option value="A">Player A</option><option value="B">Player B</option></select></label>
+<button type="button" class="btn" id="sm-reset">Reset to Running</button>
+</div>
+<p>Current state: <strong id="sm-current"></strong></p>
+<div id="sm-events" class="sm-events" role="group" aria-label="Available triggers"></div>
+<ol id="sm-log" class="sm-log" aria-label="Transition log"></ol>
+<dl id="sm-result" class="widget-output" hidden></dl>
+</div>
+<h3 id="sm-priority-resolver">Same-tick priority resolver <a class="anchor" href="#sm-priority-resolver" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> the resolver treats the four triggers as candidates on one simulation tick and picks the highest-priority one, which is what <a href="#same-tick-priority-order">Same-Tick Priority Order</a> prescribes. The state machine only allows a disconnect forfeit from <code>PausedReconnect</code>, while the priority list also ranks it against triggers that fire in <code>Running</code>; the resolver follows the priority list. Two simultaneous surrenders or forfeits are not modeled.</p>
+<div class="widget" id="priority-widget" hidden>
+<div class="widget-controls">
+<label>Core destroyed this tick <select id="pr-core"><option value="none">No</option><option value="A">Player A's core</option><option value="B">Player B's core</option><option value="both">Both cores</option></select></label>
+<label>Surrender countdown completes <select id="pr-surrender"><option value="none">No</option><option value="A">Player A</option><option value="B">Player B</option></select></label>
+<label>Disconnect grace timeout reached <select id="pr-disconnect"><option value="none">No</option><option value="A">Player A</option><option value="B">Player B</option></select></label>
+<label>Match timer expires <input id="pr-timer" type="checkbox"></label>
+</div>
+<ol id="pr-trace" class="pr-trace" aria-label="Priority trace"></ol>
+<dl id="pr-result" class="widget-output"></dl>
+</div>
 </section>
 <section aria-labelledby="replay-and-end-state-metadata-audit-grade">
 <h2 id="replay-and-end-state-metadata-audit-grade">Replay And End-State Metadata (Audit Grade) <a class="anchor" href="#replay-and-end-state-metadata-audit-grade" aria-label="Link to this section">#</a></h2>

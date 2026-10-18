@@ -234,3 +234,37 @@ a:hover { text-decoration-thickness: 2px; }
 .tech-detail p { margin: 0.3rem 0; }
 .tech-detail .tech-detail-title { font-weight: 600; margin-bottom: 0; }
 .tech-detail .tech-note { color: var(--muted); font-size: 0.9rem; }
+
+/* Calculator extras */
+.widget tr.current td { background: var(--surface-2); font-weight: 600; }
+.widget details { margin: 0.5rem 0; }
+.widget details summary { cursor: pointer; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 0.35rem; list-style: none; margin: 0.5rem 0; padding: 0; }
+.chip { padding: 0.15rem 0.55rem; font-size: 0.8rem; border: 1px solid var(--ok); border-radius: 999px; color: var(--ok); }
+.chip.idle { border-style: dashed; border-color: var(--border); color: var(--muted); }
+
+/* State machine diagram */
+.sm-diagram { width: 100%; height: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.sm-diagram text { font: 13px var(--font-body); fill: var(--fg); pointer-events: none; }
+.sm-diagram text.sm-sub { font-size: 11px; fill: var(--muted); }
+.sm-diagram text.sm-edge-label { paint-order: stroke; stroke: var(--surface); stroke-width: 6px; stroke-linejoin: round; }
+.sm-diagram .sm-edge text, .sm-diagram .sm-state text { pointer-events: auto; }
+.sm-state { cursor: pointer; }
+.sm-state rect { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+.sm-state[data-state="Ended"] rect { stroke: var(--ok); }
+.sm-state[data-state="PausedReconnect"] rect { stroke: var(--warn); }
+.sm-state.current rect, .sm-state.selected rect { fill: var(--surface-2); stroke-width: 4; }
+.sm-edge { cursor: pointer; }
+.sm-edge path { fill: none; stroke: var(--muted); stroke-width: 1.8; }
+.sm-edge path.sm-hit { stroke: transparent; stroke-width: 14; marker-end: none; }
+.sm-edge.selected path:not(.sm-hit), .sm-edge.fired path:not(.sm-hit) { stroke: var(--accent); stroke-width: 3.2; }
+.sm-edge.selected text, .sm-edge.fired text { font-weight: 700; }
+.sm-edge:focus, .sm-state:focus { outline: none; }
+.sm-state:focus-visible rect { stroke-width: 4; stroke: var(--fg); }
+.sm-edge:focus-visible path:not(.sm-hit) { stroke: var(--fg); stroke-width: 3.2; }
+.doc table tr.clickable { cursor: pointer; }
+.doc table tr.current td { background: var(--surface-2); }
+.sm-events { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+.sm-log, .pr-trace { margin: 0.5rem 0; padding-left: 1.4rem; }
+.pr-trace li.selected { font-weight: 700; color: var(--ok); }
+.pr-trace li.superseded { color: var(--muted); text-decoration: line-through; }

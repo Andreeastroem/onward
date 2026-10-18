@@ -136,6 +136,11 @@
       "level": 2
     },
     {
+      "id": "interactive-calculators",
+      "title": "Interactive Calculators",
+      "level": 2
+    },
+    {
       "id": "replay-and-telemetry-requirements-audit-grade",
       "title": "Replay And Telemetry Requirements (Audit Grade)",
       "level": 2
@@ -154,6 +159,8 @@
 }
 </script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/widget-utils.js" defer></script>
+<script src="assets/js/production-calculators.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -220,6 +227,12 @@
 <ul>
 <li><a href="#construction-state-machine">Construction State Machine</a></li>
 <li><a href="#production-state-machine">Production State Machine</a></li>
+</ul></li>
+<li><a href="#interactive-calculators">Interactive Calculators</a>
+<ul>
+<li><a href="#calc-builder-scaling">Builder scaling and surcharge</a></li>
+<li><a href="#calc-auto-throttle">Insolvency auto-throttle</a></li>
+<li><a href="#calc-cancel-refund">Cancel and refund</a></li>
 </ul></li>
 <li><a href="#replay-and-telemetry-requirements-audit-grade">Replay And Telemetry Requirements (Audit Grade)</a>
 </li>
@@ -569,6 +582,80 @@
 </ul>
 </li>
 </ol>
+</section>
+<section aria-labelledby="interactive-calculators">
+<h2 id="interactive-calculators">Interactive Calculators <a class="anchor" href="#interactive-calculators" aria-label="Link to this section">#</a></h2>
+<p>The calculators below evaluate the <a href="#builder-assignment-and-scaling">builder scaling formulas</a>, the <a href="#insolvency-and-auto-throttle-behavior">auto-throttle rule</a> and the <a href="#cost-commitment-and-refund-policy">refund policy</a> using <code>production_operations_spec_version = 1</code>. They add no rules; the reference table shows the same values without JavaScript. Their constants are mirrored in the <code>production-constants</code> JSON block on this page and must be updated together with the formulas whenever the spec version changes.</p>
+<script type="application/json" id="production-constants">
+{
+  "production_operations_spec_version": 1,
+  "max_builders_per_site": 24,
+  "speed": {
+    "base": 1,
+    "coefficient": 0.55
+  },
+  "k_by_class": {
+    "Economy/utility structures": 0.35,
+    "Military production structures": 0.5,
+    "Tech/advanced unlock structures": 0.7,
+    "Defensive/control structures": 0.6
+  }
+}
+</script>
+<h3 id="calc-builder-scaling">Builder scaling and surcharge <a class="anchor" href="#calc-builder-scaling" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> the spec defines the speed multiplier <code>S(n)</code> and the per-tick surcharge <code>k * (n - 1)^2</code>, but not a base build time, the length of a surcharge tick, or the currency charged. Build time is therefore <code>base build time / S(n)</code> for a constant builder count, the surcharge tick rate is an input (default one tick per second), and the total is the per-tick surcharge multiplied by the number of ticks in the build.</p>
+<div class="widget" id="builders-widget" hidden>
+<div class="widget-controls">
+<label>Building class <select id="build-class"></select></label>
+<label>Base build time with one builder (s, not defined in spec) <input id="build-time" type="number" min="1" step="1" value="60"></label>
+<label>Surcharge ticks per second (not defined in spec) <input id="build-tick-rate" type="number" min="0" step="0.5" value="1"></label>
+<label>Builders on the site <input id="build-count" type="range" min="1" max="24" step="1" value="8"> <output id="build-count-out" for="build-count">8</output></label>
+</div>
+<dl id="build-output" class="widget-output"></dl>
+<svg id="build-chart" class="diagram" viewBox="0 0 520 240" role="img" aria-labelledby="build-chart-title"></svg>
+<details><summary>Full table for every builder count</summary>
+<div class="table-wrap"><table data-no-sort>
+<thead><tr><th scope="col">Builders</th><th scope="col">S(n)</th><th scope="col">Build time (s)</th><th scope="col">Surcharge per tick</th><th scope="col">Total surcharge</th></tr></thead>
+<tbody id="build-rows"></tbody>
+</table></div>
+</details>
+</div>
+<p>Reference values (the surcharge multipliers match the sample multipliers in the <a href="#initial-balancing-appendix-v0-defaults">balancing appendix</a>; per-tick surcharge is <code>k * (n - 1)^2</code>):</p>
+<div class="table-wrap"><table data-no-sort>
+<thead><tr><th scope="col">Builders (n)</th><th scope="col">S(n)</th><th scope="col">(n - 1)&sup2;</th><th scope="col">Economy (k = 0.35)</th><th scope="col">Military (k = 0.5)</th><th scope="col">Tech (k = 0.7)</th><th scope="col">Defensive (k = 0.6)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>2</td><td>1.55</td><td>1</td><td>0.35</td><td>0.5</td><td>0.7</td><td>0.6</td></tr>
+<tr><td>4</td><td>1.953</td><td>9</td><td>3.15</td><td>4.5</td><td>6.3</td><td>5.4</td></tr>
+<tr><td>8</td><td>2.455</td><td>49</td><td>17.15</td><td>24.5</td><td>34.3</td><td>29.4</td></tr>
+<tr><td>12</td><td>2.824</td><td>121</td><td>42.35</td><td>60.5</td><td>84.7</td><td>72.6</td></tr>
+<tr><td>16</td><td>3.13</td><td>225</td><td>78.75</td><td>112.5</td><td>157.5</td><td>135</td></tr>
+<tr><td>20</td><td>3.397</td><td>361</td><td>126.35</td><td>180.5</td><td>252.7</td><td>216.6</td></tr>
+<tr><td>24</td><td>3.638</td><td>529</td><td>185.15</td><td>264.5</td><td>370.3</td><td>317.4</td></tr>
+</tbody>
+</table></div>
+<h3 id="calc-auto-throttle">Insolvency auto-throttle <a class="anchor" href="#calc-auto-throttle" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> the stockpile can pay the current tick when the per-tick surcharge for the active builder count is no more than the amount you enter. The site keeps the highest builder count that is affordable, never fewer than one, and the earliest-assigned builders stay active. The spec does not say which resource pays the surcharge.</p>
+<div class="widget" id="throttle-widget" hidden>
+<div class="widget-controls">
+<label>Building class <select id="throttle-class"></select></label>
+<label>Assigned builders <input id="throttle-assigned" type="number" min="1" max="24" step="1" value="16"></label>
+<label>Surcharge the stockpile can pay this tick <input id="throttle-budget" type="number" min="0" step="1" value="40"></label>
+</div>
+<dl id="throttle-output" class="widget-output"></dl>
+<ol id="throttle-chips" class="chip-list" aria-label="Builders in assignment order"></ol>
+</div>
+<h3 id="calc-cancel-refund">Cancel and refund <a class="anchor" href="#calc-cancel-refund" aria-label="Link to this section">#</a></h3>
+<p><strong>Calculator interpretation (not a spec change):</strong> the full base cost is treated as paid at placement, so a cancel returns the unspent part (<code>base_cost * (1 - p)</code>) and nothing else, and destruction under construction returns nothing. Paid surcharge is never refunded.</p>
+<div class="widget" id="refund-widget" hidden>
+<div class="widget-controls">
+<label>Base cost <input id="refund-cost" type="number" min="0" step="1" value="100"></label>
+<label>Progress <input id="refund-progress" type="range" min="0" max="100" step="1" value="40"> <output id="refund-progress-out" for="refund-progress">40%</output></label>
+<label>Surcharge paid so far <input id="refund-surcharge" type="number" min="0" step="1" value="20"></label>
+<label>Outcome <select id="refund-mode"><option value="cancel">Player cancels</option><option value="destroyed">Destroyed under construction</option></select></label>
+</div>
+<dl id="refund-output" class="widget-output"></dl>
+</div>
 </section>
 <section aria-labelledby="replay-and-telemetry-requirements-audit-grade">
 <h2 id="replay-and-telemetry-requirements-audit-grade">Replay And Telemetry Requirements (Audit Grade) <a class="anchor" href="#replay-and-telemetry-requirements-audit-grade" aria-label="Link to this section">#</a></h2>
