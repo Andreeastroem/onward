@@ -470,10 +470,12 @@
 <ul>
 <li>One spendable strategic resource: biomass.</li>
 <li>Core-credit authority (banked biomass is not spendable until core deposit).</li>
+<li>Shared bank-interaction state machine: all factions use the same steal and deny verbs, ownership states, core-credit rules, and deterministic tie-breakers. Faction asymmetry may affect only approach, protection, interaction speed, and raid windows.</li>
 <li>Single-queue deterministic production sources.</li>
 <li>Soft-counter-first combat model with deterministic outcomes.</li>
 <li>Impassable water chokepoints in baseline map rules.</li>
 <li>Mandatory role-family coverage: Worker, Warrior, Air, Anti-air, Behemoth.</li>
+<li>Tier 1 anti-air parity: every launch faction has a viable early anti-air answer. Faction-specific anti-air strengths begin at Tier 2.</li>
 </ul>
 <h3 id="asymmetry-budget">Asymmetry budget <a class="anchor" href="#asymmetry-budget" aria-label="Link to this section">#</a></h3>
 <p>Each faction should vary mainly on:</p>
@@ -779,6 +781,7 @@
 <li>Black defends linear reliability and positional control.</li>
 <li>Black wins by compressing fronts into direct trades.</li>
 <li>Weaver wins by forcing constant reorientation.</li>
+<li>This is the first launch-matchup telemetry and anti-degeneracy test priority. Validate that detected anchors, single-file exits, and Black carrier route controls create meaningful counterplay rather than a repeatable raid-and-escape loop.</li>
 </ul>
 </section>
 <section aria-labelledby="black-vs-army" data-matchup="black army">
@@ -901,7 +904,7 @@
 </section>
 <section aria-labelledby="productionconnectivity-exception-candidates">
 <h2 id="productionconnectivity-exception-candidates">Production/Connectivity Exception Candidates <a class="anchor" href="#productionconnectivity-exception-candidates" aria-label="Link to this section">#</a></h2>
-<p>Use these as initial faction-exception directions against the shared baseline.</p>
+<p>Exceptions are optional and require a contract-level justification. They are not a faction quota; all other faction behavior remains within the shared baseline.</p>
 </section>
 <section aria-labelledby="black" data-exception-for="black">
 <h2 id="black">Black <a class="anchor" href="#black" aria-label="Link to this section">#</a></h2>
@@ -921,13 +924,13 @@
 <h2 id="weaver">Weaver <a class="anchor" href="#weaver" aria-label="Link to this section">#</a></h2>
 <ul>
 <li>Placement: expanded projection behavior tied to traversal-network structures.</li>
-<li>Connectivity: partial function on select peripheral structures if network condition is met.</li>
+<li>Connectivity: this is the strongest and only launch connectivity exception. Designated peripheral structures remain operational while physically disconnected when linked to an active paired traversal-anchor network. The exception does not apply to core or primary production structures.</li>
 </ul>
 </section>
 <section aria-labelledby="army" data-exception-for="army">
 <h2 id="army">Army <a class="anchor" href="#army" aria-label="Link to this section">#</a></h2>
 <ul>
-<li>Connectivity: targeted partial functionality while disconnected for specific forward classes.</li>
+<li>Connectivity: post-launch only, a forward rally nest retains rally and reinforcement-staging functions while disconnected. It cannot train units, spend biomass, or provide logistics shortcuts until baseline connectivity is restored.</li>
 <li>Production topology: more operational flexibility in forward pressure lanes.</li>
 </ul>
 </section>
@@ -966,13 +969,7 @@
 </section>
 <section aria-labelledby="open-design-questions">
 <h2 id="open-design-questions">Open Design Questions <a class="anchor" href="#open-design-questions" aria-label="Link to this section">#</a></h2>
-<ul>
-<li>Which exact faction gets the strongest connectivity exception budget without reducing clarity?</li>
-<li>Should Army and Weaver both have connectivity exceptions, or should one rely only on mobility and topology?</li>
-<li>How much bank-raid asymmetry can be introduced before ownership model readability degrades?</li>
-<li>Do we want one faction with a stronger anti-air identity early, or preserve tighter parity until Tier 2?</li>
-<li>Which matchup pair should anchor first balance pass telemetry (recommended: Fire vs Leafcutter, Army vs Black)?</li>
-</ul>
+<p>No unresolved faction-scope questions remain. The first launch-matchup telemetry priority is Black versus Weaver.</p>
 <hr />
 </section>
 <section aria-labelledby="success-criteria-for-asymmetry">

@@ -47,7 +47,28 @@
   "referencedBy": [
     "index"
   ],
-  "constants": {},
+  "constants": {
+    "ai_beginner_response_delay_s": "0.75",
+    "ai_standard_response_delay_s": "0.40",
+    "ai_hard_response_delay_s": "0.20",
+    "ai_beginner_max_production_idle_pct": "35",
+    "ai_standard_max_production_idle_pct": "20",
+    "ai_hard_max_production_idle_pct": "10",
+    "ai_beginner_max_unspent_biomass_pct": "45",
+    "ai_standard_max_unspent_biomass_pct": "30",
+    "ai_hard_max_unspent_biomass_pct": "20",
+    "ai_beginner_raid_cooldown_s": "150",
+    "ai_standard_raid_cooldown_s": "90",
+    "ai_hard_raid_cooldown_s": "60",
+    "ai_upkeep_stress_projection_s": "20",
+    "ai_upkeep_stress_reserve_s": "30",
+    "ai_beginner_deficit_stabilization_s": "90",
+    "ai_standard_deficit_recovery_s": "240",
+    "ai_hard_deficit_recovery_s": "240",
+    "ai_hard_deficit_recovery_pass_pct": "70",
+    "ai_profile_reassessment_s": "30",
+    "ai_profile_min_commitment_s": "60"
+  },
   "sections": [
     {
       "id": "1-match-termination-and-victory-rules-high",
@@ -354,6 +375,10 @@
 <li>Conditional anchor warnings reveal an approximate minimap sector, not the exact construction position.</li>
 <li>Launch faction contracts use role-first placeholder unit names until visual and art direction is finalized.</li>
 <li>Faction-expression units may satisfy mandatory capability coverage, but each required capability must remain viably represented; rosters may intentionally include redundant coverage.</li>
+<li>Weaver Ants have the strongest and only launch connectivity exception: designated peripheral structures remain operational while physically disconnected when linked to an active paired traversal-anchor network. Core and primary production structures remain subject to baseline connectivity.</li>
+<li>Army Ants are post-launch scope and have one limited connectivity exception: a forward rally nest retains rally and reinforcement-staging functions while disconnected, but cannot train units, spend biomass, or provide logistics shortcuts until baseline connectivity is restored.</li>
+<li>Launch factions share the same bank-interaction state machine: steal and deny verbs, ownership states, core-credit rules, and deterministic tie-breakers are universal. Faction asymmetry may affect only approach, protection, interaction speed, and raid windows.</li>
+<li>All launch factions have Tier 1 anti-air parity through a viable early anti-air answer. Faction-specific anti-air strengths begin at Tier 2.</li>
 </ul>
 <hr />
 </section>
@@ -437,6 +462,23 @@
 <p>Definition of done:</p>
 <ul>
 <li>AI specification with measurable KPIs and regression test scenarios per tier.</li>
+</ul>
+<p>Decisions locked:</p>
+<ul>
+<li>v1 ships three AI difficulty tiers: Beginner, Standard, and Hard.</li>
+<li>Response delay after valid information is <code data-constant="ai_beginner_response_delay_s" data-value="0.75">0.75 s</code> for Beginner, <code data-constant="ai_standard_response_delay_s" data-value="0.40">0.40 s</code> for Standard, and <code data-constant="ai_hard_response_delay_s" data-value="0.20">0.20 s</code> for Hard. This delay applies before the AI's first responsive order, not to simulation or pathing.</li>
+<li>Primary macro-quality KPIs are average production-source idle time and unspent spendable biomass as a share of recent income. Worker-count milestones are optional diagnostic KPIs that may vary by strategic profile and build order; they are not universal pass/fail gates.</li>
+<li>Macro KPIs use a rolling 60-second measurement window. Biomass explicitly reserved for an active, visible tech or production purchase is excluded from unspent-biomass calculations.</li>
+<li>Maximum average production-source idle time is <code data-constant="ai_beginner_max_production_idle_pct" data-value="35">35%</code> for Beginner, <code data-constant="ai_standard_max_production_idle_pct" data-value="20">20%</code> for Standard, and <code data-constant="ai_hard_max_production_idle_pct" data-value="10">10%</code> for Hard. Maximum unspent biomass is <code data-constant="ai_beginner_max_unspent_biomass_pct" data-value="45">45%</code>, <code data-constant="ai_standard_max_unspent_biomass_pct" data-value="30">30%</code>, and <code data-constant="ai_hard_max_unspent_biomass_pct" data-value="20">20%</code> of recent income respectively.</li>
+<li>Route raids require both a difficulty-specific cooldown and an opportunity gate based on scouted exposed logistics and acceptable local force odds. Difficulty changes cadence and risk tolerance; fixed schedules alone are prohibited.</li>
+<li>Minimum raid cooldowns, measured from a raid's completion or abort, are <code data-constant="ai_beginner_raid_cooldown_s" data-value="150">150 s</code> for Beginner, <code data-constant="ai_standard_raid_cooldown_s" data-value="90">90 s</code> for Standard, and <code data-constant="ai_hard_raid_cooldown_s" data-value="60">60 s</code> for Hard.</li>
+<li>Under projected sustained negative biomass after upkeep, the AI pauses optional tech and high-upkeep queues, cancels only unstarted nonessential queue items, and prioritizes safe deposits plus low-upkeep defense. It never auto-disbands existing units.</li>
+<li>Upkeep-stress recovery begins when the AI projects net-negative biomass over <code data-constant="ai_upkeep_stress_projection_s" data-value="20">20 s</code> and its spendable reserve covers under <code data-constant="ai_upkeep_stress_reserve_s" data-value="30">30 s</code> of projected upkeep.</li>
+<li>In a fixed fair scenario beginning at a 20% army-value deficit, Beginner must stabilize without falling more than 10% further within <code data-constant="ai_beginner_deficit_stabilization_s" data-value="90">90 s</code>; Standard must reduce the gap to 10% or less within <code data-constant="ai_standard_deficit_recovery_s" data-value="240">4 min</code>; and Hard must reach a 5% gap or better within <code data-constant="ai_hard_deficit_recovery_s" data-value="240">4 min</code> in at least <code data-constant="ai_hard_deficit_recovery_pass_pct" data-value="70">70%</code> of regression runs.</li>
+<li>AI v1 must detect and counter four release-blocking exploit classes: repeated bait-and-retreat loops; unescorted carrier or relay raid loops; static choke or Weaver-anchor-exit camping that causes unit feeding; and unreachable or invalid pathing and placement exploitation.</li>
+<li>All difficulty tiers may adapt freely among the curated Economic, Aggressive, Balanced, and Raiding strategic profiles during a match.</li>
+<li>AI profiles are reassessed every <code data-constant="ai_profile_reassessment_s" data-value="30">30 s</code> and retained for at least <code data-constant="ai_profile_min_commitment_s" data-value="60">60 s</code>. Only core threat, the upkeep-stress trigger, or a validated exploit response may override the commitment window.</li>
+<li>Every AI regression match emits a compact full decision trace: observed inputs and visibility; active profile and switch reason; response-delay timestamp; production-idle and resource-float samples; raid gate and cooldown decisions; upkeep-stress state; and exploit-detection response.</li>
 </ul>
 <hr />
 </section>
