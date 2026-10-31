@@ -18,12 +18,14 @@
     "url": "index.html"
   },
   "citation": [
+    "ai-spec.html",
     "combat-spec.html",
     "economy-design.html",
     "match-termination-spec.html",
     "production-operations-spec.html",
     "resource-ownership-spec.html",
-    "tech-tree-operational-spec.html"
+    "tech-tree-operational-spec.html",
+    "technical-requirements.html"
   ]
 }
 </script>
@@ -37,38 +39,19 @@
     "label": "Review log"
   },
   "references": [
+    "ai-spec",
     "combat-spec",
     "economy-design",
     "match-termination-spec",
     "production-operations-spec",
     "resource-ownership-spec",
-    "tech-tree-operational-spec"
+    "tech-tree-operational-spec",
+    "technical-requirements"
   ],
   "referencedBy": [
     "index"
   ],
-  "constants": {
-    "ai_beginner_response_delay_s": "0.75",
-    "ai_standard_response_delay_s": "0.40",
-    "ai_hard_response_delay_s": "0.20",
-    "ai_beginner_max_production_idle_pct": "35",
-    "ai_standard_max_production_idle_pct": "20",
-    "ai_hard_max_production_idle_pct": "10",
-    "ai_beginner_max_unspent_biomass_pct": "45",
-    "ai_standard_max_unspent_biomass_pct": "30",
-    "ai_hard_max_unspent_biomass_pct": "20",
-    "ai_beginner_raid_cooldown_s": "150",
-    "ai_standard_raid_cooldown_s": "90",
-    "ai_hard_raid_cooldown_s": "60",
-    "ai_upkeep_stress_projection_s": "20",
-    "ai_upkeep_stress_reserve_s": "30",
-    "ai_beginner_deficit_stabilization_s": "90",
-    "ai_standard_deficit_recovery_s": "240",
-    "ai_hard_deficit_recovery_s": "240",
-    "ai_hard_deficit_recovery_pass_pct": "70",
-    "ai_profile_reassessment_s": "30",
-    "ai_profile_min_commitment_s": "60"
-  },
+  "constants": {},
   "sections": [
     {
       "id": "1-match-termination-and-victory-rules-high",
@@ -143,7 +126,7 @@
 <ul>
 <li><a href="index.html">Overview</a></li>
 <li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
-<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="ai-spec.html">AI</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html" aria-current="page">Design review</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
@@ -439,6 +422,7 @@
 </section>
 <section aria-labelledby="6-ai-design-for-playtesting-and-productization-high">
 <h2 id="6-ai-design-for-playtesting-and-productization-high">6) AI Design For Playtesting And Productization (High) <a class="anchor" href="#6-ai-design-for-playtesting-and-productization-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v1 baseline. See <a href="ai-spec.html">ai-spec.html</a>.</p>
 <p>Why this matters:</p>
 <ul>
 <li>AI is a critical path for practical iteration and remains necessary even with multiplayer goals.</li>
@@ -466,24 +450,25 @@
 <p>Decisions locked:</p>
 <ul>
 <li>v1 ships three AI difficulty tiers: Beginner, Standard, and Hard.</li>
-<li>Response delay after valid information is <code data-constant="ai_beginner_response_delay_s" data-value="0.75">0.75 s</code> for Beginner, <code data-constant="ai_standard_response_delay_s" data-value="0.40">0.40 s</code> for Standard, and <code data-constant="ai_hard_response_delay_s" data-value="0.20">0.20 s</code> for Hard. This delay applies before the AI's first responsive order, not to simulation or pathing.</li>
+<li>Response delay after valid information is <code>0.75 s</code> for Beginner, <code>0.40 s</code> for Standard, and <code>0.20 s</code> for Hard. This delay applies before the AI's first responsive order, not to simulation or pathing.</li>
 <li>Primary macro-quality KPIs are average production-source idle time and unspent spendable biomass as a share of recent income. Worker-count milestones are optional diagnostic KPIs that may vary by strategic profile and build order; they are not universal pass/fail gates.</li>
 <li>Macro KPIs use a rolling 60-second measurement window. Biomass explicitly reserved for an active, visible tech or production purchase is excluded from unspent-biomass calculations.</li>
-<li>Maximum average production-source idle time is <code data-constant="ai_beginner_max_production_idle_pct" data-value="35">35%</code> for Beginner, <code data-constant="ai_standard_max_production_idle_pct" data-value="20">20%</code> for Standard, and <code data-constant="ai_hard_max_production_idle_pct" data-value="10">10%</code> for Hard. Maximum unspent biomass is <code data-constant="ai_beginner_max_unspent_biomass_pct" data-value="45">45%</code>, <code data-constant="ai_standard_max_unspent_biomass_pct" data-value="30">30%</code>, and <code data-constant="ai_hard_max_unspent_biomass_pct" data-value="20">20%</code> of recent income respectively.</li>
+<li>Maximum average production-source idle time is <code>35%</code> for Beginner, <code>20%</code> for Standard, and <code>10%</code> for Hard. Maximum unspent biomass is <code>45%</code>, <code>30%</code>, and <code>20%</code> of recent income respectively.</li>
 <li>Route raids require both a difficulty-specific cooldown and an opportunity gate based on scouted exposed logistics and acceptable local force odds. Difficulty changes cadence and risk tolerance; fixed schedules alone are prohibited.</li>
-<li>Minimum raid cooldowns, measured from a raid's completion or abort, are <code data-constant="ai_beginner_raid_cooldown_s" data-value="150">150 s</code> for Beginner, <code data-constant="ai_standard_raid_cooldown_s" data-value="90">90 s</code> for Standard, and <code data-constant="ai_hard_raid_cooldown_s" data-value="60">60 s</code> for Hard.</li>
+<li>Minimum raid cooldowns, measured from a raid's completion or abort, are <code>150 s</code> for Beginner, <code>90 s</code> for Standard, and <code>60 s</code> for Hard.</li>
 <li>Under projected sustained negative biomass after upkeep, the AI pauses optional tech and high-upkeep queues, cancels only unstarted nonessential queue items, and prioritizes safe deposits plus low-upkeep defense. It never auto-disbands existing units.</li>
-<li>Upkeep-stress recovery begins when the AI projects net-negative biomass over <code data-constant="ai_upkeep_stress_projection_s" data-value="20">20 s</code> and its spendable reserve covers under <code data-constant="ai_upkeep_stress_reserve_s" data-value="30">30 s</code> of projected upkeep.</li>
-<li>In a fixed fair scenario beginning at a 20% army-value deficit, Beginner must stabilize without falling more than 10% further within <code data-constant="ai_beginner_deficit_stabilization_s" data-value="90">90 s</code>; Standard must reduce the gap to 10% or less within <code data-constant="ai_standard_deficit_recovery_s" data-value="240">4 min</code>; and Hard must reach a 5% gap or better within <code data-constant="ai_hard_deficit_recovery_s" data-value="240">4 min</code> in at least <code data-constant="ai_hard_deficit_recovery_pass_pct" data-value="70">70%</code> of regression runs.</li>
+<li>Upkeep-stress recovery begins when the AI projects net-negative biomass over <code>20 s</code> and its spendable reserve covers under <code>30 s</code> of projected upkeep.</li>
+<li>In a fixed fair scenario beginning at a 20% army-value deficit, Beginner must stabilize without falling more than 10% further within <code>90 s</code>; Standard must reduce the gap to 10% or less within <code>4 min</code>; and Hard must reach a 5% gap or better within <code>4 min</code> in at least <code>70%</code> of regression runs.</li>
 <li>AI v1 must detect and counter four release-blocking exploit classes: repeated bait-and-retreat loops; unescorted carrier or relay raid loops; static choke or Weaver-anchor-exit camping that causes unit feeding; and unreachable or invalid pathing and placement exploitation.</li>
 <li>All difficulty tiers may adapt freely among the curated Economic, Aggressive, Balanced, and Raiding strategic profiles during a match.</li>
-<li>AI profiles are reassessed every <code data-constant="ai_profile_reassessment_s" data-value="30">30 s</code> and retained for at least <code data-constant="ai_profile_min_commitment_s" data-value="60">60 s</code>. Only core threat, the upkeep-stress trigger, or a validated exploit response may override the commitment window.</li>
+<li>AI profiles are reassessed every <code>30 s</code> and retained for at least <code>60 s</code>. Only core threat, the upkeep-stress trigger, or a validated exploit response may override the commitment window.</li>
 <li>Every AI regression match emits a compact full decision trace: observed inputs and visibility; active profile and switch reason; response-delay timestamp; production-idle and resource-float samples; raid gate and cooldown decisions; upkeep-stress state; and exploit-detection response.</li>
 </ul>
 <hr />
 </section>
 <section aria-labelledby="7-technical-readability-and-performance-budgets-high">
 <h2 id="7-technical-readability-and-performance-budgets-high">7) Technical Readability And Performance Budgets (High) <a class="anchor" href="#7-technical-readability-and-performance-budgets-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v1 baseline. See <a href="technical-requirements.html#performance-and-readability-budgets">technical-requirements.html</a>.</p>
 <p>Why this matters:</p>
 <ul>
 <li>Technical constraints are documented, but publish-ready GDD requires measurable budgets.</li>
@@ -509,6 +494,17 @@
 <p>Definition of done:</p>
 <ul>
 <li>A technical budget table with validation methods and acceptance criteria.</li>
+</ul>
+<p>Decisions locked:</p>
+<ul>
+<li>Hardware floor is an RTX 2060 class PC at 1080p-1440p.</li>
+<li>Client target is 60 FPS with a 45 FPS (1% low) minimum in the stress scenario of two players at the 260 hard cap in a large fight.</li>
+<li>Multiplayer is client-server and server-authoritative; lockstep is rejected. The server simulation stays deterministic from its input log and seed; clients need not be bit-identical.</li>
+<li>Server tick is 20 Hz. Command-to-visible-response is under 150 ms at 50 ms ping, with immediate local feedback.</li>
+<li>Server tick work is 25 ms average and 40 ms worst case; pathfinding is 8 ms per tick with deterministic unit-id queuing of overflow.</li>
+<li>Unit triangle budgets are 2,000 / 600 / 150 by LOD; buildings 8,000; at most 2,500 draw calls and 3 million visible triangles in the stress scenario.</li>
+<li>Readability is validated by automated screenshot checks (12 px minimum silhouette at 1080p, contrast, team color) plus a human grayscale and colorblind review.</li>
+<li>Quality fallback never changes gameplay: shadows and effects first, then LOD bias and animation rate, then resolution scale.</li>
 </ul>
 <hr />
 </section>
@@ -709,7 +705,7 @@
 </ul>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="ai-spec.html">AI</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>

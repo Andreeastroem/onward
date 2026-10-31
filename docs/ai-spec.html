@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Specification (v1 baseline) - Onward</title>
+<meta name="description" content="AI difficulty tiers, strategic profiles, measurable KPIs, exploit counters, and regression testing for Onward skirmish AI.">
+<link rel="stylesheet" href="assets/css/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AI Specification (v1 baseline)",
+  "description": "AI difficulty tiers, strategic profiles, measurable KPIs, exploit counters, and regression testing for Onward skirmish AI.",
+  "isPartOf": { "@type": "CreativeWork", "name": "Onward design documentation", "url": "index.html" },
+  "citation": ["combat-spec.html", "design-review.html", "economy-design.html", "resource-ownership-spec.html"]
+}
+</script>
+<script type="application/json" id="doc-data">
+{
+  "slug": "ai-spec",
+  "title": "AI Specification (v1 baseline)",
+  "group": "Systems",
+  "status": { "key": "baseline", "label": "v1 baseline" },
+  "references": ["combat-spec", "design-review", "economy-design", "resource-ownership-spec"],
+  "referencedBy": ["design-review", "index"],
+  "constants": {
+    "ai_beginner_response_delay_s": "0.75",
+    "ai_standard_response_delay_s": "0.40",
+    "ai_hard_response_delay_s": "0.20",
+    "ai_beginner_max_production_idle_pct": "35",
+    "ai_standard_max_production_idle_pct": "20",
+    "ai_hard_max_production_idle_pct": "10",
+    "ai_beginner_max_unspent_biomass_pct": "45",
+    "ai_standard_max_unspent_biomass_pct": "30",
+    "ai_hard_max_unspent_biomass_pct": "20",
+    "ai_macro_window_s": "60",
+    "ai_beginner_raid_cooldown_s": "150",
+    "ai_standard_raid_cooldown_s": "90",
+    "ai_hard_raid_cooldown_s": "60",
+    "ai_upkeep_stress_projection_s": "20",
+    "ai_upkeep_stress_reserve_s": "30",
+    "ai_comeback_start_deficit_pct": "20",
+    "ai_beginner_deficit_stabilization_s": "90",
+    "ai_beginner_max_further_deficit_pct": "10",
+    "ai_standard_deficit_recovery_s": "240",
+    "ai_standard_deficit_recovery_gap_pct": "10",
+    "ai_hard_deficit_recovery_s": "240",
+    "ai_hard_deficit_recovery_gap_pct": "5",
+    "ai_hard_deficit_recovery_pass_pct": "70",
+    "ai_profile_reassessment_s": "30",
+    "ai_profile_min_commitment_s": "60"
+  },
+  "sections": [
+    { "id": "purpose", "title": "Purpose", "level": 2 },
+    { "id": "tiers", "title": "Difficulty Tiers", "level": 2 },
+    { "id": "macro-kpis", "title": "Macro Quality KPIs", "level": 2 },
+    { "id": "raids", "title": "Route Raids", "level": 2 },
+    { "id": "scouting-and-micro", "title": "Scouting And Army Control", "level": 2 },
+    { "id": "profiles", "title": "Strategic Profiles", "level": 2 },
+    { "id": "upkeep-stress", "title": "Upkeep Stress Recovery", "level": 2 },
+    { "id": "comeback", "title": "Deficit Recovery", "level": 2 },
+    { "id": "exploits", "title": "Exploit Counters", "level": 2 },
+    { "id": "testing", "title": "Regression Testing", "level": 2 },
+    { "id": "decision-trace", "title": "Decision Trace", "level": 2 },
+    { "id": "open-items", "title": "Open Items", "level": 2 }
+  ]
+}
+</script>
+<script src="assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to content</a>
+<header class="site-header">
+<a class="brand" href="index.html">On<span>ward</span> docs</a>
+<nav class="site-nav" aria-label="Documentation">
+<ul>
+<li><a href="index.html">Overview</a></li>
+<li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="ai-spec.html" aria-current="page">AI</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
+</ul>
+</nav>
+<div class="header-tools"><button type="button" id="theme-toggle" aria-label="Toggle light or dark theme">Theme</button></div>
+</header>
+<div class="layout">
+<nav class="toc" aria-label="On this page"><h2>On this page</h2>
+<ul>
+<li><a href="#purpose">Purpose</a></li>
+<li><a href="#tiers">Difficulty Tiers</a></li>
+<li><a href="#macro-kpis">Macro Quality KPIs</a></li>
+<li><a href="#raids">Route Raids</a></li>
+<li><a href="#scouting-and-micro">Scouting And Army Control</a></li>
+<li><a href="#profiles">Strategic Profiles</a></li>
+<li><a href="#upkeep-stress">Upkeep Stress Recovery</a></li>
+<li><a href="#comeback">Deficit Recovery</a></li>
+<li><a href="#exploits">Exploit Counters</a></li>
+<li><a href="#testing">Regression Testing</a></li>
+<li><a href="#decision-trace">Decision Trace</a></li>
+<li><a href="#open-items">Open Items</a></li>
+</ul>
+<div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
+<main id="content" class="doc">
+<h1>AI Specification (v1 baseline)</h1>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="baseline">v1 baseline</span></dd><dt>Area</dt><dd>Systems</dd></dl></div>
+
+<section aria-labelledby="purpose">
+<h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
+<p>Defines the measurable behavior of skirmish AI so it can serve playtesting and ship as a product feature. It resolves item 6 of the <a href="design-review.html#6-ai-design-for-playtesting-and-productization-high">design review</a>. Economy rules come from <a href="economy-design.html">Economy design</a>, theft and bank rules from <a href="resource-ownership-spec.html">Resource ownership</a>, and the micro ceiling from <a href="combat-spec.html">Combat</a>.</p>
+<p>The AI is one shared decision engine. Tiers and profiles are parameter sets on that engine, not separate implementations.</p>
+</section>
+
+<section aria-labelledby="tiers">
+<h2 id="tiers">Difficulty Tiers <a class="anchor" href="#tiers" aria-label="Link to this section">#</a></h2>
+<p>v1 ships three tiers: Beginner, Standard, Hard. Hard has no hidden resource or vision bonus. The response delay applies between valid information becoming available and the AI's first responsive order; it does not apply to simulation or pathing.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Tier</th><th scope="col">Response delay</th><th scope="col">Max avg production idle</th><th scope="col">Max unspent biomass</th><th scope="col">Min raid cooldown</th></tr></thead>
+<tbody>
+<tr><td>Beginner</td><td><code data-constant="ai_beginner_response_delay_s" data-value="0.75">0.75 s</code></td><td><code data-constant="ai_beginner_max_production_idle_pct" data-value="35">35%</code></td><td><code data-constant="ai_beginner_max_unspent_biomass_pct" data-value="45">45%</code></td><td><code data-constant="ai_beginner_raid_cooldown_s" data-value="150">150 s</code></td></tr>
+<tr><td>Standard</td><td><code data-constant="ai_standard_response_delay_s" data-value="0.40">0.40 s</code></td><td><code data-constant="ai_standard_max_production_idle_pct" data-value="20">20%</code></td><td><code data-constant="ai_standard_max_unspent_biomass_pct" data-value="30">30%</code></td><td><code data-constant="ai_standard_raid_cooldown_s" data-value="90">90 s</code></td></tr>
+<tr><td>Hard</td><td><code data-constant="ai_hard_response_delay_s" data-value="0.20">0.20 s</code></td><td><code data-constant="ai_hard_max_production_idle_pct" data-value="10">10%</code></td><td><code data-constant="ai_hard_max_unspent_biomass_pct" data-value="20">20%</code></td><td><code data-constant="ai_hard_raid_cooldown_s" data-value="60">60 s</code></td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section aria-labelledby="macro-kpis">
+<h2 id="macro-kpis">Macro Quality KPIs <a class="anchor" href="#macro-kpis" aria-label="Link to this section">#</a></h2>
+<ul>
+<li>Primary KPIs: average production-source idle time, and unspent spendable biomass as a share of recent income.</li>
+<li>Both are measured over a rolling <code data-constant="ai_macro_window_s" data-value="60">60 s</code> window.</li>
+<li>Biomass explicitly reserved for an active, visible tech or production purchase is excluded from unspent biomass.</li>
+<li>Worker-count milestones are optional diagnostics that may vary by profile and build order. They are not pass/fail gates.</li>
+</ul>
+</section>
+
+<section aria-labelledby="raids">
+<h2 id="raids">Route Raids <a class="anchor" href="#raids" aria-label="Link to this section">#</a></h2>
+<p>A raid requires both a cooldown and an opportunity gate. The cooldown is measured from the previous raid's completion or abort (see <a href="#tiers">tier table</a>). The opportunity gate requires scouted exposed logistics and acceptable local force odds. Difficulty changes cadence and risk tolerance; fixed raid schedules alone are prohibited.</p>
+</section>
+
+<section aria-labelledby="scouting-and-micro">
+<h2 id="scouting-and-micro">Scouting And Army Control <a class="anchor" href="#scouting-and-micro">#</a></h2>
+<p>Scouting and micro scale by tier. Hard micro never exceeds the micro ceiling in <a href="combat-spec.html">Combat</a>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Tier</th><th scope="col">Scouting</th><th scope="col">Focus fire</th><th scope="col">Retreat</th></tr></thead>
+<tbody>
+<tr><td>Beginner</td><td>Rare</td><td>None</td><td>None</td></tr>
+<tr><td>Standard</td><td>Periodic</td><td>Basic</td><td>Basic</td></tr>
+<tr><td>Hard</td><td>Continuous, including raid-gate targets</td><td>Full, within combat-spec micro ceiling</td><td>Full, within combat-spec micro ceiling</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section aria-labelledby="profiles">
+<h2 id="profiles">Strategic Profiles <a class="anchor" href="#profiles">#</a></h2>
+<p>Four curated profiles exist: Economic, Aggressive, Balanced, Raiding. Each is a weighted parameter set over five axes on the shared engine. All tiers may switch freely among profiles during a match. Profiles are reassessed every <code data-constant="ai_profile_reassessment_s" data-value="30">30 s</code> and retained for at least <code data-constant="ai_profile_min_commitment_s" data-value="60">60 s</code>. Only a core threat, the <a href="#upkeep-stress">upkeep-stress trigger</a>, or a <a href="#exploits">validated exploit response</a> may override the commitment window.</p>
+<p>Profile values are relative bands, not locked numbers. Exact weights are tuned within the stated ordering without a spec change.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Profile</th><th scope="col">Economy / army spend split</th><th scope="col">Raid-gate threshold</th><th scope="col">Tech timing</th><th scope="col">Defense posture</th><th scope="col">Expansion appetite</th></tr></thead>
+<tbody>
+<tr><td>Economic</td><td>60 / 40</td><td>Highest (raids rarely)</td><td>Early</td><td>Heavy</td><td>High</td></tr>
+<tr><td>Balanced</td><td>50 / 50</td><td>Medium</td><td>Medium</td><td>Medium</td><td>Medium</td></tr>
+<tr><td>Raiding</td><td>40 / 60</td><td>Lowest (raids eagerly)</td><td>Medium</td><td>Light</td><td>Medium</td></tr>
+<tr><td>Aggressive</td><td>30 / 70</td><td>Medium</td><td>Late</td><td>Light</td><td>Low</td></tr>
+</tbody>
+</table></div>
+<p class="placeholder-box">Placeholder: the spend splits are the chosen bands. The qualitative values in the other four columns are proposed orderings awaiting confirmation.</p>
+</section>
+
+<section aria-labelledby="upkeep-stress">
+<h2 id="upkeep-stress">Upkeep Stress Recovery <a class="anchor" href="#upkeep-stress">#</a></h2>
+<p>Trigger: the AI projects net-negative biomass over <code data-constant="ai_upkeep_stress_projection_s" data-value="20">20 s</code> and its spendable reserve covers under <code data-constant="ai_upkeep_stress_reserve_s" data-value="30">30 s</code> of projected upkeep. While triggered the AI:</p>
+<ol>
+<li>pauses optional tech and high-upkeep queues;</li>
+<li>cancels only unstarted nonessential queue items;</li>
+<li>prioritizes safe deposits and low-upkeep defense;</li>
+<li>never auto-disbands existing units.</li>
+</ol>
+</section>
+
+<section aria-labelledby="comeback">
+<h2 id="comeback">Deficit Recovery <a class="anchor" href="#comeback">#</a></h2>
+<p>Measured in a fixed fair scenario that starts at a <code data-constant="ai_comeback_start_deficit_pct" data-value="20">20%</code> army-value deficit.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Tier</th><th scope="col">Requirement</th><th scope="col">Time limit</th></tr></thead>
+<tbody>
+<tr><td>Beginner</td><td>Stabilize: deficit grows no more than <code data-constant="ai_beginner_max_further_deficit_pct" data-value="10">10%</code> further</td><td><code data-constant="ai_beginner_deficit_stabilization_s" data-value="90">90 s</code></td></tr>
+<tr><td>Standard</td><td>Reduce gap to <code data-constant="ai_standard_deficit_recovery_gap_pct" data-value="10">10%</code> or less</td><td><code data-constant="ai_standard_deficit_recovery_s" data-value="240">4 min</code></td></tr>
+<tr><td>Hard</td><td>Reach <code data-constant="ai_hard_deficit_recovery_gap_pct" data-value="5">5%</code> gap or better in at least <code data-constant="ai_hard_deficit_recovery_pass_pct" data-value="70">70%</code> of regression runs</td><td><code data-constant="ai_hard_deficit_recovery_s" data-value="240">4 min</code></td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section aria-labelledby="exploits">
+<h2 id="exploits">Exploit Counters <a class="anchor" href="#exploits">#</a></h2>
+<p>Release-blocking: AI v1 must detect and counter all four classes.</p>
+<ol>
+<li>Repeated bait-and-retreat loops.</li>
+<li>Unescorted carrier or relay raid loops (see <a href="resource-ownership-spec.html">Resource ownership</a>).</li>
+<li>Static choke or Weaver-anchor-exit camping that causes unit feeding.</li>
+<li>Unreachable or invalid pathing and placement exploitation.</li>
+</ol>
+</section>
+
+<section aria-labelledby="testing">
+<h2 id="testing">Regression Testing <a class="anchor" href="#testing">#</a></h2>
+<ul>
+<li><strong>Release gate:</strong> a fixed, seeded scenario suite run per tier. It covers the macro KPIs, raid gating, upkeep stress, deficit recovery, and each exploit class. Every KPI above must pass per tier.</li>
+<li><strong>Balance report:</strong> a periodic AI-vs-AI ladder across tiers and profiles. It reports win rates and is informational, not a release gate.</li>
+</ul>
+</section>
+
+<section aria-labelledby="decision-trace">
+<h2 id="decision-trace">Decision Trace <a class="anchor" href="#decision-trace">#</a></h2>
+<p>Every AI regression match emits a compact full trace containing:</p>
+<ul>
+<li>observed inputs and visibility;</li>
+<li>active profile and switch reason;</li>
+<li>response-delay timestamps;</li>
+<li>production-idle and resource-float samples;</li>
+<li>raid gate and cooldown decisions;</li>
+<li>upkeep-stress state;</li>
+<li>exploit-detection responses.</li>
+</ul>
+</section>
+
+<section aria-labelledby="open-items">
+<h2 id="open-items">Open Items <a class="anchor" href="#open-items">#</a></h2>
+<ul>
+<li>Scenario list, seed count per scenario, and the ladder match count are not yet defined.</li>
+<li>Detection heuristics for each exploit class are not yet specified.</li>
+<li>Confirm the qualitative profile orderings in the <a href="#profiles">profiles table</a>.</li>
+</ul>
+</section>
+
+<aside class="doc-links" aria-label="Related documents">
+<div><h2>This document references</h2><ul><li><a href="combat-spec.html">Combat</a></li><li><a href="design-review.html">Design review</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li></ul></div>
+<div><h2>Referenced by</h2><ul><li><a href="design-review.html">Design review</a></li><li><a href="index.html">Overview</a></li></ul></div>
+</aside>
+</main>
+</div>
+<footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
+</body>
+</html>

@@ -18,6 +18,7 @@
     "url": "index.html"
   },
   "citation": [
+    "ai-spec.html",
     "combat-spec.html",
     "design-doc.html",
     "design-review.html",
@@ -41,6 +42,7 @@
     "label": "Documented"
   },
   "references": [
+    "ai-spec",
     "combat-spec",
     "design-doc",
     "design-review",
@@ -88,7 +90,7 @@
 <ul>
 <li><a href="index.html" aria-current="page">Overview</a></li>
 <li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
-<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="ai-spec.html">AI</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html">Technical requirements</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
@@ -116,7 +118,7 @@
 <h3>Design</h3>
 <ul class="card-grid"><li><a class="card" href="design-doc.html"><strong>Design document</strong><span>Project vision, gameplay loop, factions, modes, and victory condition.</span><span class="badge" data-status="documented">Documented</span></a></li><li><a class="card" href="level-design.html"><strong>Level design</strong><span>Map-design principles and individual map concepts.</span><span class="badge" data-status="draft">Exploration draft</span></a></li><li><a class="card" href="potential-factions.html"><strong>Potential factions</strong><span>Candidate ant factions, asymmetry directions, matchup intent, and exception candidates.</span><span class="badge" data-status="direction">Design direction</span></a></li></ul>
 <h3>Systems</h3>
-<ul class="card-grid"><li><a class="card" href="economy-design.html"><strong>Economy design</strong><span>Economy, biomass recovery, upkeep, logistics, and economy telemetry.</span><span class="badge" data-status="locked">Locked v0 constants</span></a></li><li><a class="card" href="resource-ownership-spec.html"><strong>Resource ownership</strong><span>Resource ownership, pickup conflicts, bank raids, processing, and audit logging.</span><span class="badge" data-status="locked">Locked for v0</span></a></li><li><a class="card" href="combat-spec.html"><strong>Combat</strong><span>Combat roles, damage model, counterplay, TTK targets, and determinism.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="production-operations-spec.html"><strong>Production operations</strong><span>Construction, production queues, placement, refunds, spawning, and connectivity.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="tech-tree-operational-spec.html"><strong>Tech tree</strong><span>Tech tiers, prerequisite structure, gating, and recovery policy.</span><span class="badge" data-status="placeholder">Placeholder-based v0 baseline</span></a></li><li><a class="card" href="match-termination-spec.html"><strong>Match termination</strong><span>Match outcomes, surrender, disconnects, resume flow, and replay metadata.</span><span class="badge" data-status="locked">Locked for v0</span></a></li></ul>
+<ul class="card-grid"><li><a class="card" href="economy-design.html"><strong>Economy design</strong><span>Economy, biomass recovery, upkeep, logistics, and economy telemetry.</span><span class="badge" data-status="locked">Locked v0 constants</span></a></li><li><a class="card" href="resource-ownership-spec.html"><strong>Resource ownership</strong><span>Resource ownership, pickup conflicts, bank raids, processing, and audit logging.</span><span class="badge" data-status="locked">Locked for v0</span></a></li><li><a class="card" href="combat-spec.html"><strong>Combat</strong><span>Combat roles, damage model, counterplay, TTK targets, and determinism.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="production-operations-spec.html"><strong>Production operations</strong><span>Construction, production queues, placement, refunds, spawning, and connectivity.</span><span class="badge" data-status="baseline">v0 baseline</span></a></li><li><a class="card" href="tech-tree-operational-spec.html"><strong>Tech tree</strong><span>Tech tiers, prerequisite structure, gating, and recovery policy.</span><span class="badge" data-status="placeholder">Placeholder-based v0 baseline</span></a></li><li><a class="card" href="match-termination-spec.html"><strong>Match termination</strong><span>Match outcomes, surrender, disconnects, resume flow, and replay metadata.</span><span class="badge" data-status="locked">Locked for v0</span></a></li><li><a class="card" href="ai-spec.html"><strong>AI</strong><span>AI tiers, strategic profiles, KPIs, exploit counters, and regression testing.</span><span class="badge" data-status="baseline">v1 baseline</span></a></li></ul>
 <h3>Technical</h3>
 <ul class="card-grid"><li><a class="card" href="technical-requirements.html"><strong>Technical requirements</strong><span>Presentation, unit scale, terrain constraints, and deterministic simulation requirements.</span><span class="badge" data-status="documented">Documented</span></a></li></ul>
 <h3>Process</h3>
@@ -173,6 +175,11 @@
 <td><a href="match-termination-spec.html"><a href="match-termination-spec.html">match-termination-spec.html</a></a></td>
 </tr>
 <tr>
+<td>AI tiers, strategic profiles, KPIs, exploit counters, and regression testing</td>
+<td>Documented as a v1 baseline</td>
+<td><a href="ai-spec.html">ai-spec.html</a></td>
+</tr>
+<tr>
 <td>Presentation, unit scale, terrain constraints, and deterministic simulation requirements</td>
 <td>Documented</td>
 <td><a href="technical-requirements.html"><a href="technical-requirements.html">technical-requirements.html</a></a></td>
@@ -208,7 +215,7 @@
 <p>The immediate product focus is skirmish against AI, with multiplayer skirmish treated as a product target. Campaign, narrative progression, ranked systems, and a regional-conquest mode are not part of the current v0 scope.</p>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="ai-spec.html">AI</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="design-review.html">Design review</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>

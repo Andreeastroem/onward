@@ -33,11 +33,12 @@
   "title": "Ant RTS Technical Requirements",
   "group": "Technical",
   "status": {
-    "key": "documented",
-    "label": "Documented"
+    "key": "baseline",
+    "label": "Documented, v1 budgets baseline"
   },
   "references": [
     "combat-spec",
+    "design-review",
     "design-doc",
     "economy-design",
     "match-termination-spec",
@@ -53,7 +54,24 @@
     "production-operations-spec",
     "tech-tree-operational-spec"
   ],
-  "constants": {},
+  "constants": {
+    "hardware_floor_gpu": "RTX 2060 class",
+    "target_resolution": "1080p-1440p",
+    "target_fps": "60",
+    "min_fps_1pct_low": "45",
+    "server_tick_hz": "20",
+    "command_to_response_ms_at_50ms_ping": "150",
+    "server_tick_avg_ms": "25",
+    "server_tick_worst_ms": "40",
+    "server_pathfinding_budget_ms": "8",
+    "unit_lod0_max_tris": "2000",
+    "unit_lod1_max_tris": "600",
+    "unit_lod2_max_tris": "150",
+    "building_max_tris": "8000",
+    "stress_max_draw_calls": "2500",
+    "stress_max_visible_tris": "3000000",
+    "min_unit_silhouette_px_1080p": "12"
+  },
   "sections": [
     {
       "id": "purpose",
@@ -63,6 +81,11 @@
     {
       "id": "locked-decisions",
       "title": "Locked Decisions",
+      "level": 2
+    },
+    {
+      "id": "performance-and-readability-budgets",
+      "title": "Performance And Readability Budgets",
       "level": 2
     },
     {
@@ -88,7 +111,7 @@
 <ul>
 <li><a href="index.html">Overview</a></li>
 <li><span class="group-label" tabindex="0">Design</span><ul class="group-links"><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="potential-factions.html">Potential factions</a></li></ul></li>
-<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></li>
+<li><span class="group-label" tabindex="0">Systems</span><ul class="group-links"><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="ai-spec.html">AI</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Technical</span><ul class="group-links"><li><a href="technical-requirements.html" aria-current="page">Technical requirements</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Process</span><ul class="group-links"><li><a href="design-review.html">Design review</a></li></ul></li>
 <li><span class="group-label" tabindex="0">Art</span><ul class="group-links"><li><a href="art-direction.html">Art direction</a></li></ul></li>
@@ -114,6 +137,14 @@
 <li><a href="#resource-audit-requirements">Resource Audit Requirements</a></li>
 <li><a href="#terrain-constraints">Terrain Constraints</a></li>
 </ul></li>
+<li><a href="#performance-and-readability-budgets">Performance And Readability Budgets</a>
+<ul>
+<li><a href="#stress-scenario">Stress Scenario</a></li>
+<li><a href="#network-and-simulation-model">Network And Simulation Model</a></li>
+<li><a href="#budget-table">Budget Table</a></li>
+<li><a href="#readability-tests">Readability Tests</a></li>
+<li><a href="#quality-fallback">Quality Fallback</a></li>
+</ul></li>
 <li><a href="#production-implications">Production Implications</a>
 </li>
 <li><a href="#related-design-documents">Related Design Documents</a>
@@ -122,7 +153,7 @@
 <div class="toc-tools"><button type="button" id="expand-all">Expand all</button><button type="button" id="collapse-all">Collapse all</button></div></nav>
 <main id="content" class="doc">
 <h1 id="ant-rts-technical-requirements">Ant RTS Technical Requirements</h1>
-<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="documented">Documented</span></dd><dt>Area</dt><dd>Technical</dd></dl></div>
+<div class="doc-meta"><dl><dt>Status</dt><dd><span class="badge" data-status="baseline">Documented, v1 budgets baseline</span></dd><dt>Area</dt><dd>Technical</dd></dl></div>
 <section aria-labelledby="purpose">
 <h2 id="purpose">Purpose <a class="anchor" href="#purpose" aria-label="Link to this section">#</a></h2>
 <p>This document locks the core presentation and simulation constraints that shape production scope, readability, and performance targets.</p>
@@ -193,6 +224,51 @@
 <li>Shoreline biomass events, including fish-like supply drops, are allowed as narrative map dressing and resource opportunities.</li>
 </ul>
 </section>
+<section aria-labelledby="performance-and-readability-budgets">
+<h2 id="performance-and-readability-budgets">Performance And Readability Budgets <a class="anchor" href="#performance-and-readability-budgets" aria-label="Link to this section">#</a></h2>
+<p>These budgets resolve item 7 of the <a href="design-review.html#7-technical-readability-and-performance-budgets-high">design review</a>. All numbers are v1 baseline targets validated in the stress scenario below.</p>
+<h3 id="stress-scenario">Stress Scenario <a class="anchor" href="#stress-scenario" aria-label="Link to this section">#</a></h3>
+<p>Two players each at the 260 hard cap, with most units engaged in one large fight on a large map, from the fixed isometric camera.</p>
+<h3 id="network-and-simulation-model">Network And Simulation Model <a class="anchor" href="#network-and-simulation-model" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Multiplayer is client-server and server-authoritative. Lockstep is not used.</li>
+<li>The server simulation is fixed-tick at <code data-constant="server_tick_hz" data-value="20">20 Hz</code> and decoupled from client rendering. Clients interpolate between server snapshots.</li>
+<li>The server simulation must be deterministic from its input log and seed, so the tie-breaking, audit, and resume-hash rules in <a href="match-termination-spec.html">Match termination</a>, <a href="resource-ownership-spec.html">Resource ownership</a>, and <a href="combat-spec.html">Combat</a> stay valid. Replays can be verified by re-simulating on the server.</li>
+<li>Clients are not required to be bit-identical to the server. Larger replay and bandwidth cost is accepted.</li>
+<li>Local command feedback (selection, move marker, order acknowledgement) is immediate, within one render frame.</li>
+</ul>
+<h3 id="budget-table">Budget Table <a class="anchor" href="#budget-table" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Area</th><th scope="col">Budget</th><th scope="col">Validation</th></tr></thead>
+<tbody>
+<tr><td>Hardware floor</td><td><code data-constant="hardware_floor_gpu" data-value="RTX 2060 class">RTX 2060 class</code> or better at <code data-constant="target_resolution" data-value="1080p-1440p">1080p-1440p</code></td><td>Reference machine</td></tr>
+<tr><td>Client frame rate</td><td>Target <code data-constant="target_fps" data-value="60">60 FPS</code>; minimum <code data-constant="min_fps_1pct_low" data-value="45">45 FPS</code> (1% low)</td><td>Scripted stress scenario capture</td></tr>
+<tr><td>Command responsiveness</td><td>Command to visible unit response under <code data-constant="command_to_response_ms_at_50ms_ping" data-value="150">150 ms</code> at 50 ms ping</td><td>Latency-injected network test</td></tr>
+<tr><td>Server tick time</td><td><code data-constant="server_tick_avg_ms" data-value="25">25 ms</code> average, <code data-constant="server_tick_worst_ms" data-value="40">40 ms</code> worst case, at 2 x 260 units</td><td>Server profiling in stress scenario</td></tr>
+<tr><td>Pathfinding</td><td><code data-constant="server_pathfinding_budget_ms" data-value="8">8 ms</code> per tick; overflow requests are queued deterministically in unit-id order</td><td>Server profiling plus replay re-simulation</td></tr>
+<tr><td>Unit triangles</td><td>LOD0 <code data-constant="unit_lod0_max_tris" data-value="2000">2,000</code>; LOD1 <code data-constant="unit_lod1_max_tris" data-value="600">600</code>; LOD2 <code data-constant="unit_lod2_max_tris" data-value="150">150</code> (default at the fixed camera distance)</td><td>Asset import check</td></tr>
+<tr><td>Building triangles</td><td>At most <code data-constant="building_max_tris" data-value="8000">8,000</code></td><td>Asset import check</td></tr>
+<tr><td>Draw calls</td><td>At most <code data-constant="stress_max_draw_calls" data-value="2500">2,500</code> in the stress scenario; units are GPU-instanced</td><td>Frame capture</td></tr>
+<tr><td>Visible triangles</td><td>At most <code data-constant="stress_max_visible_tris" data-value="3000000">3 million</code> in the stress scenario</td><td>Frame capture</td></tr>
+</tbody>
+</table></div>
+<h3 id="readability-tests">Readability Tests <a class="anchor" href="#readability-tests" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Automated screenshot checks run from the fixed camera in a scripted dense-combat scene.</li>
+<li>Each faction unit class keeps a minimum silhouette size of <code data-constant="min_unit_silhouette_px_1080p" data-value="12">12 px</code> at 1080p.</li>
+<li>Each unit class keeps a minimum luminance and hue contrast against terrain, and team color is identifiable at a glance.</li>
+<li>A human grayscale and colorblind-simulation review is required per release.</li>
+</ul>
+<h3 id="quality-fallback">Quality Fallback <a class="anchor" href="#quality-fallback" aria-label="Link to this section">#</a></h3>
+<p>Fallbacks never change simulation or gameplay. Apply in order:</p>
+<ol>
+<li>Reduce shadow quality and cosmetic effect density.</li>
+<li>Increase LOD distance bias and lower animation update rates.</li>
+<li>Reduce render resolution scale.</li>
+</ol>
+<p>Unit silhouettes, team colors, and combat telegraphs are never reduced.</p>
+</section>
+
 <section aria-labelledby="production-implications">
 <h2 id="production-implications">Production Implications <a class="anchor" href="#production-implications" aria-label="Link to this section">#</a></h2>
 <ul>
@@ -214,7 +290,7 @@
 </ul>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-review.html">Design review</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="potential-factions.html">Potential factions</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
