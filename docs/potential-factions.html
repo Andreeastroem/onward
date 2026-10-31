@@ -18,6 +18,7 @@
     "url": "index.html"
   },
   "citation": [
+    "design-review.html",
     "combat-spec.html",
     "design-doc.html",
     "economy-design.html",
@@ -39,6 +40,7 @@
     "label": "Design direction"
   },
   "references": [
+    "design-review",
     "combat-spec",
     "design-doc",
     "economy-design",
@@ -57,6 +59,11 @@
     {
       "id": "purpose",
       "title": "Purpose",
+      "level": 2
+    },
+    {
+      "id": "v1-launch-scope",
+      "title": "v1 Launch Scope",
       "level": 2
     },
     {
@@ -276,6 +283,13 @@
 <ul>
 <li><a href="#purpose">Purpose</a>
 </li>
+<li><a href="#v1-launch-scope">v1 Launch Scope</a>
+<ul>
+<li><a href="#v1-launch-factions">Launch Factions</a></li>
+<li><a href="#v1-rosters">Rosters</a></li>
+<li><a href="#v1-no-go-rules">No-Go Rules</a></li>
+<li><a href="#v1-matchup-test-order">Anti-Degeneracy Test Order</a></li>
+</ul></li>
 <li><a href="#recommended-faction-set">Recommended Faction Set</a>
 <ul>
 <li><a href="#core-5-recommended">Core 5 (recommended)</a></li>
@@ -442,6 +456,37 @@
 </ul>
 <hr />
 </section>
+<section aria-labelledby="v1-launch-scope">
+<h2 id="v1-launch-scope">v1 Launch Scope <a class="anchor" href="#v1-launch-scope" aria-label="Link to this section">#</a></h2>
+<p>Resolves item 4 of the <a href="design-review.html#4-faction-scope-and-asymmetry-budget-high">design review</a>. The contracts below stay as written. This section fixes which factions ship in v1; the Core 5 and sixth-slot recommendations that follow are the longer-term direction.</p>
+<h3 id="v1-launch-factions">Launch Factions <a class="anchor" href="#v1-launch-factions" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Faction</th><th scope="col">Macro hook</th><th scope="col">Hard weakness</th></tr></thead>
+<tbody>
+<tr><td><a href="#1-black-ants">Black Ants</a></td><td>Connected-corridor efficiency</td><td>Route fragility under multi-lane pressure</td></tr>
+<tr><td><a href="#2-fire-ants">Fire Ants</a></td><td>Accelerated light-unit production</td><td>Reduced harvesting rate and carrier haul capacity</td></tr>
+<tr><td><a href="#3-weaver-ants">Weaver Ants</a></td><td>Constructible, destructible traversal networks</td><td>Inferior frontal sustain and siege reliability</td></tr>
+</tbody>
+</table></div>
+<p>Army, Leafcutter, Trap-jaw, and Honeypot Ants are post-launch scope.</p>
+<h3 id="v1-rosters">Rosters <a class="anchor" href="#v1-rosters" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Each launch faction has one worker and eight combat units.</li>
+<li>Only the three faction-expression units per faction are defined. The remaining five slots are unspecified placeholders until combat balance playtests show what each faction needs.</li>
+<li>Rosters must still cover ground line warrior, air, anti-air, behemoth, and a siege-capable answer, and all factions have Tier 1 anti-air parity.</li>
+</ul>
+<h3 id="v1-no-go-rules">No-Go Rules <a class="anchor" href="#v1-no-go-rules" aria-label="Link to this section">#</a></h3>
+<p>Factions carry no separate no-go list. The <a href="#shared-rules-and-asymmetry-budget">shared non-negotiables</a> apply to every faction.</p>
+<h3 id="v1-matchup-test-order">Anti-Degeneracy Test Order <a class="anchor" href="#v1-matchup-test-order" aria-label="Link to this section">#</a></h3>
+<p>Each matchup gets an anti-degeneracy test scenario defined in the spec. Pass criteria are deferred to playtests.</p>
+<ol>
+<li><a href="#black-vs-weaver">Black vs Weaver</a>: first dedicated test suite.</li>
+<li><a href="#black-vs-fire">Black vs Fire</a>: Fire tempo into defended Black corridors can stall into a siege.</li>
+<li><a href="#fire-vs-weaver">Fire vs Weaver</a>: two raid-oriented factions with weak frontal siege.</li>
+<li>Mirror matchups.</li>
+</ol>
+</section>
+
 <section aria-labelledby="recommended-faction-set">
 <h2 id="recommended-faction-set">Recommended Faction Set <a class="anchor" href="#recommended-faction-set" aria-label="Link to this section">#</a></h2>
 <h3 id="core-5-recommended">Core 5 (recommended) <a class="anchor" href="#core-5-recommended" aria-label="Link to this section">#</a></h3>
@@ -984,7 +1029,7 @@
 </ul>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="design-review.html">Design review</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li><li><a href="technical-requirements.html">Technical requirements</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li><li><a href="art-direction.html">Art direction</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>

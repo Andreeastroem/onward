@@ -18,6 +18,8 @@
     "url": "index.html"
   },
   "citation": [
+    "potential-factions.html",
+    "design-doc.html",
     "ai-spec.html",
     "combat-spec.html",
     "economy-design.html",
@@ -41,6 +43,8 @@
   },
   "references": [
     "ai-spec",
+    "potential-factions",
+    "design-doc",
     "combat-spec",
     "economy-design",
     "match-termination-spec",
@@ -303,7 +307,7 @@
 </section>
 <section aria-labelledby="4-faction-scope-and-asymmetry-budget-high">
 <h2 id="4-faction-scope-and-asymmetry-budget-high">4) Faction Scope And Asymmetry Budget (High) <a class="anchor" href="#4-faction-scope-and-asymmetry-budget-high" aria-label="Link to this section">#</a></h2>
-<p>Status: In grill session.</p>
+<p>Status: Resolved in v1 baseline. See <a href="potential-factions.html#v1-launch-scope">potential-factions.html</a>.</p>
 <p>Why this matters:</p>
 <ul>
 <li>Species-led identity is clear, but publish-ready GDD needs concrete launch faction contracts.</li>
@@ -364,6 +368,9 @@
 <li>Army Ants are post-launch scope and have one limited connectivity exception: a forward rally nest retains rally and reinforcement-staging functions while disconnected, but cannot train units, spend biomass, or provide logistics shortcuts until baseline connectivity is restored.</li>
 <li>Launch factions share the same bank-interaction state machine: steal and deny verbs, ownership states, core-credit rules, and deterministic tie-breakers are universal. Faction asymmetry may affect only approach, protection, interaction speed, and raid windows.</li>
 <li>All launch factions have Tier 1 anti-air parity through a viable early anti-air answer. Faction-specific anti-air strengths begin at Tier 2.</li>
+<li>Rosters beyond the three expression units per faction remain unspecified placeholders until combat balance playtests.</li>
+<li>Anti-degeneracy test order is Black vs Weaver, Black vs Fire, Fire vs Weaver, then mirrors; pass criteria are deferred to playtests.</li>
+<li>Factions carry no separate no-go list beyond the shared non-negotiables.</li>
 </ul>
 <hr />
 </section>
@@ -669,6 +676,7 @@
 </section>
 <section aria-labelledby="11-multiplayer-skirmish-requirements-to-add-to-gdd-high">
 <h2 id="11-multiplayer-skirmish-requirements-to-add-to-gdd-high">11) Multiplayer Skirmish Requirements To Add To GDD (High) <a class="anchor" href="#11-multiplayer-skirmish-requirements-to-add-to-gdd-high" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v1 baseline. See <a href="design-doc.html#multiplayer-skirmish">design-doc.html</a>.</p>
 <p>Why this matters:</p>
 <ul>
 <li>Multiplayer is now explicitly in scope and needs first-class requirements in the GDD.</li>
@@ -694,6 +702,14 @@
 <ul>
 <li>A multiplayer requirements section in the GDD with explicit out-of-scope list for v1.</li>
 </ul>
+<p>Decisions locked:</p>
+<ul>
+<li>1v1 is the balanced mode. Custom lobbies support up to 4 players in any team setup, without balance tuning and without a performance guarantee beyond 1v1.</li>
+<li>Allies share vision only; no resource transfer, shared banks, or allied contesting. Multi-player termination is individual elimination, and the last surviving player or team wins.</li>
+<li>Simulation is client-server and server-authoritative with a deterministic server. Clients get full-state hashes and snapshots every 5 s and silently resync on mismatch.</li>
+<li>v1 ships custom lobbies with join codes on dedicated servers, and AI can fill any slot. There is no matchmaking queue, ranking, or ladder.</li>
+<li>The server validates every command and rate-limits players. Clients receive only team-visible state. No client-side anti-cheat ships in v1.</li>
+</ul>
 <hr />
 </section>
 <section aria-labelledby="suggested-grill-order">
@@ -717,7 +733,7 @@
 </ul>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="level-design.html">Level design</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="ai-spec.html">AI</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="potential-factions.html">Potential factions</a></li><li><a href="design-doc.html">Design document</a></li><li><a href="level-design.html">Level design</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="ai-spec.html">AI</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>
