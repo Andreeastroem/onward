@@ -21,6 +21,7 @@
     "ai-spec.html",
     "combat-spec.html",
     "economy-design.html",
+    "level-design.html",
     "match-termination-spec.html",
     "production-operations-spec.html",
     "resource-ownership-spec.html",
@@ -45,6 +46,7 @@
     "match-termination-spec",
     "production-operations-spec",
     "resource-ownership-spec",
+    "level-design",
     "tech-tree-operational-spec",
     "technical-requirements"
   ],
@@ -510,6 +512,7 @@
 </section>
 <section aria-labelledby="8-map-generation-and-fairness-constraints-medium">
 <h2 id="8-map-generation-and-fairness-constraints-medium">8) Map Generation And Fairness Constraints (Medium) <a class="anchor" href="#8-map-generation-and-fairness-constraints-medium" aria-label="Link to this section">#</a></h2>
+<p>Status: Resolved in v1 baseline. See <a href="level-design.html#map-generation-and-fairness">level-design.html</a>.</p>
 <p>Why this matters:</p>
 <ul>
 <li>Water/chokepoint philosophy is good, but map fairness requires explicit generation constraints.</li>
@@ -533,6 +536,15 @@
 <p>Definition of done:</p>
 <ul>
 <li>A map specification with fairness metrics, event rules, and validation pipeline.</li>
+</ul>
+<p>Decisions locked:</p>
+<ul>
+<li>Maps come from a hand-authored curated pool for competitive play and seeded procedural generation for casual and custom play, both checked by one validator.</li>
+<li>Competitive-legal maps need travel times within 3%, objective access within 5%, and identical starting biomass and buildable area. Casual-legal allows 10% and 15%.</li>
+<li>Both tiers need a 90 s safe-harvest window, 2 early expansion routes per spawn by minute 4, and 2 distinct routes between starts differing in length by 15% or more.</li>
+<li>Shoreline events are casual and custom only: mirrored or contested placement, 30 s telegraph, at most 10% of starting biomass value, one active at a time, 120 s minimum gap.</li>
+<li>Biomes are cosmetic and must pass the readability tests.</li>
+<li>Validation is static checks on every map plus mirrored AI-vs-AI runs on the curated pool, failing a map when either side wins more than 55%.</li>
 </ul>
 <hr />
 </section>
@@ -705,7 +717,7 @@
 </ul>
 </section>
 
-<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="ai-spec.html">AI</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
+<aside class="doc-links" aria-label="Related documents"><div><h2>This document references</h2><ul><li><a href="level-design.html">Level design</a></li><li><a href="technical-requirements.html">Technical requirements</a></li><li><a href="ai-spec.html">AI</a></li><li><a href="economy-design.html">Economy design</a></li><li><a href="resource-ownership-spec.html">Resource ownership</a></li><li><a href="combat-spec.html">Combat</a></li><li><a href="production-operations-spec.html">Production operations</a></li><li><a href="tech-tree-operational-spec.html">Tech tree</a></li><li><a href="match-termination-spec.html">Match termination</a></li></ul></div><div><h2>Referenced by</h2><ul><li><a href="index.html">Overview</a></li></ul></div></aside>
 </main>
 </div>
 <footer class="site-footer">Onward design documentation. Static HTML is the source of truth; see <code>.github/skills/html-docs/SKILL.md</code>.</footer>

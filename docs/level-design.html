@@ -31,7 +31,22 @@
   },
   "references": [],
   "referencedBy": [],
-  "constants": {},
+  "constants": {
+    "map_competitive_travel_time_tolerance_pct": "3",
+    "map_competitive_objective_access_tolerance_pct": "5",
+    "map_casual_travel_time_tolerance_pct": "10",
+    "map_casual_objective_access_tolerance_pct": "15",
+    "map_safe_harvest_window_s": "90",
+    "map_min_early_expansion_routes": "2",
+    "map_early_expansion_deadline_min": "4",
+    "map_min_routes_between_starts": "2",
+    "map_min_route_length_difference_pct": "15",
+    "shoreline_event_telegraph_s": "30",
+    "shoreline_event_max_value_pct_of_start_biomass": "10",
+    "shoreline_event_max_active": "1",
+    "shoreline_event_min_gap_s": "120",
+    "map_max_side_win_rate_pct": "55"
+  },
   "sections": [
     {
       "id": "purpose-and-status",
@@ -51,6 +66,11 @@
     {
       "id": "concept-001-watercut-crossing",
       "title": "Concept 001: Watercut Crossing",
+      "level": 2
+    },
+    {
+      "id": "map-generation-and-fairness",
+      "title": "Map Generation And Fairness (v1 baseline)",
       "level": 2
     },
     {
@@ -103,6 +123,15 @@
 <li><a href="#preliminary-zone-roles">Preliminary Zone Roles</a></li>
 <li><a href="#design-risks-to-test">Design Risks To Test</a></li>
 <li><a href="#open-questions-for-the-sketch">Open Questions For The Sketch</a></li>
+</ul></li>
+<li><a href="#map-generation-and-fairness">Map Generation And Fairness (v1 baseline)</a>
+<ul>
+<li><a href="#map-sources">Map Sources</a></li>
+<li><a href="#legality-tiers">Legality Tiers</a></li>
+<li><a href="#spawn-and-route-minimums">Spawn And Route Minimums</a></li>
+<li><a href="#shoreline-events">Shoreline Events</a></li>
+<li><a href="#biomes">Biomes</a></li>
+<li><a href="#validation-pipeline">Validation Pipeline</a></li>
 </ul></li>
 <li><a href="#validation-checklist-for-a-playable-blockout">Validation Checklist For A Playable Blockout</a>
 </li>
@@ -283,6 +312,49 @@
 <li>Is the layout meant to be rotationally symmetric, mirrored, or deliberately asymmetric with equivalent opportunity?</li>
 </ol>
 </section>
+<section aria-labelledby="map-generation-and-fairness">
+<h2 id="map-generation-and-fairness">Map Generation And Fairness (v1 baseline) <a class="anchor" href="#map-generation-and-fairness" aria-label="Link to this section">#</a></h2>
+<p>Resolves item 8 of the <a href="design-review.html#8-map-generation-and-fairness-constraints-medium">design review</a>. These rules are measurable and apply on top of the principles above.</p>
+<h3 id="map-sources">Map Sources <a class="anchor" href="#map-sources" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>A hand-authored curated pool serves ranked and competitive play.</li>
+<li>Seeded procedural generation serves casual and custom play. It is constrained by the same validator.</li>
+</ul>
+<h3 id="legality-tiers" >Legality Tiers <a class="anchor" href="#legality-tiers" aria-label="Link to this section">#</a></h3>
+<p>One validator produces two tiers. Competitive-legal additionally requires identical starting biomass and identical buildable area for both starts. Maps that pass only the casual tolerances are labeled casual.</p>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Metric</th><th scope="col">Competitive-legal</th><th scope="col">Casual-legal</th></tr></thead>
+<tbody>
+<tr><td>Start-to-objective travel-time difference</td><td>Within <code data-constant="map_competitive_travel_time_tolerance_pct" data-value="3">3%</code></td><td>Within <code data-constant="map_casual_travel_time_tolerance_pct" data-value="10">10%</code></td></tr>
+<tr><td>High-value objective access difference</td><td>Within <code data-constant="map_competitive_objective_access_tolerance_pct" data-value="5">5%</code></td><td>Within <code data-constant="map_casual_objective_access_tolerance_pct" data-value="15">15%</code></td></tr>
+<tr><td>Starting biomass and buildable area</td><td>Identical</td><td>Within the casual access tolerance</td></tr>
+</tbody>
+</table></div>
+<h3 id="spawn-and-route-minimums">Spawn And Route Minimums <a class="anchor" href="#spawn-and-route-minimums" aria-label="Link to this section">#</a></h3>
+<p>Both tiers must satisfy:</p>
+<ul>
+<li>Safe-harvest window of at least <code data-constant="map_safe_harvest_window_s" data-value="90">90 s</code> before an enemy scout-speed unit can reach the first node, measured by travel time.</li>
+<li>At least <code data-constant="map_min_early_expansion_routes" data-value="2">2</code> viable early expansion routes per spawn by minute <code data-constant="map_early_expansion_deadline_min" data-value="4">4</code>.</li>
+<li>At least <code data-constant="map_min_routes_between_starts" data-value="2">2</code> distinct routes between starts whose lengths differ by at least <code data-constant="map_min_route_length_difference_pct" data-value="15">15%</code>.</li>
+</ul>
+<h3 id="shoreline-events">Shoreline Events <a class="anchor" href="#shoreline-events" aria-label="Link to this section">#</a></h3>
+<ul>
+<li>Shoreline events are not allowed on competitive-legal maps.</li>
+<li>On casual and custom maps they are server-scheduled from the match seed and placed either as mirrored pairs or at a shared contested site.</li>
+<li>Each event is telegraphed <code data-constant="shoreline_event_telegraph_s" data-value="30">30 s</code> ahead.</li>
+<li>Each event's value is at most <code data-constant="shoreline_event_max_value_pct_of_start_biomass" data-value="10">10%</code> of the map's starting biomass value.</li>
+<li>At most <code data-constant="shoreline_event_max_active" data-value="1">1</code> event is active at a time, with at least <code data-constant="shoreline_event_min_gap_s" data-value="120">120 s</code> between events.</li>
+</ul>
+<h3 id="biomes">Biomes <a class="anchor" href="#biomes" aria-label="Link to this section">#</a></h3>
+<p>Biomes are cosmetic. They never change gameplay rules, and each must pass the readability tests in <a href="technical-requirements.html#readability-tests">Technical requirements</a>.</p>
+<h3 id="validation-pipeline">Validation Pipeline <a class="anchor" href="#validation-pipeline" aria-label="Link to this section">#</a></h3>
+<ol>
+<li><strong>Static checks on every map:</strong> symmetry metrics, route graph, safe-harvest time, buildable area, impassable-water connectivity, and the bridge and vegetation guardrails above.</li>
+<li><strong>Runtime check on the curated pool:</strong> automated AI-vs-AI runs with mirrored sides (see <a href="ai-spec.html">AI</a>). A map fails if either side wins more than <code data-constant="map_max_side_win_rate_pct" data-value="55">55%</code> of the run set.</li>
+</ol>
+<p class="placeholder-box">Placeholder: the run count and AI tier for the runtime check are not yet defined.</p>
+</section>
+
 <section aria-labelledby="validation-checklist-for-a-playable-blockout">
 <h2 id="validation-checklist-for-a-playable-blockout">Validation Checklist For A Playable Blockout <a class="anchor" href="#validation-checklist-for-a-playable-blockout" aria-label="Link to this section">#</a></h2>
 <ul>
