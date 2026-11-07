@@ -16,6 +16,8 @@ The design aims for readable classic RTS play at high unit density: individual-u
 | Tech tiers, prerequisite structure, gating, and recovery policy | Documented as a placeholder-based v0 baseline | [RTS_tech_tree_operational_spec.md](RTS_tech_tree_operational_spec.md) |
 | Match outcomes, surrender, disconnects, resume flow, and replay metadata | Documented and locked for v0 | [RTS_match_termination_spec.md](RTS_match_termination_spec.md) |
 | Presentation, unit scale, terrain constraints, and deterministic simulation requirements | Documented | [RTS_technical_requirements.md](RTS_technical_requirements.md) |
+| Art direction, visual readability, faction/player color responsibilities, and effects language | Documented | [RTS_art_direction.md](RTS_art_direction.md) |
+| Example low-poly ant, colony structures, and transform animations | Documented | [sample_ant.obj](sample_ant.obj), [sample_ant_blocky.obj](sample_ant_blocky.obj), [colony_asset_examples.gltf](colony_asset_examples.gltf) |
 | Candidate factions, asymmetry directions, matchup intent, and exception candidates | Documented as design direction | [RTS_potential_factions.md](RTS_potential_factions.md) |
 | Design-review decisions, gaps, and prioritization | Documented | [design_review.md](design_review.md) |
 
